@@ -1,0 +1,15 @@
+"D:\SoftWare\IAR\System\arm\bin\armproc.dll" 
+
+"D:\SoftWare\IAR\System\arm\bin\armstlink2.dll" 
+
+"D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Debug\Exe\Advanced Clock.out" 
+
+--plugin "D:\SoftWare\IAR\System\arm\bin\armbat.dll" 
+
+--device_macro "D:\SoftWare\IAR\System\arm\config\debugger\ST\STM32F4xx.dmac" 
+
+--flash_loader "D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Advanced Clock.board" 
+
+
+
+
