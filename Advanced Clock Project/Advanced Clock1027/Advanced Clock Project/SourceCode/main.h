@@ -19,7 +19,11 @@
 #include "common.h"
 #include "nrf24l01.h"
 #include "key.h"
+#include "WIFI.h"
+#include "cJSON.h"
 
+
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>

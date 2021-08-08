@@ -23,9 +23,9 @@ param([String]$debugfile = "");
 
 if ($debugfile -eq "")
 {
-& "D:\SoftWare\IAR\System\common\bin\cspybat" -f "D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\settings\Advanced Clock.Debug.general.xcl" --backend -f "D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\settings\Advanced Clock.Debug.driver.xcl" 
+& "D:\SoftWare\IAR\System\common\bin\cspybat" -f "D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\settings\Advanced Clock.Debug.general.xcl" --backend -f "D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\settings\Advanced Clock.Debug.driver.xcl" 
 }
 else
 {
-& "D:\SoftWare\IAR\System\common\bin\cspybat" -f "D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\settings\Advanced Clock.Debug.general.xcl" --debug_file=$debugfile --backend -f "D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\settings\Advanced Clock.Debug.driver.xcl" 
+& "D:\SoftWare\IAR\System\common\bin\cspybat" -f "D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\settings\Advanced Clock.Debug.general.xcl" --debug_file=$debugfile --backend -f "D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\settings\Advanced Clock.Debug.driver.xcl" 
 }

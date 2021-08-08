@@ -1,82 +1,94 @@
-"D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\KEY\key.c"
+"D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\KEY\key.c"
 -std=c11
 -ferror-limit=100
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Core
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Core
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Driver
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Driver
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\COMMON
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\COMMON
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\HeadDef
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\HeadDef
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\HTSensor
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\HTSensor
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\KEY
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\KEY
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\LED
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\LED
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\MsgDeal
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\MsgDeal
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\NRF24L01
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\NRF24L01
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\OLED
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\OLED
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\Queue
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\Queue
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\RADIO
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\RADIO
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\RTC
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\RTC
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\TIM
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\TIM
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\UART
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\UART
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\WDG
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\WDG
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Driver\inc
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\WIFI
+-I
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\BlueTooth
+-I
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Driver\inc
+-I
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\cJson
 -I
 D:\SoftWare\IAR\System\arm\inc
 -I
 D:\SoftWare\IAR\System\arm\inc\c
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Core
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Core
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Driver
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Driver
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\COMMON
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\COMMON
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\HeadDef
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\HeadDef
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\HTSensor
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\HTSensor
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\KEY
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\KEY
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\LED
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\LED
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\MsgDeal
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\MsgDeal
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\NRF24L01
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\NRF24L01
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\OLED
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\OLED
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\Queue
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\Queue
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\RADIO
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\RADIO
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\RTC
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\RTC
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\TIM
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\TIM
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\UART
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\UART
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\WDG
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\WDG
 -I
-D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Driver\inc
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\WIFI
+-I
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\BlueTooth
+-I
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\Driver\inc
+-I
+D:\Learning Resource\参与设计的项目\Advanced Clock\Advanced Clock Project\Advanced Clock1027\Advanced Clock Project\SourceCode\cJson
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0

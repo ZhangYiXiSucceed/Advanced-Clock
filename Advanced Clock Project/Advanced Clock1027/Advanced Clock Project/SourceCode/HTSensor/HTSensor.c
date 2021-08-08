@@ -196,11 +196,11 @@ void PrintHTInfo()
     ReadHTSensorData();
     //rt_kprintf("%2.2f C %2.2f %%\r\n",system_data.Tempture,system_data.Humidty);
     
-    sprintf((char*)TempBuff,"T   :%2.2f C",system_data.Tempture);
-    OLED_ShowString(0,4,TempBuff);
+    sprintf((char*)TempBuff,"%dC",(int)system_data.Tempture);
+    show_t_rh_string(72,6,TempBuff,font_size8X16);
     
-    sprintf((char*)TempBuff,"RH  :%2.2f %%",system_data.Humidty);
-    OLED_ShowString(0,6,TempBuff);
+    sprintf((char*)TempBuff,"%d%%",(int)system_data.Humidty);
+    show_t_rh_string(104,6,TempBuff,font_size8X16);
   }
 }
 

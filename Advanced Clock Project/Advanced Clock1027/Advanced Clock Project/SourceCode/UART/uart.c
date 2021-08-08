@@ -1,8 +1,8 @@
 #include "main.h"
                         
 
-uint8_t   FrameInlen;
-uint8_t   FrameInBuff[256]={"main go while"};
+uint16_t   FrameInlen;
+uint8_t   FrameInBuff[BUFFER_SIZE]={"main go while"};
  
 unsigned short Uart1Len;    
 unsigned char  UART1FramInFlag = 0; 
@@ -147,7 +147,8 @@ unsigned char Sizeofmsg(unsigned char* msg)
 
 void UART1_SentMsgL(unsigned char *data, unsigned short cnt)
 {
-    DMA_Cmd(DMA2_Stream7, DISABLE);
+	if(0 == cnt) return;
+	DMA_Cmd(DMA2_Stream7, DISABLE);
     DMA2_Stream7->M0AR = (uint32_t)&data[0];                                     // update address
     DMA_SetCurrDataCounter(DMA2_Stream7, cnt);                                   // update tx count
     
@@ -233,7 +234,7 @@ unsigned short Uart1Read(unsigned char *data)
 {
     unsigned short  i;
     unsigned short  len, len1,len2;
-    if(Uart1Len >250) return 0;
+    if(Uart1Len > (RX_BUFFER_SIZE-1)) return (RX_BUFFER_SIZE-1);
     len = Uart1Len;
     if(len + Uart1DmaLastCnt < RX_BUFFER_SIZE)
     {
@@ -269,7 +270,7 @@ void rt_kprintf(const char *fmt, ...)
 {
       va_list args;
       char length;
-      static char rt_log_buf[128];
+      static char rt_log_buf[256];
 
       va_start(args, fmt);
       // the return value of vsnprintf is the number of bytes that would be
@@ -278,8 +279,8 @@ void rt_kprintf(const char *fmt, ...)
       // would be larger than the rt_log_buf, we have to adjust the output
       // length. 
       length = vsnprintf(rt_log_buf, sizeof(rt_log_buf) - 1, fmt, args);
-      if (length > 120)
-          length = 120;
+      if (length > 250)
+          length = 250;
 
       rt_hw_console_output(rt_log_buf);
 
@@ -908,7 +909,7 @@ void UART4_SentMsgL(unsigned char *data, unsigned short cnt)
 void UART4Poll(void)
 {
   unsigned short dmacnt;
-  unsigned char  tempbuff[200];
+  unsigned char  tempbuff[RX_BUFFER_SIZE];
   
   dmacnt = DMA_GetCurrDataCounter(DMA1_Stream2);
   if(Uart4RcvStartFlag==0)
@@ -943,10 +944,9 @@ void UART4Poll(void)
         Uart4Len=Uart4Read(tempbuff);
         Uart4DmaStartCnt  = dmacnt; 
         Uart4RcvStartFlag = 0;
-        if(Uart4Len<=200) 
-        {
-           QueueIn(&MyQueue, tempbuff, Uart4Len);  
-        } 
+		if(Uart4Len>0)
+			QueueIn(&wifi_queue, tempbuff, Uart4Len);  
+
       }    
     }
     else 
@@ -961,7 +961,7 @@ unsigned short Uart4Read(unsigned char *data)
 {
     unsigned short  i;
     unsigned short  len, len1,len2;
-    if(Uart4Len >200) return 0;
+    if(Uart4Len > (RX_BUFFER_SIZE - 1)) return 0;
     len = Uart4Len;
     if(len + Uart4DmaLastCnt < RX_BUFFER_SIZE)
     {
@@ -1020,7 +1020,7 @@ void Printfmsg4(unsigned char* msg)
 void PrintfIOTPort4(unsigned char*msg,unsigned char len)
 {
     #ifdef DEBUG_PORT
-    if(len<250){
+    if(len<=250){
         UART4_SentMsgL(msg,len);
     }
     #endif

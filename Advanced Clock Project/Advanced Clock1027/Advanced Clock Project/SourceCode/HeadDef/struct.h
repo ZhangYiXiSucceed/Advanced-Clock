@@ -27,9 +27,26 @@ struct SystemVar
 	
 	unsigned char NRFRxFlag;
 	unsigned char NRFTxFlag;
+	unsigned char WIFIConnectFlag;
 };
 
+typedef struct STR_FrameHead  
+{
+    unsigned int   sign;		//帧头	   		        
+    unsigned int   addr; 		//帧地址			        
+    unsigned short   seq;         //帧序列号	                                
+    unsigned char  len;    		//帧长度	                        
+    unsigned char   cmd;         //ָ帧指令码
+    unsigned char data[]; 		//帧数据                    
+}STR_FrameHead_t;    
 
+/*
+typedef struct 
+{
+	
+};
+
+*/
 
 #endif
 

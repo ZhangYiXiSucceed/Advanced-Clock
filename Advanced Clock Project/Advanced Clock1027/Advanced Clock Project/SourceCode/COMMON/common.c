@@ -64,27 +64,27 @@ int8_t StateCheck(char *data)
 {   
     char *point;
     // rtn:2
-    point = strstr(data, "+QIOPEN: 0,0");               // point = strstr(data, "QIOPEN: 0,0"); // QIOPEN
+    point = strstr(data, "CONNECT");               // point = strstr(data, "QIOPEN: 0,0"); // QIOPEN
     if(point != NULL)
     {
       return 2;
     }
     
     // rtn:3
-    point = strstr(data, "+IP:");                       // point = strstr(data, "QIOPEN: 0,0"); // QIOPEN
+    point = strstr(data, ">");                       // point = strstr(data, "QIOPEN: 0,0"); // QIOPEN
     if(point != NULL)
     {
       return 3;
     }
     
     // rtn:4
-    point = strstr(data, "+QIOPEN: 0,566");             // point = strstr(data, "QIOPEN: 0,0"); // QIOPEN
+    point = strstr(data, "WIFI");             // point = strstr(data, "QIOPEN: 0,0"); // QIOPEN
     if(point != NULL)
     {
       return 4;
     }
     // rtn:5
-    point = strstr(data, "+QIURC: \"closed\"");         // point = strstr(data, "QIOPEN: 0,0"); // QIOPEN
+    point = strstr(data, "+CWLAP:(");         // point = strstr(data, "QIOPEN: 0,0"); // QIOPEN
     if(point != NULL)
     {
       return 5;

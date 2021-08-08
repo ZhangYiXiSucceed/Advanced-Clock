@@ -36,10 +36,10 @@ void TIM5_IRQHandler(void)
         TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
         Systemtime++;
         
-			  if(Systemtime % 1000 == 1)
-				{
-					system_data.SystemGMTTime++;
-				}
+		if(Systemtime % 1000 == 1)
+		{
+			system_data.SystemGMTTime++;
+		}
         if(Systemtime % 120000 == 0)
         {
           system_var.TwoMinuteFlag = 1;
@@ -67,4 +67,11 @@ void TIM5_IRQHandler(void)
     }
 }
 
+
+unsigned long GetSystemTime(void)
+{
+
+   return system_data.SystemGMTTime;
+	
+}
 

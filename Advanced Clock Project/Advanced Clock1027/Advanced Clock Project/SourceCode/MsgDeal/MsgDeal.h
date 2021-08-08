@@ -5,5 +5,7 @@
 
 extern struct SystemVar system_var; 
 void Uart_AT_Deal(void);
+void QueueInfoPrint(void);
+
 #endif
 

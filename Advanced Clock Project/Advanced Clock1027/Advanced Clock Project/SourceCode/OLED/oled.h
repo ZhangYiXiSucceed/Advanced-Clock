@@ -40,6 +40,19 @@
 #define X_WIDTH 	128
 #define Y_WIDTH 	64	 
 
+
+#define   font_size6X8     0
+#define   font_size8X16    16
+#define   font_size8X16_encode_offset_data   8
+
+#define   font_size16X32   32
+#define   font_size16X32_encode_offset_data   8
+
+
+#define   special_character_offset   10
+
+
+
 void OLED_Init(void);
 void SPI2Init(void);
 void OLED_WR_Byte(u8 data,u8 cmd);
@@ -60,6 +73,15 @@ void ShowStartDisplay(void);
 void OLED_IOInit(void);
 void ShowBMP(void);
 void Show16X32(void);
+
+void show_oled_char(int font_x,int font_y, char character,int font_size);
+void show_time_str(u8 x,u8 y,u8 *chr);
+void show_line(int x,int y);
+void show_t_rh_string(u8 x,u8 y,u8 *chr,int font_size);
+void show_common_string(u8 x,u8 y,u8 *chr,int font_size);
+void show_date_str(u8 x,u8 y,u8 *chr);
+
+
 #endif
 
 

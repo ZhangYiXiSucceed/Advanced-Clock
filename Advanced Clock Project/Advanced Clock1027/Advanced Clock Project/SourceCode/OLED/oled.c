@@ -2,6 +2,8 @@
 #include "oledfont.h"
 #include "bmp.h"
 
+
+
 void Spi2IOInit(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -226,23 +228,23 @@ void OLED_Clear(void)
 void OLED_ShowChar(u8 x,u8 y,u8 chr)
 {      	
 	unsigned char c=0,i=0;	
-		c=chr-' ';//得到偏移后的值			
+		c=chr-' '; /* get offset value*/	
 		if(x>Max_Column-1){x=0;y=y+2;}
 		if(SIZE ==16)
-			{
+		{
 			OLED_Set_Pos(x,y);	
 			for(i=0;i<8;i++)
 			OLED_WR_Byte(F8X16[c*16+i],OLED_DATA);
 			OLED_Set_Pos(x,y+1);
 			for(i=0;i<8;i++)
 			OLED_WR_Byte(F8X16[c*16+i+8],OLED_DATA);
-			}
-			else {	
-				OLED_Set_Pos(x,y+1);
-				for(i=0;i<6;i++)
-				OLED_WR_Byte(F6x8[c][i],OLED_DATA);
-				
-			}
+		}
+		else {	
+			OLED_Set_Pos(x,y+1);
+			for(i=0;i<6;i++)
+			OLED_WR_Byte(F6x8[c][i],OLED_DATA);
+			
+		}
 }
 //m^n函数
 u32 oled_pow(u8 m,u8 n)
@@ -296,31 +298,34 @@ void OLED_ShowCHinese(u8 x,u8 y,u8 no)
 	OLED_Set_Pos(x,y);	
     for(t=0;t<16;t++)
 		{
-				OLED_WR_Byte(Hzk[2*no][t],OLED_DATA);
+				OLED_WR_Byte(city[2*no][t],OLED_DATA);
 				adder+=1;
     }	
 		OLED_Set_Pos(x,y+1);	
     for(t=0;t<16;t++)
     {	
-      OLED_WR_Byte(Hzk[2*no+1][t],OLED_DATA);
+      OLED_WR_Byte(city[2*no+1][t],OLED_DATA);
       adder+=1;
     }					
 }
-/***********功能描述：显示显示BMP图片128×64起始点坐标(x,y),x的范围0～127，y为页的范围0～7*****************/
+/***********Show BMP Picture*****************/
 void OLED_DrawBMP(unsigned char x0, unsigned char y0,unsigned char x1, unsigned char y1,unsigned char BMP[])
 { 	
  unsigned int j=0;
  unsigned char x,y;
+ unsigned char y_line_num;
   
-  if(y1%8==0) y=y1/8;      
-  else y=y1/8+1;
-	for(y=y0;y<y1;y++)
+	if(y1%8==0) 
+		y_line_num=y1/8;      
+	else 
+		y_line_num=y1/8+1;
+	for(y=y0;y<(y_line_num + ((y0%8)?(y0/8+1):(y0/8)));y++)
 	{
 		OLED_Set_Pos(x0,y);
-    for(x=x0;x<x1;x++)
-	    {      
-	    	OLED_WR_Byte(BMP[j++],OLED_DATA);	    	
-	    }
+		for(x=x0;x<(x0+x1);x++)
+		{      
+			OLED_WR_Byte(BMP[j++],OLED_DATA);	    	
+		}
 	}
 } 
 
@@ -328,23 +333,275 @@ void OLED_DrawBMP(unsigned char x0, unsigned char y0,unsigned char x1, unsigned 
 void ShowStartDisplay()
 {
   	OLED_ShowCHinese(0,0,0);//中
-		OLED_ShowCHinese(18,0,1);//景
-		OLED_ShowCHinese(36,0,2);//园
-		OLED_ShowCHinese(54,0,3);//电
-		OLED_ShowCHinese(72,0,4);//子
-		OLED_ShowCHinese(90,0,5);//科
-		OLED_ShowCHinese(108,0,6);//技
-		OLED_ShowString(0,3,"1.54' OLED TEST");
-		OLED_ShowString(0,6,"ASCII:");  
-		OLED_ShowString(63,6,"CODE:");
+	OLED_ShowCHinese(18,0,1);//景
+	OLED_ShowCHinese(36,0,2);//园
+	OLED_ShowCHinese(54,0,3);//电
+	OLED_ShowCHinese(72,0,4);//子
+	OLED_ShowCHinese(90,0,5);//科
+	OLED_ShowCHinese(108,0,6);//技
+	OLED_ShowString(0,3,"1.54' OLED TEST");
+	OLED_ShowString(0,6,"ASCII:");  
+	OLED_ShowString(63,6,"CODE:");
 }
 
 
 void ShowBMP()
 {
-  OLED_DrawBMP(0,0,127,7,BMP2);
+  //OLED_DrawBMP(0,0,127,7,BMP2);
+
+  
+  static unsigned char fresh_once_flag[10] = {0};
+  static unsigned char fresh_once_flag_last[10]={0};
+  
+  if(system_var.WIFIConnectFlag)
+  {
+  	fresh_once_flag[0]=1;
+  	if (fresh_once_flag[0] != fresh_once_flag_last[0])
+  		OLED_Clear();
+  	OLED_DrawBMP(0,0,11,13,signal_bmp1);
+	
+  }
+  else
+  {
+  	fresh_once_flag[0]=2;
+  	if (fresh_once_flag[0] != fresh_once_flag_last[0])
+  		OLED_Clear();
+	OLED_DrawBMP(0,0,16,16,signal_idle);
+	
+  }
+  fresh_once_flag_last[0] = fresh_once_flag[0];
+  
+  //OLED_DrawBMP(0,0,8,9,signal_bmp2);
+
+  //OLED_DrawBMP(32,0,5,6,signal_bmp3);
+
+  OLED_DrawBMP(100,0,16,8,battery_bmp2);
+
 }
 
+
+void show_oled_char(int font_x,int font_y, char character,int font_size)
+{
+	unsigned char temp_character_position=0,character_offset=0;	
+	temp_character_position=character-' '; /* get offset value*/		
+	if(font_x>Max_Column-1)    /*character is over right side,then new line*/
+	{
+		font_x=0;
+		font_y=font_y+2;
+	}
+	if(font_size16X32 == font_size)
+	{
+
+	    if(':' == character)
+    	{
+    		OLED_Set_Pos(font_x,font_y);	
+			for(character_offset=0;character_offset<8;character_offset++)
+			{
+				OLED_WR_Byte(F16X32[special_character_offset*font_size16X32+character_offset],OLED_DATA);
+			}
+				
+			OLED_Set_Pos(font_x,font_y+1);
+			for(character_offset=0;character_offset<8;character_offset++)
+			{
+				OLED_WR_Byte(F16X32[special_character_offset*font_size16X32+character_offset + font_size16X32_encode_offset_data],OLED_DATA);
+			}
+
+			OLED_Set_Pos(font_x,font_y+2);
+			for(character_offset=0;character_offset<8;character_offset++)
+			{
+				OLED_WR_Byte(F16X32[special_character_offset*font_size16X32+character_offset + font_size16X32_encode_offset_data*2],OLED_DATA);
+			}
+			
+			OLED_Set_Pos(font_x,font_y+3);
+			for(character_offset=0;character_offset<8;character_offset++)
+			{
+				OLED_WR_Byte(F16X32[special_character_offset*font_size16X32+character_offset + font_size16X32_encode_offset_data*3],OLED_DATA);
+			}
+    	}
+		else
+		{
+			temp_character_position-= 16;
+		
+			OLED_Set_Pos(font_x,font_y);	
+			for(character_offset=0;character_offset<8;character_offset++)
+			{
+				OLED_WR_Byte(F16X32[temp_character_position*font_size16X32+character_offset],OLED_DATA);
+			}
+				
+			OLED_Set_Pos(font_x,font_y+1);
+			for(character_offset=0;character_offset<8;character_offset++)
+			{
+				OLED_WR_Byte(F16X32[temp_character_position*font_size16X32+character_offset + font_size16X32_encode_offset_data],OLED_DATA);
+			}
+
+			OLED_Set_Pos(font_x,font_y+2);
+			for(character_offset=0;character_offset<8;character_offset++)
+			{
+				OLED_WR_Byte(F16X32[temp_character_position*font_size16X32+character_offset + font_size16X32_encode_offset_data*2],OLED_DATA);
+			}
+			
+			OLED_Set_Pos(font_x,font_y+3);
+			for(character_offset=0;character_offset<8;character_offset++)
+			{
+				OLED_WR_Byte(F16X32[temp_character_position*font_size16X32+character_offset + font_size16X32_encode_offset_data*3],OLED_DATA);
+			}
+		}
+		
+	}
+	else if(font_size8X16 == font_size)
+	{
+		OLED_Set_Pos(font_x,font_y);	
+		for(character_offset=0;character_offset<8;character_offset++)
+		{
+			OLED_WR_Byte(F8X16[temp_character_position*font_size8X16+character_offset],OLED_DATA);
+		}
+			
+		OLED_Set_Pos(font_x,font_y+1);
+		for(character_offset=0;character_offset<8;character_offset++)
+		{
+			OLED_WR_Byte(F8X16[temp_character_position*font_size8X16+character_offset + font_size8X16_encode_offset_data],OLED_DATA);
+		}
+	}
+	else if(font_size6X8 == font_size)
+	{	
+		OLED_Set_Pos(font_x,font_y+1);
+		for(character_offset=0;character_offset<6;character_offset++)
+		{
+			OLED_WR_Byte(F6x8[temp_character_position][character_offset],OLED_DATA);
+		}
+		
+	}
+	
+}
+
+
+
+void show_common_string(u8 x,u8 y,u8 *chr,int font_size)
+{
+	unsigned char j=0;
+
+	unsigned char font_select ;
+
+	if(font_size6X8 == font_size)
+		font_select=6;
+	if(font_size8X16 == font_size)
+		font_select=8;
+	if(font_size16X32 == font_size)
+		font_select=16;
+	
+	while (chr[j]!='\0')
+	{	
+		show_oled_char(x,y,chr[j],font_size);
+		x+=font_select;
+		if(x>120){x=0;y+=2;}
+			j++;
+	}
+
+	
+}
+
+
+void show_time_str(u8 x,u8 y,u8 *chr)
+{
+	unsigned char j=0;
+	
+	while (chr[j]!='\0')
+	{		show_oled_char(x,y,chr[j],font_size16X32);
+			x+=16;
+		if(x>120){x=0;y+=2;}
+			j++;
+	}
+	
+}
+void show_date_str(u8 x,u8 y,u8 *chr)
+{
+	unsigned char j=0;
+	int font_x =x,font_y=y;
+	int character_offset;
+	int temp_character_position;
+	while (chr[j]!='\0')
+	{	
+
+		if(chr[j]>='0')
+		{
+			temp_character_position = chr[j]-'0';
+			OLED_Set_Pos(font_x,font_y);
+			for(character_offset=0;character_offset<8;character_offset++)
+			{
+				OLED_WR_Byte(number_font[temp_character_position][character_offset],OLED_DATA);
+			}
+
+			OLED_Set_Pos(font_x,font_y+1);
+			for(character_offset=8;character_offset<16;character_offset++)
+			{
+				OLED_WR_Byte(number_font[temp_character_position][character_offset],OLED_DATA);
+			}
+		}
+		else
+		{
+			temp_character_position = 10;
+			OLED_Set_Pos(font_x,font_y);
+			for(character_offset=0;character_offset<8;character_offset++)
+			{
+				OLED_WR_Byte(number_font[temp_character_position][character_offset],OLED_DATA);
+			}
+			OLED_Set_Pos(font_x,font_y+1);
+			for(character_offset=8;character_offset<16;character_offset++)
+			{
+				OLED_WR_Byte(number_font[temp_character_position][character_offset],OLED_DATA);
+			}
+			
+		}
+		font_x+=8;
+		j++;
+
+	}
+	
+}
+
+
+
+void show_t_rh_string(u8 x,u8 y,u8 *chr,int font_size)
+{
+	unsigned char j=0;
+
+	unsigned char font_select ;
+
+	if(font_size6X8 == font_size)
+		font_select=6;
+	if(font_size8X16 == font_size)
+		font_select=8;
+	if(font_size16X32 == font_size)
+		font_select=16;
+	
+	while (chr[j]!='\0')
+	{		
+		show_oled_char(x,y,chr[j],font_size);
+		x+=font_select;
+		if(x>120){x=0;y+=2;}
+			j++;
+	}
+
+
+}
+
+void show_line(int x,int y)
+{
+	int row_offset;
+	int i;
+	int x_var = x;
+	for(row_offset=0;row_offset<((128-x)/8);row_offset++)
+	{
+		OLED_Set_Pos(x_var,y);
+
+		for(i=0;i<8;i++)
+		{
+			OLED_WR_Byte(line_num[i],OLED_DATA);
+		}
+		
+		x_var+=8;
+	}
+}
 
 void Show16X32()
 {

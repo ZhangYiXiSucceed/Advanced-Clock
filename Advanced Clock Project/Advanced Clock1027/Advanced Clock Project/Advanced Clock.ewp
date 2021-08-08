@@ -350,7 +350,10 @@
                     <state>$PROJ_DIR$\SourceCode\TIM</state>
                     <state>$PROJ_DIR$\SourceCode\UART</state>
                     <state>$PROJ_DIR$\SourceCode\WDG</state>
+                    <state>$PROJ_DIR$\SourceCode\WIFI</state>
+                    <state>$PROJ_DIR$\SourceCode\BlueTooth</state>
                     <state>$PROJ_DIR$\Driver\inc</state>
+                    <state>$PROJ_DIR$\SourceCode\cJson</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -769,7 +772,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>D:\WorkSpace\Advanced Clock\Advanced Clock Project\Core\stm32f407xG.icf</state>
+                    <state>$PROJ_DIR$\Core\stm32f407xG.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -2162,6 +2165,12 @@
     <group>
         <name>SourceCode</name>
         <file>
+            <name>$PROJ_DIR$\SourceCode\BlueTooth\BlueTooth.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\SourceCode\cJson\cJSON.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\SourceCode\COMMON\common.c</name>
         </file>
         <file>
@@ -2202,6 +2211,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\SourceCode\UART\uart.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\SourceCode\WIFI\WIFI.c</name>
         </file>
     </group>
 </project>

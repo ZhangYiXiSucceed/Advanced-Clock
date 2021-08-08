@@ -2436,6 +2436,12 @@
     <group>
         <name>SourceCode</name>
         <file>
+            <name>$PROJ_DIR$\SourceCode\BlueTooth\BlueTooth.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\SourceCode\cJson\cJSON.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\SourceCode\COMMON\common.c</name>
         </file>
         <file>
@@ -2476,6 +2482,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\SourceCode\UART\uart.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\SourceCode\WIFI\WIFI.c</name>
         </file>
     </group>
 </project>

@@ -5,12 +5,14 @@
 #include "stm32f4xx.h"
 
 #define DEBUG_PORT
-#define TX_BUFFER_SIZE 256
-#define RX_BUFFER_SIZE 256
+#define TX_BUFFER_SIZE 4096
+#define RX_BUFFER_SIZE 4096
+
+#define   BUFFER_SIZE   4096
 
 
-extern uint8_t   FrameInlen;
-extern uint8_t   FrameInBuff[256];
+extern uint16_t   FrameInlen;
+extern uint8_t   FrameInBuff[BUFFER_SIZE];
 extern unsigned char  UART1FramInFlag; 
 
 void UART1_DMA_Init(void);
