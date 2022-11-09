@@ -142,7 +142,7 @@ void PendSV_Handler(void)
 
 
 
-u32 TimeDelay;
+volatile u32 TimeDelay;
 void SysTick_Handler(void)
 {
  if(TimeDelay!=0x00)

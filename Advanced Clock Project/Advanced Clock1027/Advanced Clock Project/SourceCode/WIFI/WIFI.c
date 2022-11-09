@@ -7,14 +7,14 @@ unsigned char  WiFiNetCmd[][100]=
   {"AT+RST\x0d\x0a"},                                                              
   {"ATE0\x0d\x0a"},                                                         
   {"AT+CWMODE=1\x0d\x0a"},                                                        
-  {"AT+CWJAP=\"ZhangYixi\",\"qq1395208387\"\x0d\x0a"},                                                     
+  {"AT+CWJAP=\"ZhangYixiSucceed\",\"qazwsx123\"\x0d\x0a"},                                                     
   {"AT+CIPSTART=\"TCP\",\"api.k780.com\",80\x0d\x0a"},            
   {"AT+CIPMODE=1\x0d\x0a"},            
   {"AT+CIPSEND\x0d\x0a"},                                                   
   {"+++"},                                         
   {"AT+CWQAP\x0d\x0a"},                                     
   {"AT+CEDRXS=0,5\x0d\x0a"},    
-  {"AT+CWLAP=\"ZhangYixi\"\x0d\x0a"},
+  {"AT+CWLAP=\"ZhangYixiSucceed\"\x0d\x0a"},
   {"AT+CIPCLOSE\x0d\x0a"}
 };
 
@@ -250,6 +250,7 @@ void wifi_task_deal()
 			      if(mrtn == 1)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
+					  delay_ms(1000);
 
 			      }
 			      break;

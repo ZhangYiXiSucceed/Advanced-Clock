@@ -46,7 +46,7 @@ int main()
 
   init_wifi_network();
   
-  IWDG_Init();
+  //IWDG_Init();
 
   diag_cmd_start();
 
@@ -54,7 +54,7 @@ int main()
   while(1)
   {
   	
-    IWDG_Feed();
+    //IWDG_Feed();
     //LedBlink();
     KEYService();
     //NRFCommunicationService();
@@ -65,7 +65,7 @@ int main()
     PrintHTInfo();
     ShowCurrentTime();
     ShowBMP();
-	ShowWifiConnect();
+	  ShowWifiConnect();
   }
 }
 
