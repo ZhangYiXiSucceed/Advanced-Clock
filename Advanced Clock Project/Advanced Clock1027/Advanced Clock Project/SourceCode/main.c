@@ -48,10 +48,11 @@ int main()
   
   IWDG_Init();
 
+  diag_cmd_start();
+
   
   while(1)
   {
-
   	
     IWDG_Feed();
     //LedBlink();
@@ -63,25 +64,8 @@ int main()
     wifi_task_deal();
     PrintHTInfo();
     ShowCurrentTime();
-
-    //show_oled_char(0,0,'0',32);
-
-	//show_oled_char(20,0,'1',32);
-    //show_oled_char(36,0,'2',32);
-
-	//show_oled_char(52,0,':',32);
-	
-    //show_oled_char(68,0,'3',32);
-	//show_oled_char(84,0,'4',32);
-
-	ShowBMP();
-	show_line(0,5);
-	OLED_ShowCHinese(0,6,0);
-	OLED_ShowCHinese(18,6,1);
-	OLED_ShowCHinese(36,6,2);
-	OLED_ShowCHinese(54,6,3);
-    //Show16X32();
-  
+    ShowBMP();
+	ShowWifiConnect();
   }
 }
 

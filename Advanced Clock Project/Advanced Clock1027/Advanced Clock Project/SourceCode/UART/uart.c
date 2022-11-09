@@ -159,13 +159,11 @@ void UART1_SentMsgL(unsigned char *data, unsigned short cnt)
     USART_ClearFlag(USART1, USART_FLAG_TC);                                       // ??UART1???????
 }
 
-void UART1_SentMsg(unsigned char *data)
+void UART1_SentMsg(unsigned char *data,uint16_t data_len)
 {
-    unsigned char ucnt = Sizeofmsg(data);
-    
     DMA_Cmd(DMA2_Stream7, DISABLE);
     DMA2_Stream7->M0AR = (uint32_t)&data[0];                                     // update address
-    DMA_SetCurrDataCounter(DMA2_Stream7, ucnt);                                  // update tx count
+    DMA_SetCurrDataCounter(DMA2_Stream7, data_len);                                  // update tx count
     
     DMA_Cmd(DMA2_Stream7, ENABLE);
     while(DMA_GetFlagStatus(DMA2_Stream7, DMA_FLAG_TCIF7)!=1); 
@@ -254,22 +252,19 @@ unsigned short Uart1Read(unsigned char *data)
     return(len);
 }
 
-void rt_hw_console_output(const char *str)
+void rt_hw_console_output(char *str,uint16_t output_len)
 {   
-    Printfmsg((unsigned char*)str);
-}
-
-void Printfmsg(unsigned char* msg)
-{
     #ifdef DEBUG_PORT
-    UART1_SentMsg(msg);
+    UART1_SentMsgL((unsigned char*)str,output_len);
     #endif
 }
+
+
 
 void rt_kprintf(const char *fmt, ...)
 {
       va_list args;
-      char length;
+      int16_t length;
       static char rt_log_buf[256];
 
       va_start(args, fmt);
@@ -279,10 +274,10 @@ void rt_kprintf(const char *fmt, ...)
       // would be larger than the rt_log_buf, we have to adjust the output
       // length. 
       length = vsnprintf(rt_log_buf, sizeof(rt_log_buf) - 1, fmt, args);
-      if (length > 250)
+      if ((length > 250) || (length == -1))
           length = 250;
 
-      rt_hw_console_output(rt_log_buf);
+      rt_hw_console_output(rt_log_buf,length);
 
       va_end(args);
 }

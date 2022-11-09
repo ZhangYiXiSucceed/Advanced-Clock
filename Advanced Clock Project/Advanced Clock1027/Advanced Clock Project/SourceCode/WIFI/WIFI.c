@@ -333,6 +333,7 @@ void wifi_task_deal()
 				{
 				 	rt_kprintf("%s\r\n",FrameInBuff);
 					parsing_time_json_info(FrameInBuff,FrameInlen);
+					system_var.TimeGetFlag = 1;
 				 	sOperCmdBuff.tid = 0xff;
 				}
 				break;
@@ -450,11 +451,11 @@ void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_
 	cJSON *cityno = cJSON_GetObjectItem(result, "cityno");
 	rt_kprintf("cityno value:%s\r\n", cityno->valuestring);
 
-	cJSON *temperture = cJSON_GetObjectItem(result, "temperture");
-	rt_kprintf("temperture value:%s\r\n", temperture->valuestring);
+	cJSON *temperature = cJSON_GetObjectItem(result, "temperature");
+	rt_kprintf("temperture value:%s\r\n", temperature->valuestring);
 	
-	cJSON *temperture_curr = cJSON_GetObjectItem(result, "temperture_curr");
-	rt_kprintf("temperture_curr value:%s\r\n", temperture_curr->valuestring);
+	cJSON *temperature_curr = cJSON_GetObjectItem(result, "temperature_curr");
+	rt_kprintf("temperture_curr value:%s\r\n", temperature_curr->valuestring);
 	
 	cJSON *humidity = cJSON_GetObjectItem(result, "humidity");
 	rt_kprintf("humidity value:%s\r\n", humidity->valuestring);

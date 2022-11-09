@@ -96,7 +96,7 @@ void NBModuleInit(void)
     delay_ms(4000);
     
     int8_t rtn    = -1;
-    QueueInit(&MyQueue);
+    QueueInit(&nb_queue);
     rt_kprintf("*: ATI\r\n");
     PrintfIOTPort3((unsigned char*)(&IoTNetCmd[0]),sizeof(IoTNetCmd[0]));
 
@@ -104,7 +104,7 @@ void NBModuleInit(void)
     while(Systemtime < (LastTime + 300000))
     {
 			Uart_AT_Deal();
-       if(QueueOut(&MyQueue, FrameInBuff, &FrameInlen) == QueueOperateOk)      // uart1接收IOT端口数据        
+       if(QueueOut(&nb_queue, FrameInBuff, &FrameInlen) == QueueOperateOk)      // uart1接收IOT端口数据        
         {
             UART1_SentMsgL(FrameInBuff, FrameInlen);  
             rtn = StateCheck((char*)FrameInBuff);

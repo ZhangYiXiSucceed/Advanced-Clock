@@ -19,14 +19,14 @@ void UART1_DMA_Init(void);
 void UART1Init(void);
 unsigned char Sizeofmsg(unsigned char* msg);
 void UART1_SentMsgL(unsigned char *data, unsigned short cnt);
-void UART1_SentMsg(unsigned char *data);
+
 
 void UART1_SentChar(char* data);
 void UART1Poll(void);
 unsigned short Uart1Read(unsigned char *data);
 void rt_kprintf(const char *fmt, ...);
-void rt_hw_console_output(const char *str);
-void Printfmsg(unsigned char* msg);
+void rt_hw_console_output(char *str,uint16_t output_len);
+
 
 
 void UART2_DMA_Init(void);

@@ -190,7 +190,7 @@ void ReadHTSensorData()
 void PrintHTInfo()
 {
   u8 TempBuff[40];
-  if(system_var.HTDataFlag == 1)
+  if((system_var.HTDataFlag == 1) && (system_var.TimeGetFlag == 2))
   {
     system_var.HTDataFlag = 0;
     ReadHTSensorData();

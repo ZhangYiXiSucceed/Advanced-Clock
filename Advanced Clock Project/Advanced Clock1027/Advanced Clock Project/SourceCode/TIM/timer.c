@@ -59,6 +59,11 @@ void TIM5_IRQHandler(void)
         {
           system_var.CurrentTimeFlag = 1;
         }
+		if(Systemtime % 50 == 0)
+		{
+			system_var.Time_20_ms_flag=1;
+		}
+		
         UART1Poll();
         UART2Poll();
         UART3Poll();

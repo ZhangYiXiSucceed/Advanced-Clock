@@ -83,6 +83,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_iwdg.h"
+#include "main.h"
 
 /** @addtogroup STM32F4xx_StdPeriph_Driver
   * @{
@@ -177,7 +178,8 @@ void IWDG_SetReload(uint16_t Reload)
   */
 void IWDG_ReloadCounter(void)
 {
-  IWDG->KR = KR_KEY_RELOAD;
+  //IWDG->KR = KR_KEY_RELOAD;
+  KEYService();
 }
 
 /**

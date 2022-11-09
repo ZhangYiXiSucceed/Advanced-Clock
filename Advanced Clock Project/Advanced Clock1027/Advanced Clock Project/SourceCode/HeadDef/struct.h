@@ -28,6 +28,9 @@ struct SystemVar
 	unsigned char NRFRxFlag;
 	unsigned char NRFTxFlag;
 	unsigned char WIFIConnectFlag;
+	unsigned char TimeGetFlag;
+
+	unsigned int  Time_20_ms_flag;
 };
 
 typedef struct STR_FrameHead  

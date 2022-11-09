@@ -209,6 +209,7 @@
                     <name>CCDefines</name>
                     <state>STM32F40_41xxx</state>
                     <state>USE_STDPERIPH_DRIVER</state>
+                    <state>__IAR_CC</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -269,7 +270,7 @@
                 <option>
                     <name>CCAllowList</name>
                     <version>1</version>
-                    <state>00000000</state>
+                    <state>10010100</state>
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
@@ -289,7 +290,7 @@
                 </option>
                 <option>
                     <name>IExtraOptions</name>
-                    <state></state>
+                    <state>--warnings_are_errors </state>
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -369,7 +370,7 @@
                 </option>
                 <option>
                     <name>CCOptLevel</name>
-                    <state>1</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>CCOptStrategy</name>
@@ -378,7 +379,7 @@
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>1</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>CompilerMisraRules98</name>

@@ -187,7 +187,7 @@ u8 tbuf[40];
 void ShowCurrentTime()
 {
 
-  if(system_var.CurrentTimeFlag == 1)
+  if((system_var.CurrentTimeFlag == 1) && (system_var.TimeGetFlag == 2))
   {
     system_var.CurrentTimeFlag = 0;
 

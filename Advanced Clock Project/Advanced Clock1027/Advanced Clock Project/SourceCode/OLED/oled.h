@@ -81,6 +81,8 @@ void show_t_rh_string(u8 x,u8 y,u8 *chr,int font_size);
 void show_common_string(u8 x,u8 y,u8 *chr,int font_size);
 void show_date_str(u8 x,u8 y,u8 *chr);
 
+void ShowWifiConnect();
+void wifi_bmp_clear();
 
 #endif
 

@@ -3,13 +3,22 @@
 
 #include "stm32f4xx.h"
 
-
+#ifdef __IAR_CC
+//#error "IAR CC Compiler"
 #define    IntsStorage                unsigned long IntsByte                         // 存储中断设置参数变量
 #define    EnableInts                 __enable_interrupt();                            // 中断使能 
 #define    DisableInts                __disable_interrupt();                           // 中断禁止
 #define    RestoreInts                __set_interrupt_state(IntsByte);    EnableInts;  // 恢复中断设置，恢复中断
 #define    StoreDisableInts           IntsByte = __get_interrupt_state(); DisableInts; // 存储中断参数并禁止中断
+#else
 
+#define    IntsStorage                unsigned long IntsByte                         // 存储中断设置参数变量
+#define    EnableInts                 __enable_irq();                            // 中断使能 
+#define    DisableInts                __disable_irq();                           // 中断禁止
+#define    RestoreInts                //__set_interrupt_state(IntsByte);    EnableInts;  // 恢复中断设置，恢复中断
+#define    StoreDisableInts           //IntsByte = __get_interrupt_state(); DisableInts; // 存储中断参数并禁止中断
+
+#endif
 
 #define    ValFifoSize               16   
 #define    ValFifoFull               0   
