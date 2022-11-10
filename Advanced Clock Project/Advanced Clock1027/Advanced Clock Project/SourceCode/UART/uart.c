@@ -2,7 +2,7 @@
                         
 
 uint16_t   FrameInlen;
-uint8_t   FrameInBuff[BUFFER_SIZE]={"main go while"};
+uint8_t   FrameInBuff[BUFFER_SIZE]={0};
  
 unsigned short Uart1Len;    
 unsigned char  UART1FramInFlag = 0; 

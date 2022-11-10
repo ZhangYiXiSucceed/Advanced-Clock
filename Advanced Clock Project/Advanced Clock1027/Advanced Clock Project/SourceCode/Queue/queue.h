@@ -67,7 +67,7 @@ unsigned char GetTsakFiFoCount(struct OperCmdUnionFifo *Queue);
 
 
 
-#define QueueSize       4   
+#define QueueSize       2   
 #define QueueFull       0   
 #define QueueEmpty      1   
 #define QueueOperateOk  2   
