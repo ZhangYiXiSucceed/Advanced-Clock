@@ -234,7 +234,7 @@ void wifi_task_deal()
      if(QueueOut(&wifi_queue, FrameInBuff, &FrameInlen) == QueueOperateOk)         // ����IOT�˿�����        
   {
 		  memset(&FrameInBuff[FrameInlen],0x00,RX_BUFFER_SIZE - FrameInlen); 
-		  rt_kprintf("rsp:%s\r\n",FrameInBuff);
+		  rt_kprintf("%s\r\n",FrameInBuff);
 		  switch(sOperCmdBuff.tid)
 		  {
 		  		 case AT_CMD:                                                                 // 2�����CESQ
@@ -332,7 +332,7 @@ void wifi_task_deal()
 
 				case AT_SEND_DATA:
 				{
-				 	rt_kprintf("%s\r\n",FrameInBuff);
+				 	//rt_kprintf("%s\r\n",FrameInBuff);
 					parsing_time_json_info(FrameInBuff,FrameInlen);
 					system_var.TimeGetFlag = 1;
 				 	sOperCmdBuff.tid = 0xff;
@@ -340,7 +340,7 @@ void wifi_task_deal()
 				break;
 				case AT_QUIRY_WEATHER_DATA:
 				{
-				 	rt_kprintf("%s\r\n",FrameInBuff);
+				 	//rt_kprintf("%s\r\n",FrameInBuff);
 					parsing_weather_json_info(FrameInBuff,FrameInlen);
 				 	sOperCmdBuff.tid = 0xff;
 				}
@@ -469,16 +469,18 @@ void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_
 	cJSON_Delete(root);
 }
 
+
 void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buffer_length)
 {
 
+	rt_kprintf("%s\r\n", frame_buffer);
 	cJSON *root = cJSON_Parse(frame_buffer);
 	if (0 == root)
 	{
 		rt_kprintf("error\n");
 		return;
 	}
-	//rt_kprintf("%s\n", "有格式的方式打印Json:");
+	//
 	//rt_kprintf("%s\n\n", cJSON_Print(root));
 
 	cJSON *success = cJSON_GetObjectItem(root, "success");
