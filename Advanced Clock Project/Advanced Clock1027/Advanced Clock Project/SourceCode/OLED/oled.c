@@ -410,7 +410,6 @@ void ShowWifiConnect()
 	if(system_var.TimeGetFlag == 1)
 	{
 		show_common_string(0,4,"wifi connect ok",font_size8X16);
-		OLED_Clear();
 		if(system_data.SystemGMTTime > (temp_sys_time+3))
 		{
 			system_var.TimeGetFlag = 2;

@@ -334,7 +334,10 @@ void wifi_task_deal()
 				{
 				 	//rt_kprintf("%s\r\n",FrameInBuff);
 					parsing_time_json_info(FrameInBuff,FrameInlen);
-					system_var.TimeGetFlag = 1;
+					if(0 == system_var.TimeGetFlag)
+					{
+						system_var.TimeGetFlag = 1;
+					}
 				 	sOperCmdBuff.tid = 0xff;
 				}
 				break;
