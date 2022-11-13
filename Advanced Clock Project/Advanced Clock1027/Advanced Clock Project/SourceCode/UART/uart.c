@@ -697,7 +697,7 @@ void UART3Poll(void)
         Uart3RcvStartFlag = 0;
         if(Uart3Len<=200) 
         {
-           QueueIn(&MyQueue, tempbuff, Uart3Len);  
+           QueueIn(&nb_queue, tempbuff, Uart3Len);  
         } 
       }    
     }
