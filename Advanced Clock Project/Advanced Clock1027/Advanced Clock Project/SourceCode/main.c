@@ -65,7 +65,7 @@ int main()
     PrintHTInfo();
     ShowCurrentTime();
     ShowBMP();
-	  ShowWifiConnect();
+	ShowWifiConnect();
   }
 }
 
