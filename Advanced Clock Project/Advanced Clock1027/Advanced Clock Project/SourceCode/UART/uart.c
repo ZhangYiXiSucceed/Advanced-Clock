@@ -232,7 +232,8 @@ unsigned short Uart1Read(unsigned char *data)
 {
     unsigned short  i;
     unsigned short  len, len1,len2;
-    if(Uart1Len > (RX_BUFFER_SIZE-1)) return (RX_BUFFER_SIZE-1);
+    if(Uart1Len > (RX_BUFFER_SIZE-1)) 
+		return (RX_BUFFER_SIZE-1);
     len = Uart1Len;
     if(len + Uart1DmaLastCnt < RX_BUFFER_SIZE)
     {
