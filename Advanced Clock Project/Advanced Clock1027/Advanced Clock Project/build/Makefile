@@ -1,16 +1,24 @@
-TARGET = AdvancedClock
-DEBUG = -O0
+# ###########################################################
+# File  : makfile for project compiler
+# Author: guoqing.zhang
+# date  : 2022/11/20
+###########################################################
 
+# 
+TARGET = AdvancedClock
+DEBUG = -O2
+
+# directoty for compiler object file
 BUILD_OBJ_DIR  :=obj
 BUILD_DEP_DIR  :=dep
 OUT_DIR    :=out
 
-
+# directoty for compiler source file
 CORE       := ../Core
 DRIVER     := ../Driver
 SOURCECODE := ../SourceCode
 
-
+# source file path
 C_SOURCE = \
 $(wildcard $(CORE)/*.c)  				\
 $(wildcard $(DRIVER)/src/misc.c)  			\
@@ -49,10 +57,11 @@ $(wildcard $(SOURCECODE)/UART/*.c)  	\
 $(wildcard $(SOURCECODE)/WDG/*.c)  		\
 $(wildcard $(SOURCECODE)/WIFI/*.c)  	\
 
+# asm source file path
 ASM_SOURCE = \
 $(wildcard $(CORE)/startup_stm32f40_41xxx.s)  				\
 
-
+# inlcude file path
 C_INCLUDE  =							\
 -I$(CORE)/     							\
 -I$(DRIVER)/inc/     					\
@@ -75,7 +84,7 @@ C_INCLUDE  =							\
 -I$(SOURCECODE)/WDG/    				\
 -I$(SOURCECODE)/WIFI/    				\
 
-
+# compiler exe 
 CC_EXEC := armcc.exe 
 AR_EXEC := armar.exe
 ASM_EXEC := armasm.exe
@@ -86,7 +95,6 @@ DOWNLOAD_EXEC := ST-LINK_CLI.exe
 RM   := rm -rf 
 ECHO := echo
 
-LINK_SCRIPT := AdvanceClock.sct
 
 CMN_CFLAGS = --C99 -c --cpu Cortex-M4.fp.sp -g --apcs=interwork --split_sections \
 $(DEBUG) $(C_INCLUDE)  \
@@ -101,16 +109,19 @@ CMN_AFLAGS = --cpu Cortex-M4.fp.sp -g --apcs=interwork \
 -I D:\Software\Keil\pack\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include \
 --pd "__UVISION_VERSION SETA 537" --pd "STM32F405xx SETA 1" \
 
-
+LINK_SCRIPT := AdvanceClock.sct
 CMN_LFLAGS = --cpu Cortex-M4.fp.sp \
 --strict --scatter $(LINK_SCRIPT)
 
+
+# compiler objects
 OBJECTS  = $(addprefix $(BUILD_OBJ_DIR)/,$(notdir $(C_SOURCE:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCE)))
 
 OBJECTS  += $(addprefix $(BUILD_OBJ_DIR)/,$(notdir $(ASM_SOURCE:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCE)))
 
+# compiler process
 $(BUILD_OBJ_DIR)/%.o : %.d Makefile | $(BUILD_DEP_DIR)
 $(BUILD_OBJ_DIR)/%.o : %.c Makefile | $(BUILD_OBJ_DIR)
 	@$(ECHO)  'Compiling' $<
@@ -131,6 +142,7 @@ $(BUILD_DEP_DIR)/%.d : %.c Makefile | $(BUILD_DEP_DIR)
 	$(CC_EXEC) -M   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o > $@
 	$(CC_EXEC) -c   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o
 
+
 $(OUT_DIR):
 	mkdir $@
 
@@ -140,11 +152,12 @@ $(BUILD_OBJ_DIR):
 $(BUILD_DEP_DIR):
 	mkdir $@
 
-
+# dwonload 
 flash:
 	$(DOWNLOAD_EXEC) -c -SE 0 4  -V "after_programming" -P $(OUT_DIR)/$(TARGET).bin 0x08000000
 	$(DOWNLOAD_EXEC) -Rst
 
+# clean 
 clean:
 	$(RM) obj/*
 	$(RM) out/*
