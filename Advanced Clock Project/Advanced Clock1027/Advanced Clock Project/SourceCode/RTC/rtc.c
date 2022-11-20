@@ -44,10 +44,19 @@ u8 My_RTC_Init(void)
 {
 	RTC_InitTypeDef RTC_InitStructure;
 	u16 retry=0X1FFF; 
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);//ʹ��PWRʱ��
-	PWR_BackupAccessCmd(ENABLE);	//ʹ�ܺ󱸼Ĵ������� 
 	
-	if(RTC_ReadBackupRegister(RTC_BKP_DR0)!=0x5050)		//�Ƿ��һ������?
+	PWR_DeInit();
+	RTC_DeInit();
+	//RCC_DeInit();
+
+	
+	
+  	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);//ʹ��PWRʱ��
+	PWR_BackupAccessCmd(ENABLE);	//ʹ�ܺ󱸼Ĵ������� 
+	RTC_WriteBackupRegister(RTC_BKP_DR0,0x01);
+	u32 backup_value = RTC_ReadBackupRegister(RTC_BKP_DR0);
+	rt_kprintf("value=0x%x\r\n", backup_value);
+	if(backup_value !=0x5050)		//�Ƿ��һ������?
 	{
 		//RCC_LSEConfig(RCC_LSE_ON);//LSE ���� 
     	RCC_LSICmd(ENABLE);    
