@@ -15,16 +15,16 @@ struct SystemData
 
 struct SystemVar
 {
-  unsigned char TwoMinuteFlag;
-  unsigned char LedBlinkFlag;
-  unsigned char HTDataFlag;
-  unsigned char CurrentTimeFlag;
+	unsigned char TwoMinuteFlag;
+	unsigned char LedBlinkFlag;
+	unsigned char HTDataFlag;
+	unsigned char CurrentTimeFlag;
 	
 	unsigned char Key2Flag;
-  unsigned char Key3Flag;
+		unsigned char Key3Flag;
 	unsigned char Key4Flag;
 	unsigned char Key5Flag;
-	
+
 	unsigned char NRFRxFlag;
 	unsigned char NRFTxFlag;
 	unsigned char WIFIConnectFlag;
@@ -43,6 +43,21 @@ typedef struct STR_FrameHead
     unsigned char data[]; 		//帧数据                    
 }STR_FrameHead_t;    
 
+
+
+typedef struct time_and_weather_struct{
+	
+	unsigned short year;
+	unsigned char  month;
+	unsigned char  day;
+	
+	unsigned char  hour;	
+	unsigned char  minute;
+	unsigned char  second;
+	unsigned char  weak;
+
+	
+}time_and_weather_t;
 /*
 typedef struct 
 {

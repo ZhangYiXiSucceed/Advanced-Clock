@@ -30,11 +30,11 @@ int main()
 	
   //NBModuleInit();
 
-  QueueInit(&MyQueue);
+  queue_init(&MyQueue);
 
-  QueueInit(&wifi_queue);
-  QueueInit(&nb_queue);
-  QueueInit(&ble_queue);
+  queue_init(&wifi_queue);
+  queue_init(&nb_queue);
+  queue_init(&ble_queue);
 
   
   rt_kprintf((char*)Data);
@@ -58,7 +58,7 @@ int main()
     //LedBlink();
     KEYService();
     //NRFCommunicationService();
-    QueueInfoPrint();
+    bluetooth_msg_porcess();
     Uart_AT_Deal();
 
     wifi_task_deal();

@@ -67,41 +67,36 @@ unsigned char GetTsakFiFoCount(struct OperCmdUnionFifo *Queue);
 
 
 
-#define QueueSize       2   
-#define QueueFull       0   
-#define QueueEmpty      1   
-#define QueueOperateOk  2   
-#define ElemType        unsigned char
+#define QUEUE_SIZE       2  
+#define QUEUE_MAX_LEN    4096
+#define QUEUE_FULL       0   
+#define QUEUE_EMPTY      1   
+#define QUEUE_OPER_OK  	 2   
+#define ELEM_TYPE        unsigned char
+#define ElemTypeS        unsigned int
 
-
-
-typedef struct FifoQueue   
+typedef struct fifo_queue_struct   
 {   
     unsigned char  front;        //-------------------------------------------前部
     unsigned char  rear;         //-------------------------------------------后部
-    unsigned char  count;        //-------------------------------------------个数
-    unsigned char  rsv1;
-    ElemType dat[QueueSize][4100];   
+    unsigned short count;        //-------------------------------------------个数
+    unsigned int   len;
+    ELEM_TYPE dat[QUEUE_SIZE][QUEUE_MAX_LEN];   
 }fifo_queue_t;
 
 
 
-extern ElemType MyQueueBuf;  
-
-extern struct FifoQueue MyQueue;
+extern ELEM_TYPE MyQueueBuf;  
+extern struct fifo_queue_struct MyQueue;
 extern fifo_queue_t wifi_queue;
 extern fifo_queue_t nb_queue;
 extern fifo_queue_t ble_queue;
 
 
-#define ElemTypeS        unsigned int
-
-void QueueInit(struct FifoQueue *Queue); 
-unsigned char QueueIn(struct FifoQueue *Queue,ElemType *sdat, unsigned short len); 
-unsigned char QueueOut(struct FifoQueue *Queue,ElemType *sdat,unsigned short *len);
-unsigned char GetFifopagnum(struct FifoQueue *Queue);
-
-
+void queue_init(fifo_queue_t *queue); 
+unsigned char queue_in(fifo_queue_t *queue,ELEM_TYPE *sdat, unsigned short len); 
+unsigned char queue_out(fifo_queue_t *queue,ELEM_TYPE *sdat,unsigned short *len);
+unsigned char get_queue_size(fifo_queue_t *queue);
 
 #endif
 

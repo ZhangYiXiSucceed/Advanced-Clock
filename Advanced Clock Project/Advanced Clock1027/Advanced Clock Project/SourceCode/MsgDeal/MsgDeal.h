@@ -39,7 +39,6 @@ typedef struct diag_cmd_para_struct{
 
 extern struct SystemVar system_var; 
 void Uart_AT_Deal(void);
-void QueueInfoPrint(void);
 int8_t diag_cmd_process(uint8_t *cmd_buff,uint16_t cmd_buff_len);
 int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len);
 

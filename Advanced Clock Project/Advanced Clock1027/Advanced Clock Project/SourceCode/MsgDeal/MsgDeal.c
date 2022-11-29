@@ -125,16 +125,6 @@ void Uart_AT_Deal()
     }
 }
 
-void QueueInfoPrint()
-{
-  if(QueueOut(&MyQueue, FrameInBuff, &FrameInlen) == QueueOperateOk) 
-  {
-    UART1_SentMsgL(FrameInBuff,FrameInlen);
-    memset(FrameInBuff,0x00,sizeof(FrameInBuff));
-  }
-}
-
-
 int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 {
 	int8_t status=0;	

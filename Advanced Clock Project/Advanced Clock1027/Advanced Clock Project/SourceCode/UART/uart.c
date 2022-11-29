@@ -493,9 +493,9 @@ void UART2Poll(void)
         Uart2Len=Uart2Read(tempbuff);
         Uart2DmaStartCnt  = dmacnt; 
         Uart1RcvStartFlag = 0;
-        if(Uart2Len<=200) 
+        if(Uart2Len<=RX_BUFFER_SIZE) 
         {
-           QueueIn(&MyQueue, tempbuff, Uart2Len);  
+           queue_in(&ble_queue, tempbuff, Uart2Len);  
         } 
       }    
     }
@@ -698,7 +698,7 @@ void UART3Poll(void)
         Uart3RcvStartFlag = 0;
         if(Uart3Len<=200) 
         {
-           QueueIn(&nb_queue, tempbuff, Uart3Len);  
+           queue_in(&nb_queue, tempbuff, Uart3Len);  
         } 
       }    
     }
@@ -941,7 +941,7 @@ void UART4Poll(void)
         Uart4DmaStartCnt  = dmacnt; 
         Uart4RcvStartFlag = 0;
 		if(Uart4Len>0)
-			QueueIn(&wifi_queue, tempbuff, Uart4Len);  
+			queue_in(&wifi_queue, tempbuff, Uart4Len);  
 
       }    
     }

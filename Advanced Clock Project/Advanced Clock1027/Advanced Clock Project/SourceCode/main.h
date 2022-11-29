@@ -20,6 +20,7 @@
 #include "nrf24l01.h"
 #include "key.h"
 #include "WIFI.h"
+#include "bluetooth.h"
 #include "cJSON.h"
 
 

@@ -144,7 +144,9 @@ void FMC_NORSRAMDeInit(uint32_t FMC_Bank)
     FMC_Bank1->BTCR[FMC_Bank] = 0x000030DB;    
   }
   /* FMC_Bank1_NORSRAM2,  FMC_Bank1_NORSRAM3 or FMC_Bank1_NORSRAM4 */
-  else
+  
+  
+  
   {   
     FMC_Bank1->BTCR[FMC_Bank] = 0x000030D2; 
   }

@@ -231,7 +231,7 @@ void wifi_task_deal()
           }
        }
    }
-     if(QueueOut(&wifi_queue, FrameInBuff, &FrameInlen) == QueueOperateOk)         // ����IOT�˿�����        
+     if(queue_out(&wifi_queue, FrameInBuff, &FrameInlen) == QUEUE_OPER_OK)         // ����IOT�˿�����        
   {
 		  memset(&FrameInBuff[FrameInlen],0x00,RX_BUFFER_SIZE - FrameInlen); 
 		  rt_kprintf("%s\r\n",FrameInBuff);
