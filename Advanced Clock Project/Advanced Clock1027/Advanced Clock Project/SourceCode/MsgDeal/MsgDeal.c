@@ -7,7 +7,7 @@ uint8_t cmd_process_buff[CMD_BUFF_MAX_SIZE];
 uint8_t cmd_process_buff_index=0;
 
 void diag_help();
-void test1(uint32_t para);
+void print_weather_and_time_info();
 void test2(uint32_t para1,uint32_t para2);
 void test3(uint32_t para1,uint32_t para2,uint32_t para3);
 int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_array[],int32_t max_para_num);
@@ -35,11 +35,11 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 		0,
 	},
 	{
-		"test1",
-		"test <number>\r\n",
-		"test cmd can print some debug infomation\r\n",
-		test1,
-		1,
+		"wea",
+		"wea cmd\r\n",
+		"print weather and time info\r\n",
+		print_weather_and_time_info,
+		0,
 	},
 	{
 		"test2",
@@ -82,10 +82,12 @@ void diag_help()
 	}
 }
 
+extern time_and_weather_t time_and_weather_g;
 
-void test1(uint32_t para)
+void print_weather_and_time_info()
 {
-	rt_kprintf("para=%d\r\n",para);
+	rt_kprintf("aqi=%d,temp=%d C,humi=%d %%\r\n",time_and_weather_g.api,time_and_weather_g.tempeture,time_and_weather_g.humidty);
+	rt_kprintf("id=%d city=%s \r\n",time_and_weather_g.city_id,time_and_weather_g.city);
 }
 void test2(uint32_t para1,uint32_t para2)
 {
@@ -275,11 +277,18 @@ int8_t diag_cmd_process(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 	if(NULL == curr_cmd)
 		return 1;
 	if(0 == curr_cmd->num_args)
-		curr_cmd->cmd_func();
-	
-	if(-2 == curr_cmd->num_args)
 	{
+		curr_cmd->cmd_func();
+		return 0;
+	}
+	if(FUNC_TYPE_PARA_STRING == curr_cmd->num_args)
+	{
+		typedef int32_t cmd_func_t(char* para);
+		cmd_func_t *diag_cmd_func;
 		
+		diag_cmd_func = (cmd_func_t *)curr_cmd->cmd_func;
+		diag_cmd_func(cmd_para);
+		return 0;
 	}
 	
 	diag_cmd_para_num = diag_cmd_para_parse(cmd_para,diag_cmd_para_array,MAX_CMD_PARA);
@@ -290,9 +299,14 @@ int8_t diag_cmd_process(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		return 1;
 	}
 
-	if(-1 == curr_cmd->num_args)
+	if(FUNC_TYPE_PARA_CHANGE == curr_cmd->num_args)
 	{
-		
+		typedef int32_t cmd_func_t(diag_cmd_para_t *para_array, int32_t para_num);
+		cmd_func_t *diag_cmd_func;
+
+		diag_cmd_func = (cmd_func_t *)curr_cmd->cmd_func;
+		diag_cmd_func(diag_cmd_para_array,diag_cmd_para_num);
+		return 0;
 	}
 
 	if(diag_cmd_para_num != curr_cmd->num_args)

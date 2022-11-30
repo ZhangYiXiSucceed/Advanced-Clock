@@ -266,7 +266,7 @@ void rt_kprintf(const char *fmt, ...)
 {
       va_list args;
       int16_t length;
-      static char rt_log_buf[256];
+      static char rt_log_buf[TX_BUFFER_SIZE];
 
       va_start(args, fmt);
       // the return value of vsnprintf is the number of bytes that would be
@@ -275,8 +275,8 @@ void rt_kprintf(const char *fmt, ...)
       // would be larger than the rt_log_buf, we have to adjust the output
       // length. 
       length = vsnprintf(rt_log_buf, sizeof(rt_log_buf) - 1, fmt, args);
-      if ((length > 250) || (length == -1))
-          length = 250;
+      if ((length > TX_BUFFER_SIZE) || (length == -1))
+          length = TX_BUFFER_SIZE;
 
       rt_hw_console_output(rt_log_buf,length);
 

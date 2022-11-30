@@ -7,8 +7,8 @@
 struct SystemData
 {
   unsigned int SystemGMTTime;
-  float Tempture;
-  float Humidty;
+  int tempture;
+  int humidty;
 };
 
 
@@ -56,6 +56,13 @@ typedef struct time_and_weather_struct{
 	unsigned char  second;
 	unsigned char  weak;
 
+	char tempeture;
+	char humidty;
+	char api;
+	char city_id;
+
+	char weather[16];
+	char city[16];
 	
 }time_and_weather_t;
 /*

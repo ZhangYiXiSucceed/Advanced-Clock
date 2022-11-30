@@ -379,7 +379,7 @@ void wifi_task_deal()
 
 void parsing_wifi_signal_info(unsigned char* frame_buffer,unsigned char frame_buffer_length)
 {
-	int signal_numer;
+	int signal_numer = 0;
 	int i=0;
 	int symbol_num = 0;
 
@@ -387,9 +387,7 @@ void parsing_wifi_signal_info(unsigned char* frame_buffer,unsigned char frame_bu
 
 	unsigned char symbol_flag = 0;
 	while('\0' != frame_buffer[i])
-	{
-        //rt_kprintf("%c\r\n",frame_buffer[i]);
-                
+	{                
 		if(',' == frame_buffer[i])
 			symbol_num++;
 
@@ -406,6 +404,8 @@ void parsing_wifi_signal_info(unsigned char* frame_buffer,unsigned char frame_bu
 		i++;
 	}
 	symbol_flag = 0;
+	
+    
 	for(i=index[0]+1;i<(index[1]);i++)
 	{
 			if('-' == frame_buffer[i])
@@ -422,6 +422,7 @@ void parsing_wifi_signal_info(unsigned char* frame_buffer,unsigned char frame_bu
 	rt_kprintf("signal_numer = %d\r\n", signal_numer);
 }
 
+time_and_weather_t  time_and_weather_g;
 
 void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_buffer_length)
 {
@@ -431,7 +432,6 @@ void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_
 		rt_kprintf("error\n");
 		return;
 	}
-	//rt_kprintf("%s\n", "鏈夋牸寮忕殑鏂瑰紡鎵撳嵃Json:");
 	//rt_kprintf("%s\n\n", cJSON_Print(root));
 
 	cJSON *success = cJSON_GetObjectItem(root, "success");
@@ -464,16 +464,25 @@ void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_
 	cJSON *aqi = cJSON_GetObjectItem(result, "aqi");
 	rt_kprintf("aqi value:%s\r\n", aqi->valuestring);
 
+	cJSON *weather = cJSON_GetObjectItem(result, "weather");
 	
+	rt_kprintf2("city no    : %s\r\n",cityno->valuestring);
+	rt_kprintf2("temperture : %s\r\n",temperature_curr->valuestring);
+	rt_kprintf2("humidity   : %s\r\n",humidity->valuestring);
+
+	time_and_weather_g.tempeture =  parsing_the_str(temperature_curr->valuestring);
+	time_and_weather_g.api       =  parsing_the_str(aqi->valuestring);
+	time_and_weather_g.humidty   =  parsing_the_str(humidity->valuestring);
+	time_and_weather_g.city_id   =  parsing_the_str(weaid->valuestring);
 	
+	memcpy(time_and_weather_g.city,cityno->valuestring,strlen(cityno->valuestring));
+	memcpy(time_and_weather_g.weather,weather->valuestring,strlen(weather->valuestring));
 	cJSON_Delete(root);
 }
 
 
 void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buffer_length)
 {
-
-	rt_kprintf("%s\r\n", frame_buffer);
 	cJSON *root = cJSON_Parse(frame_buffer);
 	if (0 == root)
 	{
@@ -510,6 +519,9 @@ void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buff
 	cJSON *week_4 = cJSON_GetObjectItem(result, "week_4");
 	rt_kprintf("timestamp value:%s\r\n", week_4->valuestring);
 
+	rt_kprintf2("time: %s\r\n",datetime_1->valuestring);
+	rt_kprintf2("week: %s\r\n",week_1->valuestring);
+	
 	paraing_time_string(datetime_1->valuestring,week_1->valuestring);
 	
 	cJSON_Delete(root);
@@ -527,17 +539,27 @@ void paraing_time_string(char* temp_time_date_str,char* temp_week)
 
 	hour = (temp_time_date_str[11]-'0')*10+(temp_time_date_str[12]-'0');
 	min = (temp_time_date_str[14]-'0')*10+(temp_time_date_str[15]-'0');
-	sec = (temp_time_date_str[17]-'0')*10+(temp_time_date_str[18]-'0');
+	sec = (temp_time_date_str[17]-'0')*10+(temp_time_date_str[18]-'0');	
 
-
+	char weak = 0; 
 	
-	
-	RTC_Set_Time(hour,min,sec,RTC_H12_PM);	//����ʱ��
 	if('0' == temp_week[0])
-    	RTC_Set_Date(year,month,day,RTC_Weekday_Sunday);
+		weak = RTC_Weekday_Sunday;
 	else
-		RTC_Set_Date(year,month,day,temp_week[0]-'0');
+		weak = temp_week[0]-'0';
 	
+	RTC_Set_Date(year,month,day,weak);
+	RTC_Set_Time(hour,min,sec,RTC_H12_PM);	
+	
+	time_and_weather_g.year   = year;
+	time_and_weather_g.month  = month;
+	time_and_weather_g.day    = day;
+
+	time_and_weather_g.hour   = hour;
+	time_and_weather_g.minute = min;
+	time_and_weather_g.second = sec;
+
+	time_and_weather_g.weak   = weak;
 }
 
 
@@ -547,6 +569,22 @@ void wifi_frame_deal(unsigned char* frame_buffer,unsigned char frame_buffer_leng
 }
 
 
+int parsing_the_str(char* str)
+{
+	char* temp_str = str;
+	if(NULL == temp_str)
+	{
+		return -1;
+	}
+
+	int num = 0;
+	while((*temp_str >= '0' ) && (*temp_str <= '9'))
+	{		
+		num = num*10 + (*temp_str - '0');
+		temp_str++;		
+	}
+	return num;
+}
 
 
 

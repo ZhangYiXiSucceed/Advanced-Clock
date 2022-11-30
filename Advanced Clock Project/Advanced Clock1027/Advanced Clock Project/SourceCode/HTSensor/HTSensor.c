@@ -180,12 +180,12 @@ void ReadHTSensorData()
   
   //rt_kprintf("%d %% %d\r\n",Humidity,CRCSum);
   
-  
-  system_data.Humidty = ((float)((float)Humidity/65535))*100;
-  system_data.Tempture = ((float)((float)Temperture/65535))*175-45;
+  system_data.humidty = ((float)((float)Humidity/65535))*100;
+  system_data.tempture = ((float)((float)Temperture/65535))*175-45;
 }
 
 
+extern time_and_weather_t time_and_weather_g;
 
 void PrintHTInfo()
 {
@@ -194,12 +194,12 @@ void PrintHTInfo()
   {
     system_var.HTDataFlag = 0;
     ReadHTSensorData();
-    //rt_kprintf("%2.2f C %2.2f %%\r\n",system_data.Tempture,system_data.Humidty);
+    rt_kprintf2("board:temp=%d C humi=%d %%\r\n",system_data.tempture,system_data.humidty);
     
-    sprintf((char*)TempBuff,"%dC",(int)system_data.Tempture);
+    sprintf((char*)TempBuff,"%dC",(int)time_and_weather_g.tempeture);
     show_t_rh_string(72,6,TempBuff,font_size8X16);
     
-    sprintf((char*)TempBuff,"%d%%",(int)system_data.Humidty);
+    sprintf((char*)TempBuff,"%d%%",(int)time_and_weather_g.humidty);
     show_t_rh_string(104,6,TempBuff,font_size8X16);
   }
 }

@@ -10,6 +10,9 @@
 #define MAX_CMD_PARA       12
 #define CMD_BUFF_MAX_SIZE  64
 
+#define FUNC_TYPE_PARA_CHANGE -1
+#define FUNC_TYPE_PARA_STRING -2
+
 typedef enum diag_cmd_para_type_enum{
 	diag_cmd_para_string=0,
 	diag_cmd_para_number=1

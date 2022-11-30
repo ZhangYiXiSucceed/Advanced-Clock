@@ -42,6 +42,7 @@ void paraing_time_string(char* temp_str,char* temp_week);
 void quit_network_connect_cmd(void);
 void quit_send_data_mode_cmd(void);
 void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_buffer_length);
+int parsing_the_str(char* str);
 
 
 
