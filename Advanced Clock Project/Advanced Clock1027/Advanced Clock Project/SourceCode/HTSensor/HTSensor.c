@@ -185,22 +185,14 @@ void ReadHTSensorData()
 }
 
 
-extern time_and_weather_t time_and_weather_g;
 
 void PrintHTInfo()
 {
-  u8 TempBuff[40];
-  if((system_var.HTDataFlag == 1) && (system_var.TimeGetFlag == 2))
-  {
-    system_var.HTDataFlag = 0;
-    ReadHTSensorData();
-    rt_kprintf2("board:temp=%d C humi=%d %%\r\n",system_data.tempture,system_data.humidty);
-    
-    sprintf((char*)TempBuff,"%dC",(int)time_and_weather_g.tempeture);
-    show_t_rh_string(72,6,TempBuff,font_size8X16);
-    
-    sprintf((char*)TempBuff,"%d%%",(int)time_and_weather_g.humidty);
-    show_t_rh_string(104,6,TempBuff,font_size8X16);
-  }
+	ReadHTSensorData();
+	rt_kprintf2("board:temp=%d C humi=%d %%\r\n",system_data.tempture,system_data.humidty);
 }
+
+
+
+
 

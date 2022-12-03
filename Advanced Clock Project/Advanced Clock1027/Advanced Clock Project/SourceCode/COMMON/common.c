@@ -96,13 +96,25 @@ int8_t StateCheck(char *data)
     {
       return 6;
     }
-     point = strstr(data, "CLOSE OK");      // ERR
+	
+    point = strstr(data, "CLOSE OK");      // ERR
     if(point != NULL)
     {
       return 7;
     }
-    // rtn:0
-    
+
+	point = strstr(data, "+CIPSTA");      // ERR
+    if(point != NULL)
+    {
+      return 13;
+    }
+
+	point = strstr(data, "+CIPAPMAC");      // ERR
+    if(point != NULL)
+    {
+      return 14;
+    }
+	
      point = strstr(data, "Changed");      // ERR
     if(point != NULL)
     {

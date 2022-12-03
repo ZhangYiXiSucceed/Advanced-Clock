@@ -83,6 +83,7 @@ void show_date_str(u8 x,u8 y,u8 *chr);
 
 void ShowWifiConnect();
 void wifi_bmp_clear();
+void show_weather_info();
 
 #endif
 

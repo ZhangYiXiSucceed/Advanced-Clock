@@ -344,6 +344,22 @@ void ShowStartDisplay()
 	OLED_ShowString(63,6,"CODE:");
 }
 
+extern time_and_weather_t time_and_weather_g;
+
+void show_weather_info()
+{
+  u8 TempBuff[40];
+  if((system_var.HTDataFlag == 1) && (system_var.TimeGetFlag == 2))
+  {
+    system_var.HTDataFlag = 0;
+    
+    sprintf((char*)TempBuff,"%dC",(int)time_and_weather_g.tempeture);
+    show_t_rh_string(72,6,TempBuff,font_size8X16);
+    
+    sprintf((char*)TempBuff,"%d%%",(int)time_and_weather_g.humidty);
+    show_t_rh_string(104,6,TempBuff,font_size8X16);
+  }
+}
 
 void ShowBMP()
 {

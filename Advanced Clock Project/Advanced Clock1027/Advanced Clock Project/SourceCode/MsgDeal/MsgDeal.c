@@ -121,9 +121,11 @@ void Uart_AT_Deal()
     if(system_var.TwoMinuteFlag ==1)
     {
         system_var.TwoMinuteFlag = 0;
+		rt_kprintf("*: two minute\r\n"); 
 		get_network_time_cmds();
+		PrintHTInfo();
+		print_wifi_weather_time_info();
 		OLED_Clear();
-        rt_kprintf("*: two minute\r\n"); 
     }
 }
 

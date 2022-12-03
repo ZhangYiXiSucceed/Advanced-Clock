@@ -62,7 +62,7 @@ int main()
     Uart_AT_Deal();
 
     wifi_task_deal();
-    PrintHTInfo();
+    show_weather_info();
     ShowCurrentTime();
     ShowBMP();
 	ShowWifiConnect();

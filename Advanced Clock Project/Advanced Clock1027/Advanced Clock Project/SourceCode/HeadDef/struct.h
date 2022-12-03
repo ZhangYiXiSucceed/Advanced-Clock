@@ -4,6 +4,13 @@
 #include "stm32f4xx.h"
 
 
+#define Z_TRUE     1
+#define Z_FALSE    0
+#define COMMA      ','
+#define MINUS      '-'  
+#define COLON      ':'
+#define QUOTATION  '"'
+
 struct SystemData
 {
   unsigned int SystemGMTTime;
@@ -21,7 +28,7 @@ struct SystemVar
 	unsigned char CurrentTimeFlag;
 	
 	unsigned char Key2Flag;
-		unsigned char Key3Flag;
+	unsigned char Key3Flag;
 	unsigned char Key4Flag;
 	unsigned char Key5Flag;
 
@@ -65,13 +72,15 @@ typedef struct time_and_weather_struct{
 	char city[16];
 	
 }time_and_weather_t;
-/*
-typedef struct 
+
+
+typedef struct wifi_info_struct
 {
-	
-};
-
-*/
-
+ 	char ip[32];
+	char gateway[32];
+	char netmask[32];
+	char mac[32];
+	int  wifi_signal_num;
+}wifi_info_t;
 #endif
 
