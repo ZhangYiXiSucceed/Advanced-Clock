@@ -66,13 +66,12 @@ void OLED_ShowChar(u8 x,u8 y,u8 chr);
 void OLED_ShowNum(u8 x,u8 y,u32 num,u8 len,u8 size);
 void OLED_ShowString(u8 x,u8 y, u8 *p);	 
 void OLED_Set_Pos(unsigned char x, unsigned char y);
-void OLED_ShowCHinese(u8 x,u8 y,u8 no);
+void OLED_ShowCHinese(u8 x,u8 y,u8 no,u8 city[][16]);
 void OLED_DrawBMP(unsigned char x0, unsigned char y0,unsigned char x1, unsigned char y1,unsigned char BMP[]);
 
 void ShowStartDisplay(void);
 void OLED_IOInit(void);
 void ShowBMP(void);
-void Show16X32(void);
 
 void show_oled_char(int font_x,int font_y, char character,int font_size);
 void show_time_str(u8 x,u8 y,u8 *chr);
@@ -81,9 +80,7 @@ void show_t_rh_string(u8 x,u8 y,u8 *chr,int font_size);
 void show_common_string(u8 x,u8 y,u8 *chr,int font_size);
 void show_date_str(u8 x,u8 y,u8 *chr);
 
-void ShowWifiConnect();
-void wifi_bmp_clear();
-void show_weather_info();
+
 
 #endif
 
