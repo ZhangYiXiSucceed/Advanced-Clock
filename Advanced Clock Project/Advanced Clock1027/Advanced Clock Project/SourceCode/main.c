@@ -50,7 +50,6 @@ int main()
 
   diag_cmd_start();
 
-  
   while(1)
   {
   	
@@ -62,10 +61,7 @@ int main()
     Uart_AT_Deal();
 
     wifi_task_deal();
-    show_weather_info();
-    ShowCurrentTime();
-    ShowBMP();
-	ShowWifiConnect();
+	show_interface_oled();
   }
 }
 
