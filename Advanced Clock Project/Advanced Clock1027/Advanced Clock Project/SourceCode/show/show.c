@@ -4,6 +4,7 @@
 show_state_t  oled_show_state = init_show;
 
 extern time_and_weather_t time_and_weather_g;
+extern wifi_info_t wifi_info_g;
 
 extern unsigned char connect[];
 extern unsigned char f_city[][16];
@@ -18,6 +19,7 @@ extern unsigned char signal_bmp3[];
 extern unsigned char signal_idle[];
 
 extern unsigned char advanced_clock[];
+extern unsigned char weather_icon[][84];
 
 void wifi_bmp_clear()
 {
@@ -85,13 +87,18 @@ void show_interface_oled()
 		}break;
 		case wifi_ok:
 		{
+			u8 TempBuff[40];
+			
 			if(system_var.TimeGetFlag == 1)
 			{
+				sprintf((char*)TempBuff,"ip: %s ",wifi_info_g.ip);
+				show_common_string(0,0,TempBuff,font_size6X8);
+				
 				show_common_string(0,4,"wifi connect ok",font_size8X16);
 				if(system_data.SystemGMTTime > (temp_sys_time+3))
 				{
 					system_var.TimeGetFlag = 2;
-					oled_show_state = time_and_date;
+					oled_show_state = city;
 					OLED_Clear();
 				}
 			}
@@ -134,22 +141,22 @@ void show_interface_oled()
 				OLED_ShowCHinese(36,6,2,f_city);
 				OLED_ShowCHinese(54,6,3,f_city);
 			}
-			 oled_show_state = time_and_date;
+			oled_show_state = temp_and_humi;
+			temp_sys_time = system_data.SystemGMTTime;
 		}break;
 		case temp_and_humi:
 		{
 			u8 TempBuff[40];
-			if((system_var.HTDataFlag == 1) && (system_var.TimeGetFlag == 2))
+			if((system_var.CurrentTimeFlag == 1) && (system_var.TimeGetFlag == 2))
 			{
-				system_var.HTDataFlag = 0;
-
 				sprintf((char*)TempBuff,"%dC",(int)time_and_weather_g.tempeture);
 				show_t_rh_string(72,6,TempBuff,font_size8X16);
 
 				sprintf((char*)TempBuff,"%d%%",(int)time_and_weather_g.humidty);
 				show_t_rh_string(104,6,TempBuff,font_size8X16);
 			}
-			 oled_show_state = city;
+			 oled_show_state = time_and_date;
+			temp_sys_time = system_data.SystemGMTTime;
 		}break;
 		case time_and_date:
 		{
@@ -160,7 +167,6 @@ void show_interface_oled()
 			  if((system_var.CurrentTimeFlag == 1) && (system_var.TimeGetFlag == 2))
 			  {
 			    system_var.CurrentTimeFlag = 0;
-
 				RTC_GetDate(RTC_Format_BIN, &RTC_DateStruct);
 			    //rt_kprintf("Date:20%02d-%02d-%02d  ",RTC_DateStruct.RTC_Year,RTC_DateStruct.RTC_Month,RTC_DateStruct.RTC_Date); 
 			    sprintf((char*)tbuf,"20%02d-%02d-%02d",RTC_DateStruct.RTC_Year,RTC_DateStruct.RTC_Month,RTC_DateStruct.RTC_Date);
@@ -180,7 +186,30 @@ void show_interface_oled()
 				sprintf((char*)tbuf,"%02d",RTC_TimeStruct.RTC_Seconds);
 				show_common_string(104,3,tbuf,font_size8X16);
 			  }
-			  oled_show_state = temp_and_humi;
+			  if(system_data.SystemGMTTime > (temp_sys_time + 5))
+			  {
+				oled_show_state = weather;
+				temp_sys_time = system_data.SystemGMTTime;
+				OLED_Clear();
+			  }
+		}break;
+		case weather:
+		{
+			if((system_var.TimeGetFlag == 2))
+			{
+				OLED_DrawBMP(1,1,28,20,weather_icon[0]);
+				show_common_string(7,4,"06",font_size8X16);
+				OLED_DrawBMP(40,1,28,20,weather_icon[1]);
+				show_common_string(50,4,"07",font_size8X16);
+				OLED_DrawBMP(80,1,28,20,weather_icon[2]);
+				show_common_string(90,4,"08",font_size8X16);				
+			}
+			if(system_data.SystemGMTTime > (temp_sys_time + 5))
+			{
+				oled_show_state = city;
+				temp_sys_time = system_data.SystemGMTTime;
+				OLED_Clear();
+			}
 		}break;
 		default:
 		{
@@ -188,5 +217,7 @@ void show_interface_oled()
 		}
 	}		
 }
+
+
 
 
