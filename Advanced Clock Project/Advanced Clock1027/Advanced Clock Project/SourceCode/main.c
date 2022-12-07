@@ -31,7 +31,6 @@ int main()
   //NBModuleInit();
 
   queue_init(&MyQueue);
-
   queue_init(&wifi_queue);
   queue_init(&nb_queue);
   queue_init(&ble_queue);
@@ -52,14 +51,12 @@ int main()
 
   while(1)
   {
-  	
     //IWDG_Feed();
     //LedBlink();
     KEYService();
     //NRFCommunicationService();
     bluetooth_msg_porcess();
     Uart_AT_Deal();
-
     wifi_task_deal();
 	show_interface_oled();
   }

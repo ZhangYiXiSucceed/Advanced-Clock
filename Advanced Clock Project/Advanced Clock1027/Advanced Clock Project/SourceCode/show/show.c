@@ -195,14 +195,20 @@ void show_interface_oled()
 		}break;
 		case weather:
 		{
+			u8 TempBuff[40];
 			if((system_var.TimeGetFlag == 2))
 			{
+				sprintf((char*)TempBuff,"%02d",time_and_weather_g.day);
 				OLED_DrawBMP(1,1,28,20,weather_icon[0]);
-				show_common_string(7,4,"06",font_size8X16);
+				show_common_string(7,4,TempBuff,font_size8X16);
+
+				sprintf((char*)TempBuff,"%02d",time_and_weather_g.day + 1);
 				OLED_DrawBMP(40,1,28,20,weather_icon[1]);
-				show_common_string(50,4,"07",font_size8X16);
+				show_common_string(50,4,TempBuff,font_size8X16);
+
+				sprintf((char*)TempBuff,"%02d",time_and_weather_g.day + 2);
 				OLED_DrawBMP(80,1,28,20,weather_icon[2]);
-				show_common_string(90,4,"08",font_size8X16);				
+				show_common_string(90,4,TempBuff,font_size8X16);				
 			}
 			if(system_data.SystemGMTTime > (temp_sys_time + 5))
 			{
