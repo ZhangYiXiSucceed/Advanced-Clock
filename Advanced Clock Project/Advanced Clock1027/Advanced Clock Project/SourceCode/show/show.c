@@ -176,9 +176,6 @@ void show_interface_oled()
 				show_common_string(0,3,tbuf,font_size8X16);
 				
 			    RTC_GetTime(RTC_Format_BIN,&RTC_TimeStruct);
-			    //rt_kprintf("Time:%02d:%02d:%02d\r\n",RTC_TimeStruct.RTC_Hours,RTC_TimeStruct.RTC_Minutes,RTC_TimeStruct.RTC_Seconds); 
-			    //sprintf((char*)tbuf,"Time:%02d:%02d:%02d",RTC_TimeStruct.RTC_Hours,RTC_TimeStruct.RTC_Minutes,RTC_TimeStruct.RTC_Seconds);
-			    //OLED_ShowString(0,0,tbuf);
 				sprintf((char*)tbuf,"%02d:%02d",RTC_TimeStruct.RTC_Hours,RTC_TimeStruct.RTC_Minutes);
 
 				show_time_str(20,1,tbuf);
