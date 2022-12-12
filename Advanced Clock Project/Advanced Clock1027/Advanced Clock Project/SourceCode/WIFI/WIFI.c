@@ -231,6 +231,65 @@ void quiry_wifi()
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_QUIRY_WIFI], sOperCmdUnion_wifi.len);
 	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
 }
+
+
+int8_t WifiStateCheck(char *data)
+{   
+    char *point;
+    // rtn:1
+    point = strstr(data, "OK");      			   // OK
+    if(point != NULL)
+    {
+      return RESP_WIFI_OK;
+    }
+    point = strstr(data, "CONNECT");               // IP_CONNECT 
+    if(point != NULL)
+    {
+      return RESP_IP_CONNECT;
+    }
+    
+    // rtn:3
+    point = strstr(data, ">");                       // >
+    if(point != NULL)
+    {
+      return RESP_SEND_MODE;
+    }
+    
+    // rtn:4
+    point = strstr(data, "WIFI");             // WIFI CONNECTED   WIFI GOT IP
+    if(point != NULL)
+    {
+      return RESP_WIFI_CONNECT;
+    }
+    // rtn:5
+    point = strstr(data, "+CWLAP:(");         // +CWLAP:(4,"ZhangYixiSucceed",-38,"50:2b:73:f6:92:d1",2,10,0,5,3,7,1)
+    if(point != NULL)
+    {
+      return RESP_LIST_WIFI_INFO;
+    }  
+	
+	point = strstr(data, "+CIPSTA");      // +CIPSTA:ip:"192.168.0.156" + CIPSTA:gateway:"192.168.0.1" + CIPSTA:netmask:"255.255.255.0"
+
+    if(point != NULL)
+    {
+      return RESP_GET_WIFI_IP;
+    }
+
+	point = strstr(data, "+CIPAPMAC");      // +CIPAPMAC:"42:f5:20:05:19:44"
+    if(point != NULL)
+    {
+      return RESP_GET_WIFI_MAC;
+    }
+    
+    point = strstr(data, "ERR");      // ERR
+    if(point != NULL)
+    {
+      return RESP_ERR;
+    }
+
+    return -1;
+}
+
 void wifi_task_deal()
 {
   int mrtn;
@@ -269,16 +328,16 @@ void wifi_task_deal()
 		  switch(sOperCmdBuff.tid)
 		  {
 		  		 case AT_CMD:                                                                 // 2�����CESQ
-			      mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 1)
+			      mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_WIFI_OK)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 
 			      }
 			      break;
 				 case AT_RST:                                                                 // 2�����CESQ
-			      mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 1)
+			      mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_WIFI_OK)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 					  delay_ms(1000);
@@ -286,44 +345,44 @@ void wifi_task_deal()
 			      }
 			      break;
 			    case ATE0:                                                                 // 2�����CESQ
-			      mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 1)
-			      {                                                                     // recv ok
-			          sOperCmdBuff.tid = 0xff;
-
-			      }
-			      break;
+				{	mrtn = WifiStateCheck((char*)FrameInBuff);
+					if(mrtn == RESP_WIFI_OK)
+					{                                                                     // recv ok
+					  sOperCmdBuff.tid = 0xff;
+					}
+			    }
+			    break;
 			    case AT_CWMODE:
 				{
-				 mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 1)
-			      {                                                                     // recv ok
-			          sOperCmdBuff.tid = 0xff;
+					mrtn = WifiStateCheck((char*)FrameInBuff);
+					if(mrtn == RESP_WIFI_OK)
+					{                                                                     // recv ok
+					sOperCmdBuff.tid = 0xff;
 
-			      }
+					}
 				}
 				break;
 				case AT_CWJAP:
 				{
-				 mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 4)
+				 mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_LIST_WIFI_INFO)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
-					  system_var.WIFIConnectFlag =1;
+					  system_var.WIFIConnectFlag = 1;
 					  delay_ms(1000);
 
 			      }
-				  else if(mrtn == 0)
+				  else if(mrtn == RESP_ERR)
 				  {
 					  connect_wifi_network();
-					  system_var.WIFIConnectFlag =0;
+					  system_var.WIFIConnectFlag = 0;
 				  }
 				}
 				break;
 				case AT_CIPSTART:
 				{
-				 mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 2)
+				 mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_IP_CONNECT)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 						
@@ -332,8 +391,8 @@ void wifi_task_deal()
 				break;
 				case AT_CIPMODE:
 				{
-				 mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 1)
+				 mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_WIFI_OK)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 
@@ -342,8 +401,8 @@ void wifi_task_deal()
 				break;
 				case AT_CIPSEND:
 				{
-				 mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 3)
+				 mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_SEND_MODE)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 
@@ -352,16 +411,14 @@ void wifi_task_deal()
 				break;
 				case AT_CWQAP:
 				{
-				 mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 1)
+				 mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_WIFI_OK)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 
 			      }
 				}
 				break;
-				
-
 				case AT_SEND_DATA:
 				{
 				 	//rt_kprintf("%s\r\n",FrameInBuff);
@@ -382,8 +439,8 @@ void wifi_task_deal()
 				break;
 				case AT_QUIRY_WIFI:
 				{
-				 mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 5)
+				 mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_LIST_WIFI_INFO)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 					  int signal_numer = parsing_wifi_signal_info(FrameInBuff,FrameInlen);
@@ -394,8 +451,8 @@ void wifi_task_deal()
 				break;
 				case AT_QUIRY_IP:
 				{
-				  mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 13)
+				  mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_GET_WIFI_IP)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 					  get_wifi_info_data(FrameInBuff,FrameInlen,&wifi_info_g);
@@ -404,8 +461,8 @@ void wifi_task_deal()
 				break;
 				case AT_QUIRY_MAC:
 				{
-				  mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 14)
+				  mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_GET_WIFI_MAC)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 					  parsing_wifi_mac_data(FrameInBuff,FrameInlen,&wifi_info_g);
@@ -414,13 +471,12 @@ void wifi_task_deal()
 				break;
 				case AT_QUIT_TCP_CONNECT:
 				{
-				 mrtn = StateCheck((char*)FrameInBuff);
-			      if(mrtn == 1)
+				 mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_WIFI_OK)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 					 
 			      }
-				  
 				}
 				break;
 				default:

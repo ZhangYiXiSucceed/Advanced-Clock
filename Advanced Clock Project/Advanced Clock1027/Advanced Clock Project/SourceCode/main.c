@@ -10,7 +10,6 @@ int main()
   
   UART1Init();       /*common uart,can receive uart device(ch340) data and execute cmd*/
 
-  
   UART2Init();       /*BlueTooth uart*/
   UART3Init();       /*NB-IoT uart*/
   UART4Init();       /*WIFI uart */
@@ -27,8 +26,6 @@ int main()
   OLED_Init();
  
   My_RTC_Init();
-	
-  //NBModuleInit();
 
   queue_init(&MyQueue);
   queue_init(&wifi_queue);

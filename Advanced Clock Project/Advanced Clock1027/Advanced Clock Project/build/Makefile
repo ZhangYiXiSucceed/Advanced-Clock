@@ -49,7 +49,6 @@ $(wildcard $(SOURCECODE)/msg_deal/*.c)  \
 $(wildcard $(SOURCECODE)/nrf24l01/*.c)  \
 $(wildcard $(SOURCECODE)/oled/*.c)  	\
 $(wildcard $(SOURCECODE)/queue/*.c)  	\
-$(wildcard $(SOURCECODE)/radio/*.c)  	\
 $(wildcard $(SOURCECODE)/rtc/*.c)  		\
 $(wildcard $(SOURCECODE)/timer/*.c)  	\
 $(wildcard $(SOURCECODE)/uart/*.c)  	\

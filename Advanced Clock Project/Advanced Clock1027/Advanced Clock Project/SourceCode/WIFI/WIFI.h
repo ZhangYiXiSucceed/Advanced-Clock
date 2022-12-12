@@ -24,6 +24,17 @@
 #define  AT_QUIRY_WEATHER_DATA   21
 
 
+enum 
+{
+	RESP_WIFI_OK          = 0x00,
+	RESP_WIFI_CONNECT     = 0x01,
+	RESP_IP_CONNECT       = 0x02,
+	RESP_LIST_WIFI_INFO   = 0x03,
+	RESP_SEND_MODE        = 0x04,
+	RESP_GET_WIFI_IP      = 0x05,
+	RESP_GET_WIFI_MAC     = 0x06,
+	RESP_ERR,
+};
 
 void init_wifi_network(void);
 void connect_wifi_network(void);
@@ -45,8 +56,7 @@ void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_
 int parsing_the_str(char* str);
 void print_wifi_weather_time_info();
 
-
-
+int8_t WifiStateCheck(char *data);
 
 #endif
 
