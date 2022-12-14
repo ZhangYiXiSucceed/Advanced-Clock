@@ -10,7 +10,6 @@ int main()
   
   UART1Init();       /*common uart,can receive uart device(ch340) data and execute cmd*/
 
-  
   UART2Init();       /*BlueTooth uart*/
   UART3Init();       /*NB-IoT uart*/
   UART4Init();       /*WIFI uart */
@@ -27,14 +26,11 @@ int main()
   OLED_Init();
  
   My_RTC_Init();
-	
-  //NBModuleInit();
 
-  QueueInit(&MyQueue);
-
-  QueueInit(&wifi_queue);
-  QueueInit(&nb_queue);
-  QueueInit(&ble_queue);
+  queue_init(&MyQueue);
+  queue_init(&wifi_queue);
+  queue_init(&nb_queue);
+  queue_init(&ble_queue);
 
   
   rt_kprintf((char*)Data);
@@ -50,22 +46,16 @@ int main()
 
   diag_cmd_start();
 
-  
   while(1)
   {
-  	
     //IWDG_Feed();
     //LedBlink();
     KEYService();
     //NRFCommunicationService();
-    QueueInfoPrint();
+    bluetooth_msg_porcess();
     Uart_AT_Deal();
-
     wifi_task_deal();
-    PrintHTInfo();
-    ShowCurrentTime();
-    ShowBMP();
-	ShowWifiConnect();
+	show_interface_oled();
   }
 }
 

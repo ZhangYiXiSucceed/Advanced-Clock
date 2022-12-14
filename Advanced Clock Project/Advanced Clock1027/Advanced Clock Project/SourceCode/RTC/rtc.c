@@ -189,39 +189,7 @@ u8 My_RTC_Init(void)
 //}
 
 
-RTC_TimeTypeDef RTC_TimeStruct;
-RTC_DateTypeDef RTC_DateStruct;
-u8 tbuf[40];
 
-void ShowCurrentTime()
-{
-
-  if((system_var.CurrentTimeFlag == 1) && (system_var.TimeGetFlag == 2))
-  {
-    system_var.CurrentTimeFlag = 0;
-
-	RTC_GetDate(RTC_Format_BIN, &RTC_DateStruct);
-    //rt_kprintf("Date:20%02d-%02d-%02d  ",RTC_DateStruct.RTC_Year,RTC_DateStruct.RTC_Month,RTC_DateStruct.RTC_Date); 
-    sprintf((char*)tbuf,"20%02d-%02d-%02d",RTC_DateStruct.RTC_Year,RTC_DateStruct.RTC_Month,RTC_DateStruct.RTC_Date);
-    show_date_str(16,0,tbuf);
-
-	sprintf((char*)tbuf,"0%d",RTC_DateStruct.RTC_WeekDay);
-	show_common_string(0,3,tbuf,font_size8X16);
-	
-    RTC_GetTime(RTC_Format_BIN,&RTC_TimeStruct);
-    //rt_kprintf("Time:%02d:%02d:%02d\r\n",RTC_TimeStruct.RTC_Hours,RTC_TimeStruct.RTC_Minutes,RTC_TimeStruct.RTC_Seconds); 
-    //sprintf((char*)tbuf,"Time:%02d:%02d:%02d",RTC_TimeStruct.RTC_Hours,RTC_TimeStruct.RTC_Minutes,RTC_TimeStruct.RTC_Seconds);
-    //OLED_ShowString(0,0,tbuf);
-	sprintf((char*)tbuf,"%02d:%02d",RTC_TimeStruct.RTC_Hours,RTC_TimeStruct.RTC_Minutes);
-
-	show_time_str(20,1,tbuf);
-
-	sprintf((char*)tbuf,"%02d",RTC_TimeStruct.RTC_Seconds);
-	show_common_string(104,3,tbuf,font_size8X16);
-	
-    
-  }
-}
 
 
 

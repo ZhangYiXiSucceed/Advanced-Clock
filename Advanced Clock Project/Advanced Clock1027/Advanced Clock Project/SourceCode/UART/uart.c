@@ -266,7 +266,7 @@ void rt_kprintf(const char *fmt, ...)
 {
       va_list args;
       int16_t length;
-      static char rt_log_buf[256];
+      static char rt_log_buf[TX_BUFFER_SIZE];
 
       va_start(args, fmt);
       // the return value of vsnprintf is the number of bytes that would be
@@ -275,8 +275,8 @@ void rt_kprintf(const char *fmt, ...)
       // would be larger than the rt_log_buf, we have to adjust the output
       // length. 
       length = vsnprintf(rt_log_buf, sizeof(rt_log_buf) - 1, fmt, args);
-      if ((length > 250) || (length == -1))
-          length = 250;
+      if ((length > TX_BUFFER_SIZE) || (length == -1))
+          length = TX_BUFFER_SIZE;
 
       rt_hw_console_output(rt_log_buf,length);
 
@@ -360,7 +360,7 @@ void UART2Init(void)
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3;   
     GPIO_Init(GPIOA, &GPIO_InitStructure); 
 
-    USART_InitStructure.USART_BaudRate            = 115200;
+    USART_InitStructure.USART_BaudRate            = 9600;
     USART_InitStructure.USART_WordLength          = USART_WordLength_8b;
     USART_InitStructure.USART_StopBits            = USART_StopBits_1;     
     USART_InitStructure.USART_Parity              = USART_Parity_No;
@@ -493,9 +493,9 @@ void UART2Poll(void)
         Uart2Len=Uart2Read(tempbuff);
         Uart2DmaStartCnt  = dmacnt; 
         Uart1RcvStartFlag = 0;
-        if(Uart2Len<=200) 
+        if(Uart2Len<=RX_BUFFER_SIZE) 
         {
-           QueueIn(&MyQueue, tempbuff, Uart2Len);  
+           queue_in(&ble_queue, tempbuff, Uart2Len);  
         } 
       }    
     }
@@ -698,7 +698,7 @@ void UART3Poll(void)
         Uart3RcvStartFlag = 0;
         if(Uart3Len<=200) 
         {
-           QueueIn(&nb_queue, tempbuff, Uart3Len);  
+           queue_in(&nb_queue, tempbuff, Uart3Len);  
         } 
       }    
     }
@@ -941,7 +941,7 @@ void UART4Poll(void)
         Uart4DmaStartCnt  = dmacnt; 
         Uart4RcvStartFlag = 0;
 		if(Uart4Len>0)
-			QueueIn(&wifi_queue, tempbuff, Uart4Len);  
+			queue_in(&wifi_queue, tempbuff, Uart4Len);  
 
       }    
     }

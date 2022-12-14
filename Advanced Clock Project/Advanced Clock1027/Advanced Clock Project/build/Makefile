@@ -39,23 +39,22 @@ $(wildcard $(DRIVER)/src/stm32f4xx_tim.c)  			\
 $(wildcard $(DRIVER)/src/stm32f4xx_usart.c)  		\
 $(wildcard $(DRIVER)/src/stm32f4xx_wwdg.c)  		\
 $(wildcard $(SOURCECODE)/*.c)  			\
-$(wildcard $(SOURCECODE)/BlueTooth/*.c) \
+$(wildcard $(SOURCECODE)/bluetooth/*.c) \
 $(wildcard $(SOURCECODE)/cJson/*.c)  	\
-$(wildcard $(SOURCECODE)/COMMON/*.c)  	\
-$(wildcard $(SOURCECODE)/HeadDef/*.c)  	\
-$(wildcard $(SOURCECODE)/HTSensor/*.c)  \
-$(wildcard $(SOURCECODE)/KEY/*.c)  		\
-$(wildcard $(SOURCECODE)/LED/*.c)  		\
-$(wildcard $(SOURCECODE)/MsgDeal/*.c)  	\
-$(wildcard $(SOURCECODE)/NRF24L01/*.c)  \
-$(wildcard $(SOURCECODE)/OLED/*.c)  	\
-$(wildcard $(SOURCECODE)/Queue/*.c)  	\
-$(wildcard $(SOURCECODE)/RADIO/*.c)  	\
-$(wildcard $(SOURCECODE)/RTC/*.c)  		\
-$(wildcard $(SOURCECODE)/TIM/*.c)  		\
-$(wildcard $(SOURCECODE)/UART/*.c)  	\
-$(wildcard $(SOURCECODE)/WDG/*.c)  		\
-$(wildcard $(SOURCECODE)/WIFI/*.c)  	\
+$(wildcard $(SOURCECODE)/common/*.c)  	\
+$(wildcard $(SOURCECODE)/ht_sensor/*.c)  \
+$(wildcard $(SOURCECODE)/key/*.c)  		\
+$(wildcard $(SOURCECODE)/led/*.c)  		\
+$(wildcard $(SOURCECODE)/msg_deal/*.c)  \
+$(wildcard $(SOURCECODE)/nrf24l01/*.c)  \
+$(wildcard $(SOURCECODE)/oled/*.c)  	\
+$(wildcard $(SOURCECODE)/queue/*.c)  	\
+$(wildcard $(SOURCECODE)/rtc/*.c)  		\
+$(wildcard $(SOURCECODE)/timer/*.c)  	\
+$(wildcard $(SOURCECODE)/uart/*.c)  	\
+$(wildcard $(SOURCECODE)/wdg/*.c)  		\
+$(wildcard $(SOURCECODE)/wifi/*.c)  	\
+$(wildcard $(SOURCECODE)/show/*.c)  	\
 
 # asm source file path
 ASM_SOURCE = \
@@ -66,23 +65,23 @@ C_INCLUDE  =							\
 -I$(CORE)/     							\
 -I$(DRIVER)/inc/     					\
 -I$(SOURCECODE)/     					\
--I$(SOURCECODE)/BlueTooth/    			\
+-I$(SOURCECODE)/bluetooth/    			\
 -I$(SOURCECODE)/cJson/    				\
--I$(SOURCECODE)/COMMON/    				\
--I$(SOURCECODE)/HeadDef/    			\
--I$(SOURCECODE)/KEY/    				\
--I$(SOURCECODE)/HTSensor/    			\
--I$(SOURCECODE)/LED/    				\
--I$(SOURCECODE)/MsgDeal/    			\
--I$(SOURCECODE)/NRF24L01/    			\
--I$(SOURCECODE)/OLED/    				\
--I$(SOURCECODE)/Queue/    				\
--I$(SOURCECODE)/RADIO/    				\
--I$(SOURCECODE)/RTC/    				\
--I$(SOURCECODE)/TIM/    				\
--I$(SOURCECODE)/UART/    				\
--I$(SOURCECODE)/WDG/    				\
--I$(SOURCECODE)/WIFI/    				\
+-I$(SOURCECODE)/common/    				\
+-I$(SOURCECODE)/key/    				\
+-I$(SOURCECODE)/ht_sensor/    			\
+-I$(SOURCECODE)/led/    				\
+-I$(SOURCECODE)/msg_deal/    			\
+-I$(SOURCECODE)/nrf24l01/    			\
+-I$(SOURCECODE)/oled/    				\
+-I$(SOURCECODE)/queue/    				\
+-I$(SOURCECODE)/radio/    				\
+-I$(SOURCECODE)/rtc/    				\
+-I$(SOURCECODE)/timer/    				\
+-I$(SOURCECODE)/uart/    				\
+-I$(SOURCECODE)/wdg/    				\
+-I$(SOURCECODE)/wifi/    				\
+-I$(SOURCECODE)/show/    				\
 
 # compiler exe 
 CC_EXEC := armcc.exe 

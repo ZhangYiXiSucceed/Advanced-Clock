@@ -111,8 +111,8 @@ unsigned char GetTsakFiFoCount(struct OperCmdUnionFifo *Queue)
 
 
 
-ElemType MyQueueBuf;  
-struct FifoQueue MyQueue;
+ELEM_TYPE MyQueueBuf;  
+fifo_queue_t MyQueue;
 
 
 fifo_queue_t wifi_queue;
@@ -120,82 +120,74 @@ fifo_queue_t nb_queue;
 fifo_queue_t ble_queue;
 
 
-
-
-
-void QueueInit(struct FifoQueue *Queue)   
+void queue_init(fifo_queue_t *queue)   
 {   
-  Queue->front = 0;
-  Queue->rear  = 0;   
-  Queue->count = 0;
-  // Queue->point = 0;
+  queue->front = 0;
+  queue->rear  = 0;   
+  queue->count = 0;
 }
 
 // Queue In   
-unsigned char QueueIn(struct FifoQueue *Queue, ElemType *sdat, unsigned short len)   
+unsigned char queue_in(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short len)   
 {   
   
   
   //IntsStorage;
   //StoreDisableInts;
   
-  if(len > (RX_BUFFER_SIZE-1)) len = RX_BUFFER_SIZE-1;
-  
-  if((Queue->front == Queue->rear) && (Queue->count == QueueSize))   
+  if(len > (QUEUE_MAX_LEN)) len = QUEUE_MAX_LEN;
+  if((queue->front == queue->rear) && (queue->count == QUEUE_SIZE))   
   {  
       // full   
       //RestoreInts;
-      return QueueFull;   
+      return QUEUE_FULL;   
   }
   else
   {   
       // in  
-      Queue->dat[Queue->rear][0] = len%256;
-	  Queue->dat[Queue->rear][1] = len/256;
-      memcpy(&Queue->dat[Queue->rear][2], sdat,len);  
-      Queue->rear  = (Queue->rear + 1) & (QueueSize-1);  //---------------------加满缓冲区以后就清除0，queuesize必须为2的n次方
-      Queue->count = Queue->count + 1;
+      queue->len = len;
+      memcpy(&queue->dat[queue->rear][0], sdat,len);  
+      queue->rear  = (queue->rear + 1) & (QUEUE_SIZE-1);  //---------------------加满缓冲区以后就清除0，queuesize必须为2的n次方
+      queue->count = queue->count + 1;
       
       //RestoreInts;
-      return QueueOperateOk;   
+      return QUEUE_OPER_OK;   
   }
 }
 
 // Queue Out   
-unsigned char QueueOut(struct FifoQueue *Queue, ElemType *sdat, unsigned short *len)   
+unsigned char queue_out(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short *len)   
 {   
   
   //IntsStorage;
   //StoreDisableInts;
   
-  if((Queue->front == Queue->rear) && (Queue->count == 0))   
+  if((queue->front == queue->rear) && (queue->count == 0))   
   {   
       // empty 
       //RestoreInts;  
       
-      return QueueEmpty;   
+      return QUEUE_EMPTY;   
   }
   else    
   {   
       // out
-      *len = Queue->dat[Queue->front][1]*256 + Queue->dat[Queue->front][0];
-      
-      if(*len > (RX_BUFFER_SIZE -1))
-        *len = RX_BUFFER_SIZE -1;
-      
-      memcpy(sdat,&Queue->dat[Queue->front][2],*len);  
-      Queue->front = (Queue->front + 1) & (QueueSize-1);
-      Queue->count = Queue->count - 1;
+      *len =queue->len;
+      if(*len > (QUEUE_MAX_LEN))
+        *len = QUEUE_MAX_LEN;      
+      memcpy(sdat,&queue->dat[queue->front][0],*len);  
+      queue->front = (queue->front + 1) & (QUEUE_SIZE-1);
+      queue->count = queue->count - 1;
       
       //RestoreInts;
-      return QueueOperateOk;   
+      return QUEUE_OPER_OK;   
   }   
 } 
 
 // Queue Out   
-unsigned char GetFifopagnum(struct FifoQueue *Queue)   
+unsigned char get_queue_size(fifo_queue_t *queue)   
 {   
-  return Queue->count;   
+  return queue->count;   
 } 
 
 
