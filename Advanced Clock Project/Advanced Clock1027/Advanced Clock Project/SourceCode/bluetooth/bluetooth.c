@@ -16,6 +16,8 @@ int BleStateCheck(char *data)
 	return -1;
 }
 
+
+
 void bluetooth_msg_porcess()
 {
   unsigned char mrtn;

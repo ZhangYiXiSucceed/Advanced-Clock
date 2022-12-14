@@ -75,6 +75,7 @@ void init_wifi_network()
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_CMD], sOperCmdUnion_wifi.len);
 	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+
 	
 }
 
@@ -791,13 +792,6 @@ void paraing_time_string(char* temp_time_date_str,char* temp_week)
 
 	time_and_weather_g.weak   = weak;
 }
-
-
-void wifi_frame_deal(unsigned char* frame_buffer,unsigned char frame_buffer_length)
-{
-	
-}
-
 
 int parsing_the_str(char* str)
 {

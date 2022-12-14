@@ -53,7 +53,7 @@ int main()
     KEYService();
     //NRFCommunicationService();
     bluetooth_msg_porcess();
-    Uart_AT_Deal();
+    shell_process();
     wifi_task_deal();
 	show_interface_oled();
   }
