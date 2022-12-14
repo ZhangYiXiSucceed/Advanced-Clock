@@ -237,11 +237,7 @@ int8_t WifiStateCheck(char *data)
 {   
     char *point;
     // rtn:1
-    point = strstr(data, "OK");      			   // OK
-    if(point != NULL)
-    {
-      return RESP_WIFI_OK;
-    }
+    
     point = strstr(data, "CONNECT");               // IP_CONNECT 
     if(point != NULL)
     {
@@ -287,6 +283,11 @@ int8_t WifiStateCheck(char *data)
       return RESP_ERR;
     }
 
+	point = strstr(data, "OK");      			   // OK
+    if(point != NULL)
+    {
+      return RESP_WIFI_OK;
+    }
     return -1;
 }
 
@@ -365,7 +366,7 @@ void wifi_task_deal()
 				case AT_CWJAP:
 				{
 				 mrtn = WifiStateCheck((char*)FrameInBuff);
-			      if(mrtn == RESP_LIST_WIFI_INFO)
+			      if(mrtn == RESP_WIFI_CONNECT)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 					  system_var.WIFIConnectFlag = 1;

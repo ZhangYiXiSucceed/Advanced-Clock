@@ -1,13 +1,19 @@
 #include "main.h"
 
-void BleStateCheck(char *data)
+int BleStateCheck(char *data)
 {
 	unsigned char *point;
-    point = strstr(data, "GetWifi");               // IP_CONNECT 
+    point = strstr(data, "getinfo");               // IP_CONNECT 
     if(point != NULL)
     {
-      return RESP_BLE_GET_WIFI_INFO;
+      return RESP_BLE_GET_WIFI_TIME_INFO;
     }
+	point = strstr(data, "rst"); 
+	if(point != NULL)
+    {
+      return RESP_BLE_RESET;
+    }
+	return -1;
 }
 
 void bluetooth_msg_porcess()
@@ -17,18 +23,20 @@ void bluetooth_msg_porcess()
   {
 	  memset(&FrameInBuff[FrameInlen],0x00,RX_BUFFER_SIZE - FrameInlen); 
 	  UART2_SentMsgL(FrameInBuff,FrameInlen);
-	  switch(sOperCmdBuff.tid)
+	  rt_kprintf2("\r\n");
+	  mrtn = BleStateCheck((char*)FrameInBuff);
+	  switch(mrtn)
 	  {
-	  		 case AT_CMD:                                                                 // 2�����CESQ
-		      mrtn = BleStateCheck((char*)FrameInBuff);
-		      if(mrtn == RESP_WIFI_OK)
-		      {                                                                     // recv ok
-		          sOperCmdBuff.tid = 0xff;
-
-		      }
-		      break;
-			  default:
-			  	break;
+	    case RESP_BLE_GET_WIFI_TIME_INFO:
+      	{
+      		print_wifi_weather_time_info();
+      	}break;
+		case RESP_BLE_RESET:
+		{
+			NVIC_SystemReset();
+		}break;
+		default:
+			break;
 	  }
   }
 }
