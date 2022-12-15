@@ -13,6 +13,16 @@ int BleStateCheck(char *data)
     {
       return RESP_BLE_RESET;
     }
+	point = strstr(data, "close"); 
+	if(point != NULL)
+    {
+      return RESP_BLE_CLOSE_INT;
+    }
+	point = strstr(data, "open"); 
+	if(point != NULL)
+    {
+      return RESP_BLE_OPEN_INT;
+    }
 	return -1;
 }
 
@@ -36,6 +46,16 @@ void bluetooth_msg_porcess()
 		case RESP_BLE_RESET:
 		{
 			NVIC_SystemReset();
+		}break;
+		case RESP_BLE_CLOSE_INT:
+		{
+			IntsStorage;
+			StoreDisableInts;
+		}break;
+		case RESP_BLE_OPEN_INT:
+		{
+			IntsStorage = 0;
+			RestoreInts;
 		}break;
 		default:
 			break;

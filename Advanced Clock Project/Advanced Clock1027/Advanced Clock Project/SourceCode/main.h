@@ -1,6 +1,7 @@
 #ifndef  __MAIN_H__
 #define  __MAIN_H__
 
+#include "core_cm4.h"
 #include "stm32f4xx_rtc.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_it.h"

@@ -9,12 +9,10 @@ int main()
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
   
   UART1Init();       /*common uart,can receive uart device(ch340) data and execute cmd*/
-
   UART2Init();       /*BlueTooth uart*/
   UART3Init();       /*NB-IoT uart*/
   UART4Init();       /*WIFI uart */
 
-  
   //LED_Init();
   PWM_LEDInit();
   KEY_Init();
@@ -32,7 +30,6 @@ int main()
   queue_init(&nb_queue);
   queue_init(&ble_queue);
 
-  
   rt_kprintf((char*)Data);
   rt_kprintf2((char*)Data);
 	
@@ -54,6 +51,7 @@ int main()
     //NRFCommunicationService();
     bluetooth_msg_porcess();
     shell_process();
+	periodic_task();
     wifi_task_deal();
 	show_interface_oled();
   }

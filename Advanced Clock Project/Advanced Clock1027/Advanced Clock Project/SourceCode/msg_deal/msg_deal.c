@@ -117,8 +117,12 @@ void shell_process()
 			diag_cmd_complete(status);
 			diag_cmd_start();
 		}
-    }
-    if(system_var.TwoMinuteFlag ==1)
+    }  
+}
+
+void periodic_task()
+{
+	 if(system_var.TwoMinuteFlag ==1)
     {
         system_var.TwoMinuteFlag = 0;
 		rt_kprintf("*: two minute\r\n"); 

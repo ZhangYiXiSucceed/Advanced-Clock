@@ -13,10 +13,10 @@
 #else
 
 #define    IntsStorage                unsigned long IntsByte                         // 存储中断设置参数变量
-#define    EnableInts                 __enable_irq();                            // 中断使能 
-#define    DisableInts                __disable_irq();                           // 中断禁止
-#define    RestoreInts                //__set_interrupt_state(IntsByte);    EnableInts;  // 恢复中断设置，恢复中断
-#define    StoreDisableInts           //IntsByte = __get_interrupt_state(); DisableInts; // 存储中断参数并禁止中断
+#define    EnableInts                 __enable_fault_irq()                            // 中断使能 
+#define    DisableInts                __disable_fault_irq()                           // 中断禁止
+#define    RestoreInts                 __set_FAULTMASK(IntsByte);      // 恢复中断设置，恢复中断
+#define    StoreDisableInts           do {IntsByte = __get_FAULTMASK(); DisableInts;}while(0);// 存储中断参数并禁止中断
 
 #endif
 
