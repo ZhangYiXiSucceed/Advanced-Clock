@@ -33,7 +33,7 @@ int main()
   rt_kprintf((char*)Data);
   rt_kprintf2((char*)Data);
 	
-  //NRF24L01_Init();
+  NRF24L01_Init();
 
   FifoInit(&sOperCmdUnionFifo);
 
@@ -48,7 +48,7 @@ int main()
     //IWDG_Feed();
     //LedBlink();
     KEYService();
-    //NRFCommunicationService();
+    NRFCommunicationService();
     bluetooth_msg_porcess();
     shell_process();
 	periodic_task();

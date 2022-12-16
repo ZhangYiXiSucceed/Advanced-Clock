@@ -68,8 +68,8 @@ u8 SPI1_ReadWriteByte(u8 TxData)
  		    
 }
 
-const u8 TX_ADDRESS[TX_ADR_WIDTH]={0x11,0x22,0x33,0x44,0x55}; //发送地址
-const u8 RX_ADDRESS[RX_ADR_WIDTH]={0x11,0x22,0x33,0x44,0x55}; //发送地址
+const u8 TX_ADDRESS[TX_ADR_WIDTH]={0x11,0x11,0x11,0x11,0x11}; //发送地址
+const u8 RX_ADDRESS[RX_ADR_WIDTH]={0x11,0x11,0x11,0x11,0x11}; //发送地址
 
 void NRF24L01_SPI_Init(void)
 {
@@ -135,7 +135,7 @@ void NRF24L01_Init(void)
 		 
 		}
 	}
-  
+  system_var.NRFTxFlag = 1;
 }
 //检测24L01是否存在
 //返回值:0，成功;1，失败	
@@ -143,7 +143,7 @@ u8 NRF24L01_Check(void)
 {
 	u8 buf[5]={0XA5,0XA5,0XA5,0XA5,0XA5};
 	u8 i;
-	SPI1_SetSpeed(SPI_BaudRatePrescaler_8); //spi速度为10.5Mhz（24L01的最大SPI时钟为10Mhz）   	 
+	SPI1_SetSpeed(SPI_BaudRatePrescaler_32); //spi速度为10.5Mhz（24L01的最大SPI时钟为10Mhz）   	 
 	NRF24L01_Write_Buf(NRF_WRITE_REG+TX_ADDR,buf,5);//写入5个字节的地址.	
 	NRF24L01_Read_Buf(TX_ADDR,buf,5); //读出写入的地址  
 	for(i=0;i<5;i++)if(buf[i]!=0XA5)break;	 							   
@@ -207,7 +207,7 @@ u8 NRF24L01_Write_Buf(u8 reg, u8 *pBuf, u8 len)
 u8 NRF24L01_TxPacket(u8 *txbuf)
 {
 	u8 sta;
- 	SPI1_SetSpeed(SPI_BaudRatePrescaler_8);//spi速度为10.5Mhz（24L01的最大SPI时钟为10Mhz）   
+ 	SPI1_SetSpeed(SPI_BaudRatePrescaler_32);//spi速度为10.5Mhz（24L01的最大SPI时钟为10Mhz）   
 	NRF24L01_CE=0;
   NRF24L01_Write_Buf(WR_TX_PLOAD,txbuf,TX_PLOAD_WIDTH);//写数据到TX BUF  32个字节
  	NRF24L01_CE=1;//启动发送	   
@@ -232,7 +232,7 @@ u8 NRF24L01_TxPacket(u8 *txbuf)
 u8 NRF24L01_RxPacket(u8 *rxbuf)
 {
 	u8 sta;		    							   
-	SPI1_SetSpeed(SPI_BaudRatePrescaler_8); //spi速度为10.5Mhz（24L01的最大SPI时钟为10Mhz）   
+	SPI1_SetSpeed(SPI_BaudRatePrescaler_32); //spi速度为10.5Mhz（24L01的最大SPI时钟为10Mhz）   
 	sta=NRF24L01_Read_Reg(STATUS);  //读取状态寄存器的值    	 
 	NRF24L01_Write_Reg(NRF_WRITE_REG+STATUS,sta); //清除TX_DS或MAX_RT中断标志
 	if(sta&RX_OK)//接收到数据
@@ -310,6 +310,10 @@ void NRFCommunicationService()
 			if(NRF24L01_TxPacket(NRFTXBuffer) == TX_OK)
 		 {
 			  rt_kprintf("Send OK\r\n");
+		 }
+			else
+		 {
+			rt_kprintf("Send failed\r\n");
 		 }
 		}
 	}
