@@ -139,7 +139,7 @@ $(BUILD_OBJ_DIR)/%.o : %.c Makefile | $(BUILD_OBJ_DIR)
 
 
 $(BUILD_DEP_DIR)/%.d : %.c Makefile | $(BUILD_DEP_DIR)
-	$(ECHO) Compiling and update dependency $<
+$(BUILD_DEP_DIR)/%.d : OBJ_BNAME=$(basename $(notdir $@)) 
 	$(CC_EXEC) -M   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o > $@
 	$(CC_EXEC) -c   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o
 
