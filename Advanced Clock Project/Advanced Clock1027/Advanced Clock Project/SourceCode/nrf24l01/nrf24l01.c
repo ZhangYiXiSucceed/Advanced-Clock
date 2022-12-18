@@ -135,7 +135,7 @@ void NRF24L01_Init(void)
 		 
 		}
 	}
-  system_var.NRFTxFlag = 1;
+  system_var.NRFRxFlag = 1;
 }
 //检测24L01是否存在
 //返回值:0，成功;1，失败	
@@ -279,11 +279,39 @@ void NRF24L01_TX_Mode(void)
 	NRF24L01_CE=1;//CE为高,10us后启动发送
 }
 
+
+int NRF24L01StateCheck(char *data)
+{
+	unsigned char *point;
+    point = strstr(data, "getinfo");               // IP_CONNECT 
+    if(point != NULL)
+    {
+      return RESP_BLE_GET_WIFI_TIME_INFO;
+    }
+	point = strstr(data, "rst"); 
+	if(point != NULL)
+    {
+      return RESP_BLE_RESET;
+    }
+	point = strstr(data, "close"); 
+	if(point != NULL)
+    {
+      return RESP_BLE_CLOSE_INT;
+    }
+	point = strstr(data, "open"); 
+	if(point != NULL)
+    {
+      return RESP_BLE_OPEN_INT;
+    }
+	return -1;
+}
+
 u8 NRFTXBuffer[32];
 u8 NRFRXBuffer[32];
 u32 TempGMTTime;
 void NRFCommunicationService()
 {
+	unsigned char state = 0;
 	if(system_var.NRFRxFlag == 1)
 	{
 		system_var.NRFRxFlag = 2;
@@ -302,28 +330,48 @@ void NRFCommunicationService()
 	
 	if(system_var.NRFTxFlag == 2)
 	{
-		NRFTXBuffer[0]=10;
-		strcpy((char*)&NRFTXBuffer[1],"1234567890");
-		if(system_data.SystemGMTTime > TempGMTTime + 2)
+		if(QUEUE_OPER_OK == queue_out(&nrf24l01_queue,&NRFTXBuffer[1],(unsigned short*)(&NRFTXBuffer[0])))
 		{
-			TempGMTTime = system_data.SystemGMTTime;
 			if(NRF24L01_TxPacket(NRFTXBuffer) == TX_OK)
-		 {
-			  rt_kprintf("Send OK\r\n");
-		 }
+			{
+				  rt_kprintf("Send OK\r\n");
+			}
 			else
-		 {
-			rt_kprintf("Send failed\r\n");
-		 }
+			{
+				rt_kprintf("Send failed\r\n");
+			}
 		}
 	}
 	if(system_var.NRFRxFlag == 2)
 	{
-			if(NRF24L01_RxPacket(NRFRXBuffer) == 0)
+		 if(NRF24L01_RxPacket(NRFRXBuffer) == 0)
 		 {
 			  rt_kprintf((char*)(&NRFRXBuffer[1]));
+			  state = NRF24L01StateCheck((char*)(&NRFRXBuffer[1]));
+			  switch(state)
+			  {
+			  		case RESP_NRF_RESET:
+		  			{
+		  				
+		  			}break;
+					case RESP_NRF_CLOSE_INT:
+					{
+					
+					}break;
+					case RESP_NRF_OPEN_INT:
+					{
+					
+					}break;
+					default:
+					rt_kprintf(&NRFRXBuffer[1]);
+					rt_kprintf("\r\n");
+						break;
+			  }	
 			  memset(NRFRXBuffer,0x00,sizeof(NRFRXBuffer));
 		 }
 	}
 }
+
+
+
 

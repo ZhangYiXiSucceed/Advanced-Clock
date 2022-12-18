@@ -137,9 +137,8 @@ $(BUILD_OBJ_DIR)/%.o : %.c Makefile | $(BUILD_OBJ_DIR)
 	@$(ECHO)  'Compiling' $<
 	@$(CC_EXEC) -c  $(CMN_CFLAGS) $< -o $@ 
 
-
-$(BUILD_DEP_DIR)/%.d : %.c Makefile | $(BUILD_DEP_DIR)
 $(BUILD_DEP_DIR)/%.d : OBJ_BNAME=$(basename $(notdir $@)) 
+$(BUILD_DEP_DIR)/%.d : %.c Makefile | $(BUILD_DEP_DIR)
 	$(CC_EXEC) -M   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o > $@
 	$(CC_EXEC) -c   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o
 

@@ -1,5 +1,12 @@
 #include "main.h"
 
+
+
+void ble_init()
+{
+	
+}
+
 int BleStateCheck(char *data)
 {
 	unsigned char *point;
@@ -23,6 +30,21 @@ int BleStateCheck(char *data)
     {
       return RESP_BLE_OPEN_INT;
     }
+	point = strstr(data, "nrf24"); 
+	if(point != NULL)
+    {
+      return RESP_BLE_SEND_NRF24L01;
+    }
+	point = strstr(data, "nrftx"); 
+	if(point != NULL)
+    {
+      return RESP_BLE_SET_TX;
+    }
+	point = strstr(data, "nrfrx"); 
+	if(point != NULL)
+    {
+      return RESP_BLE_SET_RX;
+    }
 	return -1;
 }
 
@@ -36,6 +58,7 @@ void bluetooth_msg_porcess()
 	  memset(&FrameInBuff[FrameInlen],0x00,RX_BUFFER_SIZE - FrameInlen); 
 	  UART2_SentMsgL(FrameInBuff,FrameInlen);
 	  rt_kprintf2("\r\n");
+	  UART1_SentMsgL(FrameInBuff,FrameInlen);
 	  mrtn = BleStateCheck((char*)FrameInBuff);
 	  switch(mrtn)
 	  {
@@ -56,6 +79,21 @@ void bluetooth_msg_porcess()
 		{
 			IntsStorage = 0;
 			RestoreInts;
+		}break;
+		case RESP_BLE_SEND_NRF24L01:
+		{
+			queue_in(&nrf24l01_queue,(char*)FrameInBuff,FrameInlen);
+			rt_kprintf2("str=%s \r\n",FrameInBuff);
+		}break;
+		case RESP_BLE_SET_TX:
+		{
+			system_var.NRFTxFlag = 1;
+			rt_kprintf2("set NRF24 TX \r\n");
+		}break;
+		case RESP_BLE_SET_RX:
+		{
+			system_var.NRFRxFlag = 1;
+			rt_kprintf2("set NRF24 RX \r\n");
 		}break;
 		default:
 			break;

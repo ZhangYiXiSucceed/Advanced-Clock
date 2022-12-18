@@ -109,7 +109,7 @@ void shell_process()
         UART1FramInFlag = 0;
         FrameInlen 	    = Uart1Read(FrameInBuff);
         //rt_kprintf((char*)FrameInBuff);
-        //PrintfIOTPort4(FrameInBuff,FrameInlen);
+        PrintfIOTPort2(FrameInBuff,FrameInlen);
         //UART1_SentMsgL(FrameInBuff,FrameInlen);
         status = diag_cmd_input(FrameInBuff,FrameInlen);
 		if(status>=0)

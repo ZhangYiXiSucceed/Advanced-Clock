@@ -57,7 +57,15 @@
 #define RX_ADR_WIDTH    5   	//5???????
 #define TX_PLOAD_WIDTH  32  	//32?????????
 #define RX_PLOAD_WIDTH  32  	//32?????????
-									   	   
+
+
+enum {
+	RESP_NRF_RESET  = 0x00,
+	RESP_NRF_CLOSE_INT,
+	RESP_NRF_OPEN_INT,
+};
+	
+
 void SPI1_Init(void);			 //初始化SPI1口
 void SPI1_SetSpeed(u8 SpeedSet); //设置SPI1速度   
 u8 SPI1_ReadWriteByte(u8 TxData);//SPI1总线读写一个字节

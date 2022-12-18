@@ -29,6 +29,7 @@ int main()
   queue_init(&wifi_queue);
   queue_init(&nb_queue);
   queue_init(&ble_queue);
+  queue_init(&nrf24l01_queue);
 
   rt_kprintf((char*)Data);
   rt_kprintf2((char*)Data);

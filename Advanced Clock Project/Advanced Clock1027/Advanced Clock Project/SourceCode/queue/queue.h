@@ -91,7 +91,7 @@ extern struct fifo_queue_struct MyQueue;
 extern fifo_queue_t wifi_queue;
 extern fifo_queue_t nb_queue;
 extern fifo_queue_t ble_queue;
-
+extern fifo_queue_t nrf24l01_queue;
 
 void queue_init(fifo_queue_t *queue); 
 unsigned char queue_in(fifo_queue_t *queue,ELEM_TYPE *sdat, unsigned short len); 
