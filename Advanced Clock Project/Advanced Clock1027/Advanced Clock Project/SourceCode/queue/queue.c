@@ -3,9 +3,11 @@
 
 struct OperCmdUnion      sOperCmdUnion_wifi;  
 struct OperCmdUnion      sOperCmdBuff;  
+struct OperCmdUnionFifo  sOperCmdUnionFifo_wifi;
 
-struct OperCmdUnionFifo  sOperCmdUnionFifo;
-
+struct OperCmdUnion      sOperCmdUnion_ble;  
+struct OperCmdUnion      sOperCmdBuff_ble;  
+struct OperCmdUnionFifo  sOperCmdUnionFifo_ble;
 
 void FifoInit(struct OperCmdUnionFifo *Queue)   
 {   

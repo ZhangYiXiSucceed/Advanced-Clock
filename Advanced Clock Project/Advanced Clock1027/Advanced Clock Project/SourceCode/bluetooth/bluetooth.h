@@ -10,6 +10,12 @@ enum {
 	RESP_BLE_SET_TX,
 	RESP_BLE_SET_RX,
 };
+
+
+enum {
+	BLE_AT_CMD = 0x00,
+
+};
 void ble_init();
 void bluetooth_msg_porcess();
 

@@ -1,10 +1,24 @@
 #include "main.h"
 
+unsigned char  ble_cmd[][32]=
+{
+  {"AT\x0d\x0a"},
+};
 
 
 void ble_init()
 {
+	FifoInit(&sOperCmdUnionFifo_ble);
+	UART2Init();       /*BlueTooth uart*/
 	
+	sOperCmdBuff_ble.tid = 0xFF;
+	
+	sOperCmdUnion_ble.tid = AT_CMD;
+	sOperCmdUnion_ble.cmd = 0x00;
+	sOperCmdUnion_ble.len = sizeof(ble_cmd[BLE_AT_CMD]);
+	sOperCmdUnion_ble.trycnt = 3;
+	memcpy(sOperCmdUnion_ble.buffer, &ble_cmd[BLE_AT_CMD], sOperCmdUnion_ble.len);
+	FifoIn(&sOperCmdUnionFifo_ble,&sOperCmdUnion_ble);
 }
 
 int BleStateCheck(char *data)

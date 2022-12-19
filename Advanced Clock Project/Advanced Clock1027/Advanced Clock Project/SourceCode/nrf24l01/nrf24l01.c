@@ -334,7 +334,7 @@ void NRFCommunicationService()
 		{
 			if(NRF24L01_TxPacket(NRFTXBuffer) == TX_OK)
 			{
-				  rt_kprintf("Send OK\r\n");
+				 rt_kprintf("Send OK\r\n");
 			}
 			else
 			{

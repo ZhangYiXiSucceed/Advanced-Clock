@@ -46,7 +46,7 @@ typedef struct OperCmdUnionFifo
 
 extern struct OperCmdUnion      sOperCmdUnion_wifi;
 extern struct OperCmdUnion      sOperCmdBuff;
-extern struct OperCmdUnionFifo  sOperCmdUnionFifo;
+extern struct OperCmdUnionFifo  sOperCmdUnionFifo_wifi;
 
 void FifoInit(struct OperCmdUnionFifo *Queue); 
 unsigned char FifoIn(struct OperCmdUnionFifo *Queue,  struct OperCmdUnion *sdat); 
