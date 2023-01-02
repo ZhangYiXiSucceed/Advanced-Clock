@@ -9,12 +9,14 @@ enum {
 	RESP_BLE_SEND_NRF24L01,
 	RESP_BLE_SET_TX,
 	RESP_BLE_SET_RX,
+	RESP_BLE_OK,
 };
 
 
 enum {
 	BLE_AT_CMD = 0x00,
-
+	BLE_AT_SET_NAME_CMD,
+	BLE_AT_SET_BAUD_CMD,
 };
 void ble_init();
 void bluetooth_msg_porcess();

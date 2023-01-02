@@ -28,7 +28,7 @@ int main()
   queue_init(&MyQueue);
   queue_init(&wifi_queue);
   queue_init(&nb_queue);
-  queue_init(&ble_queue);
+ 
   queue_init(&nrf24l01_queue);
 
   ble_init();

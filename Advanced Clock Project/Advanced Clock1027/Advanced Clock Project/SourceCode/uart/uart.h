@@ -37,7 +37,7 @@ void UART2_SentChar(char* data);
 void UART2Poll(void);
 unsigned short Uart2Read(unsigned char *data);
 
-void PrintfIOTPort(unsigned char*msg,unsigned char len);
+void PrintfIOTPort2(unsigned char*msg,unsigned char len);
 void rt_kprintf2(const char *fmt, ...);
 void rt_hw_console_output2(const char *str);
 void Printfmsg2(unsigned char* msg);

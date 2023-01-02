@@ -2,23 +2,43 @@
 
 unsigned char  ble_cmd[][32]=
 {
-  {"AT\x0d\x0a"},
+  {"AT"},
+  {"AT+NAME=Clock"},
+  {"AT+BAUD=9600"},
 };
 
 
 void ble_init()
 {
+	queue_init(&ble_queue);
 	FifoInit(&sOperCmdUnionFifo_ble);
 	UART2Init();       /*BlueTooth uart*/
 	
 	sOperCmdBuff_ble.tid = 0xFF;
+
 	
-	sOperCmdUnion_ble.tid = AT_CMD;
-	sOperCmdUnion_ble.cmd = 0x00;
-	sOperCmdUnion_ble.len = sizeof(ble_cmd[BLE_AT_CMD]);
+	sOperCmdUnion_ble.tid = BLE_AT_CMD;
+	sOperCmdUnion_ble.cmd = BLE_AT_CMD;
+	sOperCmdUnion_ble.len = strlen(ble_cmd[BLE_AT_CMD]);
 	sOperCmdUnion_ble.trycnt = 3;
 	memcpy(sOperCmdUnion_ble.buffer, &ble_cmd[BLE_AT_CMD], sOperCmdUnion_ble.len);
 	FifoIn(&sOperCmdUnionFifo_ble,&sOperCmdUnion_ble);
+
+	sOperCmdUnion_ble.tid = BLE_AT_SET_NAME_CMD;
+	sOperCmdUnion_ble.cmd = BLE_AT_SET_NAME_CMD;
+	sOperCmdUnion_ble.len = strlen(ble_cmd[BLE_AT_SET_NAME_CMD]);
+	sOperCmdUnion_ble.trycnt = 3;
+	memcpy(sOperCmdUnion_ble.buffer, &ble_cmd[BLE_AT_SET_NAME_CMD], sOperCmdUnion_ble.len);
+	FifoIn(&sOperCmdUnionFifo_ble,&sOperCmdUnion_ble);
+
+	sOperCmdUnion_ble.tid = BLE_AT_SET_BAUD_CMD;
+	sOperCmdUnion_ble.cmd = BLE_AT_SET_BAUD_CMD;
+	sOperCmdUnion_ble.len = strlen(ble_cmd[BLE_AT_SET_BAUD_CMD]);
+	sOperCmdUnion_ble.trycnt = 3;
+	memcpy(sOperCmdUnion_ble.buffer, &ble_cmd[BLE_AT_SET_BAUD_CMD], sOperCmdUnion_ble.len);
+	FifoIn(&sOperCmdUnionFifo_ble,&sOperCmdUnion_ble);
+
+	
 }
 
 int BleStateCheck(char *data)
@@ -59,6 +79,11 @@ int BleStateCheck(char *data)
     {
       return RESP_BLE_SET_RX;
     }
+	point = strstr(data, "OK"); 
+	if(point != NULL)
+    {
+      return RESP_BLE_OK;
+    }
 	return -1;
 }
 
@@ -67,6 +92,32 @@ int BleStateCheck(char *data)
 void bluetooth_msg_porcess()
 {
   unsigned char mrtn;
+  if(sOperCmdBuff_ble.tid == 0xff)
+  {
+    if(FifoOut(&sOperCmdUnionFifo_ble, &sOperCmdBuff_ble) == ValFifoOperateOk)        
+    {
+        sOperCmdBuff_ble.time   = GetSystemTime();
+        rt_kprintf("BLE-CMD:%d===>%s\r\n",sOperCmdBuff_ble.cmd,sOperCmdBuff_ble.buffer);
+        PrintfIOTPort2(sOperCmdBuff_ble.buffer,sOperCmdBuff_ble.len);
+    } 	
+  }
+  else
+  {
+      if(GetSystemTime()> sOperCmdBuff_ble.time + 10)                          
+      {
+          sOperCmdBuff_ble.trycnt = sOperCmdBuff_ble.trycnt -1;
+          if(sOperCmdBuff_ble.trycnt)
+          {
+              sOperCmdBuff_ble.time   = GetSystemTime();
+              rt_kprintf("*: rty:%d\r\n", sOperCmdBuff_ble.trycnt);
+              PrintfIOTPort2(sOperCmdBuff_ble.buffer,sOperCmdBuff_ble.len);
+          }
+          else
+          {                                   
+            sOperCmdBuff_ble.tid = 0xff;
+          }
+       }
+   }
   if(queue_out(&ble_queue, FrameInBuff, &FrameInlen) == QUEUE_OPER_OK) 
   {
 	  memset(&FrameInBuff[FrameInlen],0x00,RX_BUFFER_SIZE - FrameInlen); 
@@ -108,6 +159,11 @@ void bluetooth_msg_porcess()
 		{
 			system_var.NRFRxFlag = 1;
 			rt_kprintf2("set NRF24 RX \r\n");
+		}break;
+		case RESP_BLE_OK:
+		{
+			sOperCmdBuff_ble.tid = 0xff;
+			rt_kprintf("ble ok \r\n");
 		}break;
 		default:
 			break;

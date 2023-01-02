@@ -103,7 +103,7 @@ void test3(uint32_t para1,uint32_t para2,uint32_t para3)
 
 void shell_process()
 {
-	int8_t status;
+	int8_t status = -1;
     if( UART1FramInFlag == 1 )  // ´òÓ¡¿Ú
     {
         UART1FramInFlag = 0;
@@ -111,7 +111,7 @@ void shell_process()
         //rt_kprintf((char*)FrameInBuff);
         PrintfIOTPort2(FrameInBuff,FrameInlen);
         //UART1_SentMsgL(FrameInBuff,FrameInlen);
-        status = diag_cmd_input(FrameInBuff,FrameInlen);
+        //status = diag_cmd_input(FrameInBuff,FrameInlen);
 		if(status>=0)
 		{
 			diag_cmd_complete(status);

@@ -48,6 +48,10 @@ extern struct OperCmdUnion      sOperCmdUnion_wifi;
 extern struct OperCmdUnion      sOperCmdBuff;
 extern struct OperCmdUnionFifo  sOperCmdUnionFifo_wifi;
 
+extern struct OperCmdUnion      sOperCmdUnion_ble;  
+extern struct OperCmdUnion      sOperCmdBuff_ble;  
+extern struct OperCmdUnionFifo  sOperCmdUnionFifo_ble;
+
 void FifoInit(struct OperCmdUnionFifo *Queue); 
 unsigned char FifoIn(struct OperCmdUnionFifo *Queue,  struct OperCmdUnion *sdat); 
 unsigned char FifoOut(struct OperCmdUnionFifo *Queue, struct OperCmdUnion *sdat);
