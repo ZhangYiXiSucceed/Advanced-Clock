@@ -3,15 +3,15 @@
 
 void IWDG_Init(void)
 {
-  IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable); //使能对IWDG->PR IWDG->RLR的写
+  IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable); //enable IWDG->PR IWDG->RLR
 	
-  IWDG_SetPrescaler(IWDG_Prescaler_128); //设置IWDG分频系数
+  IWDG_SetPrescaler(IWDG_Prescaler_128); //set IWDG pre fre
 
-  IWDG_SetReload(4000);   //设置IWDG装载值
+  IWDG_SetReload(RELOAD_VALUE);   //set IWDG reload    tout = (4*2^pre)/40*reload_vale = 128/40*4000 = 12800ms
 
   IWDG_ReloadCounter(); //reload
   
-  IWDG_Enable();       //使能看门狗
+  IWDG_Enable();       //enable iwdg
 }
 
 

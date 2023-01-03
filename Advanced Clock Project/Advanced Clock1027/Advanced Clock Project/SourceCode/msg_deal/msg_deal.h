@@ -49,6 +49,7 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len);
 
 void diag_cmd_complete(int8_t status);
 void diag_cmd_start();
+void shell_init();
 
 
 #endif

@@ -81,7 +81,7 @@ u8 NRF24L01_Check(void);//??24L01????
 u8 NRF24L01_TxPacket(u8 *txbuf);//????????
 u8 NRF24L01_RxPacket(u8 *rxbuf);//????????
 
-void NRFCommunicationService(void);
+void nrf_communication_service_msg_process(void);
 #endif
 
 

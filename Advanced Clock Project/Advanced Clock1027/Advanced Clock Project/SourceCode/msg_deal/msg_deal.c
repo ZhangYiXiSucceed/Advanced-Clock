@@ -109,9 +109,9 @@ void shell_process()
         UART1FramInFlag = 0;
         FrameInlen 	    = Uart1Read(FrameInBuff);
         //rt_kprintf((char*)FrameInBuff);
-        PrintfIOTPort2(FrameInBuff,FrameInlen);
+        //PrintfIOTPort2(FrameInBuff,FrameInlen);
         //UART1_SentMsgL(FrameInBuff,FrameInlen);
-        //status = diag_cmd_input(FrameInBuff,FrameInlen);
+        status = diag_cmd_input(FrameInBuff,FrameInlen);
 		if(status>=0)
 		{
 			diag_cmd_complete(status);
@@ -120,7 +120,7 @@ void shell_process()
     }  
 }
 
-void periodic_task()
+void periodic_task_process()
 {
 	 if(system_var.TwoMinuteFlag ==1)
     {
@@ -531,6 +531,14 @@ int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_ar
 		}
 	}
 	return para_num;
+}
+
+
+void shell_init()
+{
+  UART1Init();       /*common uart,can receive uart device(ch340) data and execute cmd*/
+  queue_init(&MyQueue);
+  diag_cmd_start();
 }
 
 void diag_cmd_complete(int8_t status)

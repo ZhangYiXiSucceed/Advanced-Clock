@@ -7,57 +7,36 @@ int main()
   
   SysTick_Config(SystemCoreClock/1000000);
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+  shell_init();
   
-  UART1Init();       /*common uart,can receive uart device(ch340) data and execute cmd*/
-  
-  UART3Init();       /*NB-IoT uart*/
-  UART4Init();       /*WIFI uart */
-
   //LED_Init();
   PWM_LEDInit();
   KEY_Init();
   TIM5_Init();
   
   HTSensor_Init();
-  HTSensorMode();
-	
   OLED_Init();
- 
   My_RTC_Init();
 
-  queue_init(&MyQueue);
-  queue_init(&wifi_queue);
-  queue_init(&nb_queue);
- 
-  queue_init(&nrf24l01_queue);
-
   ble_init();
+  init_wifi_network();
+  NRF24L01_Init();
   
+  IWDG_Init();
+
   rt_kprintf((char*)Data);
   rt_kprintf2((char*)Data);
-	
-  NRF24L01_Init();
-
-  FifoInit(&sOperCmdUnionFifo_wifi);
-  
-  
-
-  init_wifi_network();
-  
-  //IWDG_Init();
-
-  diag_cmd_start();
 
   while(1)
   {
-    //IWDG_Feed();
+    IWDG_Feed();
     //LedBlink();
     KEYService();
-    NRFCommunicationService();
+    nrf_communication_service_msg_process();
     bluetooth_msg_porcess();
     shell_process();
-	periodic_task();
-    wifi_task_deal();
+	periodic_task_process();
+    wifi_msg_process();
 	show_interface_oled();
   }
 }

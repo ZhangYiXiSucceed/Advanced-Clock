@@ -100,21 +100,21 @@ void NRF24L01_Init(void)
 
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);//使能GPIOB,G时钟
 	
-  //GPIOB 7 8初始化设置:推挽输出
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7|GPIO_Pin_8;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//普通输出模式
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
-  GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化PB14
-	
+	//GPIOB 7 8初始化设置:推挽输出
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7|GPIO_Pin_8;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//普通输出模式
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
+	GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化PB14
+
 	//GPIOB 9上拉输入
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//输入
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
-  GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化PG8
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//输入
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
+	GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化PG8
 
-  GPIO_SetBits(GPIOB,GPIO_Pin_9);//PB14输出1,防止SPI FLASH干扰NRF的通信 
+	GPIO_SetBits(GPIOB,GPIO_Pin_9);//PB14输出1,防止SPI FLASH干扰NRF的通信 
   
  	SPI1_Init();    		//初始化SPI1  
 	
@@ -123,7 +123,7 @@ void NRF24L01_Init(void)
 	NRF24L01_CE=0; 			//使能24L01
 	NRF24L01_CSN=1;			//SPI片选取消
 
-  while(NRF24L01_Check())
+	while(NRF24L01_Check())
 	{
 		u8 i;
 		for(i=0;i<10;i++)
@@ -135,7 +135,8 @@ void NRF24L01_Init(void)
 		 
 		}
 	}
-  system_var.NRFRxFlag = 1;
+	system_var.NRFRxFlag = 1;
+	queue_init(&nrf24l01_queue);
 }
 //检测24L01是否存在
 //返回值:0，成功;1，失败	
@@ -309,7 +310,7 @@ int NRF24L01StateCheck(char *data)
 u8 NRFTXBuffer[32];
 u8 NRFRXBuffer[32];
 u32 TempGMTTime;
-void NRFCommunicationService()
+void nrf_communication_service_msg_process()
 {
 	unsigned char state = 0;
 	if(system_var.NRFRxFlag == 1)

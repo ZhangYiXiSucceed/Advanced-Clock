@@ -33,6 +33,10 @@ unsigned char parsing_wifi_mac_data(unsigned char* frame_buffer,unsigned char fr
 
 void init_wifi_network()
 {
+	queue_init(&wifi_queue);
+	FifoInit(&sOperCmdUnionFifo_wifi);
+	UART4Init();       /*WIFI uart */
+	
 	sOperCmdBuff.tid = 0xFF;
 	
 	sOperCmdUnion_wifi.tid = AT_CMD;
@@ -292,7 +296,7 @@ int8_t WifiStateCheck(char *data)
     return -1;
 }
 
-void wifi_task_deal()
+void wifi_msg_process()
 {
   int mrtn;
   if(sOperCmdBuff.tid == 0xff)

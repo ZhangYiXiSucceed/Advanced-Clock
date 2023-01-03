@@ -38,7 +38,7 @@ enum
 
 void init_wifi_network(void);
 void connect_wifi_network(void);
-void wifi_task_deal(void);
+void wifi_msg_process(void);
 void connect_server(void);
 void set_send_mode(unsigned char mode);
 void entry_send_state(void);

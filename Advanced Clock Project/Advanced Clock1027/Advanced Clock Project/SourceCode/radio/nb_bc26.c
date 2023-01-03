@@ -97,6 +97,8 @@ void NBModuleInit(void)
     
     int8_t rtn    = -1;
     queue_init(&nb_queue);
+	UART3Init();       /*NB-IoT uart*/
+	
     rt_kprintf("*: ATI\r\n");
     PrintfIOTPort3((unsigned char*)(&IoTNetCmd[0]),sizeof(IoTNetCmd[0]));
 
