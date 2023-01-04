@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>2</Optim>
+            <Optim>3</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\Driver\inc;..\SourceCode\LED;..\SourceCode\OLED;..\SourceCode\UART;..\SourceCode\TIM;..\SourceCode\KEY;..\SourceCode\Queue;..\SourceCode\HeadDef;..\SourceCode\MsgDeal;..\SourceCode\HTSensor;..\SourceCode\WDG;..\SourceCode\RTC;..\SourceCode;..\SourceCode\RADIO;..\SourceCode\COMMON;..\SourceCode\NRF24L01;..\SourceCode\WIFI;..\SourceCode\cJson</IncludePath>
+              <IncludePath>..\Core;..\Driver\inc;..\SourceCode\led;..\SourceCode\uart;..\SourceCode\timer;..\SourceCode\key;..\SourceCode\queue;..\SourceCode\msg_deal;..\SourceCode\ht_sensor;..\SourceCode\wdg;..\SourceCode\rtc;..\SourceCode;..\SourceCode\radio;..\SourceCode\common;..\SourceCode\nrf24l01;..\SourceCode\wifi;..\SourceCode\cJson;..\SourceCode\oled;..\SourceCode\bluetooth;..\SourceCode\show</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -525,24 +525,9 @@
               <FilePath>..\SourceCode\KEY\key.c</FilePath>
             </File>
             <File>
-              <FileName>timer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SourceCode\TIM\timer.c</FilePath>
-            </File>
-            <File>
               <FileName>queue.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SourceCode\Queue\queue.c</FilePath>
-            </File>
-            <File>
-              <FileName>MsgDeal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SourceCode\MsgDeal\MsgDeal.c</FilePath>
-            </File>
-            <File>
-              <FileName>HTSensor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SourceCode\HTSensor\HTSensor.c</FilePath>
             </File>
             <File>
               <FileName>iwdg.c</FileName>
@@ -555,11 +540,6 @@
               <FilePath>..\SourceCode\RTC\rtc.c</FilePath>
             </File>
             <File>
-              <FileName>NB_IOT_BC26.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SourceCode\RADIO\NB_IOT_BC26.c</FilePath>
-            </File>
-            <File>
               <FileName>common.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SourceCode\COMMON\common.c</FilePath>
@@ -570,14 +550,49 @@
               <FilePath>..\SourceCode\NRF24L01\nrf24l01.c</FilePath>
             </File>
             <File>
-              <FileName>WIFI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SourceCode\WIFI\WIFI.c</FilePath>
-            </File>
-            <File>
               <FileName>cJSON.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SourceCode\cJson\cJSON.c</FilePath>
+            </File>
+            <File>
+              <FileName>bluetooth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\bluetooth\bluetooth.c</FilePath>
+            </File>
+            <File>
+              <FileName>wifi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\wifi\wifi.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\timer\timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>bmp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\oled\bmp.c</FilePath>
+            </File>
+            <File>
+              <FileName>oledfont.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\oled\oledfont.c</FilePath>
+            </File>
+            <File>
+              <FileName>ht_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\ht_sensor\ht_sensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>msg_deal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\msg_deal\msg_deal.c</FilePath>
+            </File>
+            <File>
+              <FileName>show.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\show\show.c</FilePath>
             </File>
           </Files>
         </Group>
