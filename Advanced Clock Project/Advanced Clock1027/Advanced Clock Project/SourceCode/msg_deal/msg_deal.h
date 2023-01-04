@@ -42,14 +42,14 @@ typedef struct diag_cmd_para_struct{
 
 extern struct SystemVar system_var; 
 void shell_process(void);
-void periodic_task(void);
+void periodic_task_process(void);
 
 int8_t diag_cmd_process(uint8_t *cmd_buff,uint16_t cmd_buff_len);
 int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len);
 
 void diag_cmd_complete(int8_t status);
-void diag_cmd_start();
-void shell_init();
+void diag_cmd_start(void);
+void shell_init(void);
 
 
 #endif

@@ -20,9 +20,9 @@ typedef enum show_state_struct
 
 
 void ShowCurrentTime(void);
-void ShowWifiConnect();
-void wifi_bmp_clear();
-void show_weather_info();
-void show_interface_oled();
+void ShowWifiConnect(void);
+void wifi_bmp_clear(void);
+void show_weather_info(void);
+void show_interface_oled(void);
 
 #endif

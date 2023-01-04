@@ -18,8 +18,8 @@ enum {
 	BLE_AT_SET_NAME_CMD,
 	BLE_AT_SET_BAUD_CMD,
 };
-void ble_init();
-void bluetooth_msg_porcess();
+void ble_init(void);
+void bluetooth_msg_porcess(void);
 
 
 #endif
