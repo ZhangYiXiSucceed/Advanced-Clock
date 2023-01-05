@@ -35,7 +35,7 @@ int main()
     nrf_communication_service_msg_process();
     bluetooth_msg_porcess();
     shell_process();
-		periodic_task_process();
+	periodic_task_process();
     wifi_msg_process();
 	show_interface_oled();
   }

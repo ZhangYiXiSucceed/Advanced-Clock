@@ -68,7 +68,6 @@ void TIM5_IRQHandler(void)
         UART2Poll();
         UART3Poll();
         UART4Poll();
-        LED_BreathingLight();
     }
 }
 
