@@ -115,12 +115,14 @@ CMN_LFLAGS = --cpu Cortex-M4.fp.sp \
 
 # compiler objects
 OBJECTS  = $(addprefix $(BUILD_OBJ_DIR)/,$(notdir $(C_SOURCE:.c=.o)))
-vpath %.c $(sort $(dir $(C_SOURCE)))
+ vpath %.c $(sort $(dir $(C_SOURCE)))
 
 OBJECTS  += $(addprefix $(BUILD_OBJ_DIR)/,$(notdir $(ASM_SOURCE:.s=.o)))
-vpath %.s $(sort $(dir $(ASM_SOURCE)))
+ vpath %.s $(sort $(dir $(ASM_SOURCE)))
 
 
+.PHONY : build
+build :  $(OUT_DIR)/$(TARGET).axf
 
 $(OUT_DIR)/$(TARGET).axf: $(OBJECTS) 
 	@$(ECHO) Link $@ ...
@@ -153,11 +155,14 @@ $(BUILD_DEP_DIR):
 	mkdir $@
 
 # dwonload 
+.PHONY : flash
 flash:
 	$(DOWNLOAD_EXEC) -c -SE 0 4  -V "while_programming" -P $(OUT_DIR)/$(TARGET).bin 0x08000000
 	$(DOWNLOAD_EXEC) -Rst
 
+
 # clean 
+.PHONY : clean
 clean:
 	$(RM) obj/*
 	$(RM) out/*
