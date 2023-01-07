@@ -6,8 +6,8 @@ struct SystemData system_data;
 uint8_t cmd_process_buff[CMD_BUFF_MAX_SIZE];
 uint8_t cmd_process_buff_index=0;
 
-void diag_help();
-void print_weather_and_time_info();
+void diag_help(void);
+void print_weather_and_time_info(void);
 void test2(uint32_t para1,uint32_t para2);
 void test3(uint32_t para1,uint32_t para2,uint32_t para3);
 int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_array[],int32_t max_para_num);
@@ -101,24 +101,51 @@ void test3(uint32_t para1,uint32_t para2,uint32_t para3)
 
 
 
-void Uart_AT_Deal()
+void shell_process()
 {
-	int8_t status;
-    if( UART1FramInFlag == 1 )  // ´òÓ¡¿Ú
-    {
-        UART1FramInFlag = 0;
-        FrameInlen 	    = Uart1Read(FrameInBuff);
-        //rt_kprintf((char*)FrameInBuff);
-        //PrintfIOTPort4(FrameInBuff,FrameInlen);
-        //UART1_SentMsgL(FrameInBuff,FrameInlen);
-        status = diag_cmd_input(FrameInBuff,FrameInlen);
-		if(status>=0)
+	int8_t status = -1;
+	if(UART_SHELL_MODE == system_var.uart1_mode)
+	{
+		if(UART1FramInFlag == 1 )  // rec uart data
+	    {
+	        UART1FramInFlag = 0;
+	        FrameInlen 	    = Uart1Read(FrameInBuff);
+	        status = diag_cmd_input(FrameInBuff,FrameInlen);
+			if(status>=0)
+			{
+				diag_cmd_complete(status);
+				diag_cmd_start();
+			}
+	    }  
+	}
+    else if(UART_BLE_COM_MODE == system_var.uart1_mode)
+	{
+		if(UART1FramInFlag == 1 )  
+	    {
+	        UART1FramInFlag = 0;
+	        FrameInlen 	    = Uart1Read(FrameInBuff);
+	        PrintfIOTPort2(FrameInBuff,FrameInlen);  //BLE communication test
+	    }  
+	}
+	else if(UART_WIFI_COM_MODE == system_var.uart1_mode)
+	{
+		if(UART1FramInFlag == 1 )  
 		{
-			diag_cmd_complete(status);
-			diag_cmd_start();
-		}
-    }
-    if(system_var.TwoMinuteFlag ==1)
+	        UART1FramInFlag = 0;
+	        FrameInlen 	    = Uart1Read(FrameInBuff);
+	        PrintfIOTPort4(FrameInBuff,FrameInlen);  //wifi communication test
+	    }  
+	}
+	else
+	{
+		/*nothing*/
+	}
+}
+
+void periodic_task_process()
+{
+	static int last_systime = 0;
+	if(system_var.TwoMinuteFlag ==1)
     {
         system_var.TwoMinuteFlag = 0;
 		rt_kprintf("*: two minute\r\n"); 
@@ -127,6 +154,12 @@ void Uart_AT_Deal()
 		print_wifi_weather_time_info();
 		OLED_Clear();
     }
+	
+	if(last_systime != Systemtime)
+ 	{
+ 		LED_BreathingLight();
+		last_systime = Systemtime;
+	}
 }
 
 int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
@@ -527,6 +560,14 @@ int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_ar
 		}
 	}
 	return para_num;
+}
+
+
+void shell_init()
+{
+  UART1Init();       /*common uart,can receive uart device(ch340) data and execute cmd*/
+  queue_init(&MyQueue);
+  diag_cmd_start();
 }
 
 void diag_cmd_complete(int8_t status)

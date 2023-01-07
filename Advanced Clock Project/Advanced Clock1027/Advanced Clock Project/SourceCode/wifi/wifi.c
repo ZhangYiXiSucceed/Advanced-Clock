@@ -33,6 +33,10 @@ unsigned char parsing_wifi_mac_data(unsigned char* frame_buffer,unsigned char fr
 
 void init_wifi_network()
 {
+	queue_init(&wifi_queue);
+	FifoInit(&sOperCmdUnionFifo_wifi);
+	UART4Init();       /*WIFI uart */
+	
 	sOperCmdBuff.tid = 0xFF;
 	
 	sOperCmdUnion_wifi.tid = AT_CMD;
@@ -40,28 +44,28 @@ void init_wifi_network()
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_CMD]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_CMD], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 
 	sOperCmdUnion_wifi.tid = AT_RST;
 	sOperCmdUnion_wifi.cmd = 0x01;
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_RST]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_RST], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 
 	sOperCmdUnion_wifi.tid = ATE0;
 	sOperCmdUnion_wifi.cmd = 0x02;
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[ATE0]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[ATE0], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 
 	sOperCmdUnion_wifi.tid = AT_CWMODE;
 	sOperCmdUnion_wifi.cmd = 0x03;
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_CWMODE]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_CWMODE], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 
 	quiry_wifi();
 	
@@ -74,7 +78,8 @@ void init_wifi_network()
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_CMD]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_CMD], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
+
 	
 }
 
@@ -89,7 +94,7 @@ void connect_wifi_network()
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_CWJAP]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_CWJAP], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 
 	/*  CMD:13===>AT+CIPSTA?
 		OK
@@ -103,7 +108,7 @@ void connect_wifi_network()
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_QUIRY_IP]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_QUIRY_IP], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 
 	/*
 	
@@ -113,7 +118,7 @@ void connect_wifi_network()
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_QUIRY_MAC]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_QUIRY_MAC], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 	
 }
 
@@ -124,7 +129,7 @@ void stop_wifi_network()
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_CWQAP]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_CWQAP], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
 void connect_server()
@@ -134,7 +139,7 @@ void connect_server()
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_CIPSTART]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_CIPSTART], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
 void set_send_mode(unsigned char mode)
@@ -148,7 +153,7 @@ void set_send_mode(unsigned char mode)
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_CIPMODE]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_CIPMODE], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 void entry_send_state()
 {
@@ -157,7 +162,7 @@ void entry_send_state()
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_CIPSEND]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_CIPSEND], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
 void send_data(char* demo_data,unsigned char data_len)
@@ -168,7 +173,7 @@ void send_data(char* demo_data,unsigned char data_len)
 	sOperCmdUnion_wifi.len = data_len;
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, demo_data, sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
 void send_weather_data(char* demo_data,unsigned char data_len)
@@ -179,7 +184,7 @@ void send_weather_data(char* demo_data,unsigned char data_len)
 	sOperCmdUnion_wifi.len = data_len;
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, demo_data, sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
 void get_network_time_cmds()
@@ -207,7 +212,7 @@ void quit_send_data_mode_cmd()
 	sOperCmdUnion_wifi.len = 3;
 	sOperCmdUnion_wifi.trycnt = 1;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_STOP_SEND], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
 void quit_network_connect_cmd()
@@ -217,7 +222,7 @@ void quit_network_connect_cmd()
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_QUIT_TCP_CONNECT]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_QUIT_TCP_CONNECT], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
 
@@ -229,7 +234,7 @@ void quiry_wifi()
 	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_QUIRY_WIFI]);
 	sOperCmdUnion_wifi.trycnt = 3;
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_QUIRY_WIFI], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo,&sOperCmdUnion_wifi);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
 
@@ -291,12 +296,12 @@ int8_t WifiStateCheck(char *data)
     return -1;
 }
 
-void wifi_task_deal()
+void wifi_msg_process()
 {
   int mrtn;
   if(sOperCmdBuff.tid == 0xff)
   {
-    if(FifoOut(&sOperCmdUnionFifo, &sOperCmdBuff) == ValFifoOperateOk)          //������������Ƿ�������
+    if(FifoOut(&sOperCmdUnionFifo_wifi, &sOperCmdBuff) == ValFifoOperateOk)          //������������Ƿ�������
     {
                                                           //������ݽ���
         sOperCmdBuff.time   = GetSystemTime();
@@ -791,13 +796,6 @@ void paraing_time_string(char* temp_time_date_str,char* temp_week)
 
 	time_and_weather_g.weak   = weak;
 }
-
-
-void wifi_frame_deal(unsigned char* frame_buffer,unsigned char frame_buffer_length)
-{
-	
-}
-
 
 int parsing_the_str(char* str)
 {

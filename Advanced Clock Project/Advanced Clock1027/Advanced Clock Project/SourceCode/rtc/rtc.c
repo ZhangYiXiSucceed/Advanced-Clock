@@ -49,8 +49,6 @@ u8 My_RTC_Init(void)
 	RTC_DeInit();
 	//RCC_DeInit();
 
-	
-	
   	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);//ʹ��PWRʱ��
 	PWR_BackupAccessCmd(ENABLE);	//ʹ�ܺ󱸼Ĵ������� 
 	RTC_WriteBackupRegister(RTC_BKP_DR0,0x01);

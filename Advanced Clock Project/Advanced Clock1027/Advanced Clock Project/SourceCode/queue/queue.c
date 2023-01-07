@@ -3,9 +3,11 @@
 
 struct OperCmdUnion      sOperCmdUnion_wifi;  
 struct OperCmdUnion      sOperCmdBuff;  
+struct OperCmdUnionFifo  sOperCmdUnionFifo_wifi;
 
-struct OperCmdUnionFifo  sOperCmdUnionFifo;
-
+struct OperCmdUnion      sOperCmdUnion_ble;  
+struct OperCmdUnion      sOperCmdBuff_ble;  
+struct OperCmdUnionFifo  sOperCmdUnionFifo_ble;
 
 void FifoInit(struct OperCmdUnionFifo *Queue)   
 {   
@@ -118,6 +120,7 @@ fifo_queue_t MyQueue;
 fifo_queue_t wifi_queue;
 fifo_queue_t nb_queue;
 fifo_queue_t ble_queue;
+fifo_queue_t nrf24l01_queue;
 
 
 void queue_init(fifo_queue_t *queue)   
@@ -130,16 +133,14 @@ void queue_init(fifo_queue_t *queue)
 // Queue In   
 unsigned char queue_in(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short len)   
 {   
-  
-  
-  //IntsStorage;
-  //StoreDisableInts;
+  IntsStorage;
+  StoreDisableInts;
   
   if(len > (QUEUE_MAX_LEN)) len = QUEUE_MAX_LEN;
   if((queue->front == queue->rear) && (queue->count == QUEUE_SIZE))   
   {  
       // full   
-      //RestoreInts;
+      RestoreInts;
       return QUEUE_FULL;   
   }
   else
@@ -150,7 +151,7 @@ unsigned char queue_in(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short len)
       queue->rear  = (queue->rear + 1) & (QUEUE_SIZE-1);  //---------------------加满缓冲区以后就清除0，queuesize必须为2的n次方
       queue->count = queue->count + 1;
       
-      //RestoreInts;
+      RestoreInts;
       return QUEUE_OPER_OK;   
   }
 }
@@ -159,14 +160,13 @@ unsigned char queue_in(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short len)
 unsigned char queue_out(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short *len)   
 {   
   
-  //IntsStorage;
-  //StoreDisableInts;
+  IntsStorage;
+  StoreDisableInts;
   
   if((queue->front == queue->rear) && (queue->count == 0))   
   {   
       // empty 
-      //RestoreInts;  
-      
+      RestoreInts;  
       return QUEUE_EMPTY;   
   }
   else    
@@ -179,7 +179,7 @@ unsigned char queue_out(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short *le
       queue->front = (queue->front + 1) & (QUEUE_SIZE-1);
       queue->count = queue->count - 1;
       
-      //RestoreInts;
+      RestoreInts;
       return QUEUE_OPER_OK;   
   }   
 } 

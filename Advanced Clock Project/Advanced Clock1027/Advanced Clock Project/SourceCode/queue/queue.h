@@ -13,10 +13,10 @@
 #else
 
 #define    IntsStorage                unsigned long IntsByte                         // 存储中断设置参数变量
-#define    EnableInts                 __enable_irq();                            // 中断使能 
-#define    DisableInts                __disable_irq();                           // 中断禁止
-#define    RestoreInts                //__set_interrupt_state(IntsByte);    EnableInts;  // 恢复中断设置，恢复中断
-#define    StoreDisableInts           //IntsByte = __get_interrupt_state(); DisableInts; // 存储中断参数并禁止中断
+#define    EnableInts                 __enable_fault_irq()                            // 中断使能 
+#define    DisableInts                __disable_fault_irq()                           // 中断禁止
+#define    RestoreInts                 __set_FAULTMASK(IntsByte);      // 恢复中断设置，恢复中断
+#define    StoreDisableInts           do {IntsByte = __get_FAULTMASK(); DisableInts;}while(0);// 存储中断参数并禁止中断
 
 #endif
 
@@ -46,7 +46,11 @@ typedef struct OperCmdUnionFifo
 
 extern struct OperCmdUnion      sOperCmdUnion_wifi;
 extern struct OperCmdUnion      sOperCmdBuff;
-extern struct OperCmdUnionFifo  sOperCmdUnionFifo;
+extern struct OperCmdUnionFifo  sOperCmdUnionFifo_wifi;
+
+extern struct OperCmdUnion      sOperCmdUnion_ble;  
+extern struct OperCmdUnion      sOperCmdBuff_ble;  
+extern struct OperCmdUnionFifo  sOperCmdUnionFifo_ble;
 
 void FifoInit(struct OperCmdUnionFifo *Queue); 
 unsigned char FifoIn(struct OperCmdUnionFifo *Queue,  struct OperCmdUnion *sdat); 
@@ -91,7 +95,7 @@ extern struct fifo_queue_struct MyQueue;
 extern fifo_queue_t wifi_queue;
 extern fifo_queue_t nb_queue;
 extern fifo_queue_t ble_queue;
-
+extern fifo_queue_t nrf24l01_queue;
 
 void queue_init(fifo_queue_t *queue); 
 unsigned char queue_in(fifo_queue_t *queue,ELEM_TYPE *sdat, unsigned short len); 

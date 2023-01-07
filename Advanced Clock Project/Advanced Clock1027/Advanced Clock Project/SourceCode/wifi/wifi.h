@@ -38,7 +38,7 @@ enum
 
 void init_wifi_network(void);
 void connect_wifi_network(void);
-void wifi_task_deal(void);
+void wifi_msg_process(void);
 void connect_server(void);
 void set_send_mode(unsigned char mode);
 void entry_send_state(void);
@@ -47,14 +47,14 @@ void send_weather_data(char* demo_data,unsigned char data_len);
 
 void quiry_wifi(void);
 int parsing_wifi_signal_info(unsigned char* frame_buffer,unsigned char frame_buffer_length);
-void get_network_time_cmds();
+void get_network_time_cmds(void);
 void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buffer_length);
 void paraing_time_string(char* temp_str,char* temp_week);
 void quit_network_connect_cmd(void);
 void quit_send_data_mode_cmd(void);
 void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_buffer_length);
 int parsing_the_str(char* str);
-void print_wifi_weather_time_info();
+void print_wifi_weather_time_info(void);
 
 int8_t WifiStateCheck(char *data);
 

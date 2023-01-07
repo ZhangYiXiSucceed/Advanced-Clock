@@ -76,6 +76,7 @@
 #define __CORTEX_M                (0x04)                                   /*!< Cortex-M Core                    */
 
 
+
 #if   defined ( __CC_ARM )
   #define __ASM            __asm                                      /*!< asm keyword for ARM Compiler          */
   #define __INLINE         __inline                                   /*!< inline keyword for ARM Compiler       */
@@ -101,6 +102,8 @@
   #define __STATIC_INLINE  static inline
 
 #endif
+
+#define __FPU_PRESENT       1
 
 /** __FPU_USED indicates whether an FPU is used or not. For this, __FPU_PRESENT has to be checked prior to making use of FPU specific registers and functions.
 */
@@ -169,6 +172,8 @@
 #include <core_cmInstr.h>                /* Core Instruction Access                         */
 #include <core_cmFunc.h>                 /* Core Function Access                            */
 #include <core_cm4_simd.h>               /* Compiler specific SIMD Intrinsics               */
+#include "stm32f4xx.h"
+
 
 #endif /* __CORE_CM4_H_GENERIC */
 

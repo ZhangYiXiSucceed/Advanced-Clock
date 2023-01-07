@@ -119,7 +119,7 @@ void KEYService()
 	{
 		if(Systemtime > temp_key4_systemtime + 20)
 		{
-			system_var.NRFRxFlag =1;
+		  system_var.NRFRxFlag =1;
 		  system_var.Key4Flag = 0;
 		}
 	}

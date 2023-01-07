@@ -7,13 +7,19 @@
 #define DEBUG_PORT
 #define TX_BUFFER_SIZE 4096
 #define RX_BUFFER_SIZE 4096
-
-#define   BUFFER_SIZE   4096
+#define BUFFER_SIZE   4096
 
 
 extern uint16_t   FrameInlen;
 extern uint8_t   FrameInBuff[BUFFER_SIZE];
 extern unsigned char  UART1FramInFlag; 
+
+enum {
+
+	UART_SHELL_MODE = 0x00,
+	UART_BLE_COM_MODE,
+	UART_WIFI_COM_MODE,
+};
 
 void UART1_DMA_Init(void);
 void UART1Init(void);
@@ -37,7 +43,7 @@ void UART2_SentChar(char* data);
 void UART2Poll(void);
 unsigned short Uart2Read(unsigned char *data);
 
-void PrintfIOTPort(unsigned char*msg,unsigned char len);
+void PrintfIOTPort2(unsigned char*msg,unsigned char len);
 void rt_kprintf2(const char *fmt, ...);
 void rt_hw_console_output2(const char *str);
 void Printfmsg2(unsigned char* msg);
