@@ -5,12 +5,12 @@
 ###########################################################
 
 # 
-TARGET = AdvancedClock
+TARGET = AdvancedClockBoot
 DEBUG = -O2
 
 # directoty for compiler object file
-BUILD_OBJ_DIR  :=obj
-BUILD_DEP_DIR  :=dep
+BUILD_OBJ_DIR  :=obj_boot
+BUILD_DEP_DIR  :=dep_boot
 OUT_DIR    :=out
 
 # directoty for compiler source file
@@ -38,23 +38,15 @@ $(wildcard $(DRIVER)/src/stm32f4xx_syscfg.c)  		\
 $(wildcard $(DRIVER)/src/stm32f4xx_tim.c)  			\
 $(wildcard $(DRIVER)/src/stm32f4xx_usart.c)  		\
 $(wildcard $(DRIVER)/src/stm32f4xx_wwdg.c)  		\
-$(wildcard $(SOURCECODE)/*.c)  			\
-$(wildcard $(SOURCECODE)/bluetooth/*.c) \
-$(wildcard $(SOURCECODE)/cJson/*.c)  	\
 $(wildcard $(SOURCECODE)/common/*.c)  	\
-$(wildcard $(SOURCECODE)/ht_sensor/*.c)  \
-$(wildcard $(SOURCECODE)/key/*.c)  		\
-$(wildcard $(SOURCECODE)/led/*.c)  		\
 $(wildcard $(SOURCECODE)/msg_deal/*.c)  \
-$(wildcard $(SOURCECODE)/nrf24l01/*.c)  \
-$(wildcard $(SOURCECODE)/oled/*.c)  	\
 $(wildcard $(SOURCECODE)/queue/*.c)  	\
-$(wildcard $(SOURCECODE)/rtc/*.c)  		\
 $(wildcard $(SOURCECODE)/timer/*.c)  	\
 $(wildcard $(SOURCECODE)/uart/*.c)  	\
 $(wildcard $(SOURCECODE)/wdg/*.c)  		\
 $(wildcard $(SOURCECODE)/wifi/*.c)  	\
-$(wildcard $(SOURCECODE)/show/*.c)  	\
+$(wildcard $(SOURCECODE)/flash/*.c)  	\
+$(wildcard $(SOURCECODE)/bootloader/*.c)  	\
 
 # asm source file path
 ASM_SOURCE = \
@@ -108,7 +100,7 @@ CMN_AFLAGS = --cpu Cortex-M4.fp.sp -g --apcs=interwork \
 -I D:\Software\Keil\pack\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include \
 --pd "__UVISION_VERSION SETA 537" --pd "STM32F405xx SETA 1" \
 
-LINK_SCRIPT := AdvanceClock.sct
+LINK_SCRIPT := AdvanceClockBoot.sct
 CMN_LFLAGS = --cpu Cortex-M4.fp.sp \
 --strict --scatter $(LINK_SCRIPT)
 

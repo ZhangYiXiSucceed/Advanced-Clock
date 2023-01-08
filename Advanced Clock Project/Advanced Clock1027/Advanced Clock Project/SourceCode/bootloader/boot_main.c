@@ -1,4 +1,4 @@
-#include "main.h"
+#include "boot_main.h"
 int main()
 {
   u8 Data[32]="go to while!\r\n";
@@ -23,6 +23,6 @@ int main()
     shell_process();
 	periodic_task_process();
     wifi_msg_process();
-
   }
+}
 

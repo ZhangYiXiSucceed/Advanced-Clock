@@ -1,4 +1,4 @@
-#ifndef  __BOOT_MAIN_H__
+ #ifndef  __BOOT_MAIN_H__
 #define  __BOOT_MAIN_H__
 
 #include "core_cm4.h"
@@ -11,7 +11,7 @@
 #include "msg_deal.h"
 #include "iwdg.h"
 #include "common.h"
-#include "WIFI.h"
+#include "wifi.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
