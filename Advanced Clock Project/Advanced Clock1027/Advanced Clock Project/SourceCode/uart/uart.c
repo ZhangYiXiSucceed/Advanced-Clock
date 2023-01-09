@@ -9,7 +9,7 @@ unsigned char  UART1FramInFlag = 0;
 static unsigned char  Uart1RcvStartFlag = 0;                                      
 static unsigned short Uart1DmaLastCnt, Uart1DmaStartCnt;                           
 static unsigned long  Uart1DataInTime, Uart1DataCurrTime;                       
-unsigned char  Uart1TxBuffer[TX_BUFFER_SIZE]={"UART1 send data"};               
+unsigned char  Uart1TxBuffer[TX_BUFFER_SIZE];               
 unsigned char  Uart1RxBuffer[RX_BUFFER_SIZE]; 
                                      
 unsigned short Uart2Len;    
@@ -17,7 +17,7 @@ unsigned char  UART2FramInFlag = 0;
 static unsigned char  Uart2RcvStartFlag = 0;                                      
 static unsigned short Uart2DmaLastCnt, Uart2DmaStartCnt;                           
 static unsigned long  Uart2DataInTime, Uart2DataCurrTime; 
-unsigned char  Uart2TxBuffer[TX_BUFFER_SIZE]={"UART2 send data"};               
+unsigned char  Uart2TxBuffer[TX_BUFFER_SIZE];               
 unsigned char  Uart2RxBuffer[RX_BUFFER_SIZE];   
 // uart1
 
@@ -27,7 +27,7 @@ unsigned char  UART3FramInFlag = 0;
 unsigned char  Uart3RcvStartFlag = 1;                                      
 static unsigned short Uart3DmaLastCnt, Uart3DmaStartCnt;                              
 static unsigned long  Uart3DataInTime, Uart3DataCurrTime; 
-unsigned char  Uart3TxBuffer[TX_BUFFER_SIZE]={"UART3 send data"};               
+unsigned char  Uart3TxBuffer[TX_BUFFER_SIZE];               
 unsigned char  Uart3RxBuffer[RX_BUFFER_SIZE];   
 
 unsigned short Uart4Len;
@@ -36,7 +36,7 @@ unsigned char  UART4FramInFlag = 0;
 unsigned char  Uart4RcvStartFlag = 1;                                      
 static unsigned short Uart4DmaLastCnt, Uart4DmaStartCnt;                              
 static unsigned long  Uart4DataInTime, Uart4DataCurrTime; 
-unsigned char  Uart4TxBuffer[TX_BUFFER_SIZE]={"UART4 send data"};               
+unsigned char  Uart4TxBuffer[TX_BUFFER_SIZE];               
 unsigned char  Uart4RxBuffer[RX_BUFFER_SIZE]; 
 
 void UART1_DMA_Init(void)

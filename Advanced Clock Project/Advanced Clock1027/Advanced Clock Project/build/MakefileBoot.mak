@@ -57,24 +57,26 @@ C_INCLUDE  =							\
 -I$(CORE)/     							\
 -I$(DRIVER)/inc/     					\
 -I$(SOURCECODE)/     					\
+-I$(SOURCECODE)/common/    				\
+-I$(SOURCECODE)/msg_deal/    			\
+-I$(SOURCECODE)/queue/    				\
+-I$(SOURCECODE)/timer/    				\
+-I$(SOURCECODE)/uart/    				\
+-I$(SOURCECODE)/wdg/    				\
+-I$(SOURCECODE)/wifi/    				\
+-I$(SOURCECODE)/flash/    				\
+-I$(SOURCECODE)/bootloader/    			\
 -I$(SOURCECODE)/bluetooth/    			\
 -I$(SOURCECODE)/cJson/    				\
 -I$(SOURCECODE)/common/    				\
 -I$(SOURCECODE)/key/    				\
 -I$(SOURCECODE)/ht_sensor/    			\
 -I$(SOURCECODE)/led/    				\
--I$(SOURCECODE)/msg_deal/    			\
 -I$(SOURCECODE)/nrf24l01/    			\
 -I$(SOURCECODE)/oled/    				\
--I$(SOURCECODE)/queue/    				\
 -I$(SOURCECODE)/radio/    				\
 -I$(SOURCECODE)/rtc/    				\
--I$(SOURCECODE)/timer/    				\
--I$(SOURCECODE)/uart/    				\
--I$(SOURCECODE)/wdg/    				\
--I$(SOURCECODE)/wifi/    				\
--I$(SOURCECODE)/show/    				\
-
+-I$(SOURCECODE)/show/    				
 # compiler exe 
 CC_EXEC := armcc.exe 
 AR_EXEC := armar.exe
@@ -95,6 +97,7 @@ $(DEBUG) $(C_INCLUDE)  \
 -DSTM32F405xx \
 -DSTM32F40_41xxx \
 -DUSE_STDPERIPH_DRIVER \
+-DBOOT
 
 CMN_AFLAGS = --cpu Cortex-M4.fp.sp -g --apcs=interwork \
 -I D:\Software\Keil\pack\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include \
@@ -156,5 +159,5 @@ flash:
 # clean 
 .PHONY : clean
 clean:
-	$(RM) obj/*
+	$(RM) obj_boot/*
 	$(RM) out/*

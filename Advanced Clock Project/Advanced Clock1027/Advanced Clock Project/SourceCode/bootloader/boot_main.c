@@ -9,8 +9,6 @@ int main()
   
   TIM5_Init();
   
-  My_RTC_Init();
-  
   init_wifi_network();
   IWDG_Init();
 
@@ -21,7 +19,6 @@ int main()
   {
     IWDG_Feed();
     shell_process();
-	periodic_task_process();
     wifi_msg_process();
   }
 }

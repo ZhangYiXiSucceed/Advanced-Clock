@@ -1,7 +1,7 @@
 #include "main.h"
 
 
-unsigned char  WiFiNetCmd[][100]=
+unsigned char  WiFiNetCmd[][64]=
 {
   {"AT\x0d\x0a"},
   {"AT+RST\x0d\x0a"},                                                              
@@ -425,6 +425,7 @@ void wifi_msg_process()
 			      }
 				}
 				break;
+#ifndef BOOT
 				case AT_SEND_DATA:
 				{
 				 	//rt_kprintf("%s\r\n",FrameInBuff);
@@ -443,6 +444,7 @@ void wifi_msg_process()
 				 	sOperCmdBuff.tid = 0xff;
 				}
 				break;
+#endif
 				case AT_QUIRY_WIFI:
 				{
 				 mrtn = WifiStateCheck((char*)FrameInBuff);
@@ -642,6 +644,7 @@ int parsing_wifi_signal_info(unsigned char* frame_buffer,unsigned char frame_buf
 	return signal_numer;
 }
 
+#ifndef BOOT
 time_and_weather_t  time_and_weather_g;
 
 void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_buffer_length)
@@ -814,7 +817,7 @@ int parsing_the_str(char* str)
 	return num;
 }
 
-
+#endif
 
 
 

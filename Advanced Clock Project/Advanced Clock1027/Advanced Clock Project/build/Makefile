@@ -102,7 +102,7 @@ $(DEBUG) $(C_INCLUDE)  \
 -D__UVISION_VERSION="537"    \
 -DSTM32F405xx \
 -DSTM32F40_41xxx \
--DUSE_STDPERIPH_DRIVER \
+-DUSE_STDPERIPH_DRIVER 
 
 CMN_AFLAGS = --cpu Cortex-M4.fp.sp -g --apcs=interwork \
 -I D:\Software\Keil\pack\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include \
@@ -110,7 +110,8 @@ CMN_AFLAGS = --cpu Cortex-M4.fp.sp -g --apcs=interwork \
 
 LINK_SCRIPT := AdvanceClock.sct
 CMN_LFLAGS = --cpu Cortex-M4.fp.sp \
---strict --scatter $(LINK_SCRIPT)
+--strict --scatter $(LINK_SCRIPT) \
+--remove
 
 
 # compiler objects

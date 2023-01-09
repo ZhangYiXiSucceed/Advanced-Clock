@@ -35,13 +35,6 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 		0,
 	},
 	{
-		"wea",
-		"wea cmd\r\n",
-		"print weather and time info\r\n",
-		print_weather_and_time_info,
-		0,
-	},
-	{
 		"test2",
 		"test <number> <number>\r\n",
 		"test cmd can print some debug infomation\r\n",
@@ -55,6 +48,14 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 		test3,
 		3,
 	},
+#ifndef BOOT
+	{
+			"wea",
+			"wea cmd\r\n",
+			"print weather and time info\r\n",
+			print_weather_and_time_info,
+			0,
+	},
 	{
 		"OledClear",
 		"OledClear\r\n",
@@ -62,6 +63,7 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 		OLED_Clear,
 		0,
 	},
+#endif
 	{
 		NULL,
 		NULL,
@@ -82,6 +84,8 @@ void diag_help()
 	}
 }
 
+#ifndef BOOT
+
 extern time_and_weather_t time_and_weather_g;
 
 void print_weather_and_time_info()
@@ -89,6 +93,9 @@ void print_weather_and_time_info()
 	rt_kprintf("aqi=%d,temp=%d C,humi=%d %%\r\n",time_and_weather_g.api,time_and_weather_g.tempeture,time_and_weather_g.humidty);
 	rt_kprintf("id=%d city=%s \r\n",time_and_weather_g.city_id,time_and_weather_g.city);
 }
+
+#endif
+
 void test2(uint32_t para1,uint32_t para2)
 {
 	rt_kprintf("para1=%d para2=%d\r\n",para1,para2);
@@ -142,6 +149,7 @@ void shell_process()
 	}
 }
 
+#ifndef  BOOT
 void periodic_task_process()
 {
 	static int last_systime = 0;
@@ -161,6 +169,7 @@ void periodic_task_process()
 		last_systime = Systemtime;
 	}
 }
+#endif
 
 int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 {
@@ -354,7 +363,8 @@ int8_t diag_cmd_process(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 	{
 		if(diag_cmd_para_array[i].para_type != diag_cmd_para_number)
 		{
-			rt_kprintf("Error: all the parameters msut be numbers\r\n");
+			
+rt_kprintf("Error: all the parameters msut be numbers\r\n");
 			return 3;
 		}
 	}
@@ -490,18 +500,21 @@ int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_ar
 		}
 		else if(('0' < user_para_str[curr_index]) && ('9' > user_para_str[curr_index]))
 		{
-			temp_para_type=data_num;
+			
+temp_para_type=data_num;
 			diag_cmd_para_array[para_num].para_type = diag_cmd_para_number;
 		}
 		else
 		{
-			temp_para_type=data_str;
+			
+temp_para_type=data_str;
 			diag_cmd_para_array[para_num].para_type = diag_cmd_para_string;
 		}
 
 
 		while((user_para_str[curr_index]!=0) &&( user_para_str[curr_index]!=' '))
-		{ 
+		{
+ 
 			switch(temp_para_type)
 			{
 				case data_num:
