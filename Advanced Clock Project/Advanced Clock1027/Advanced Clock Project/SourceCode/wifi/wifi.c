@@ -72,19 +72,16 @@ void init_wifi_network()
 	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 
 	quiry_wifi();
-	
+
 	connect_wifi_network();
 	
+#ifndef BOOT
 	get_network_time_cmds();
-	
-	sOperCmdUnion_wifi.tid = AT_CMD;
-	sOperCmdUnion_wifi.cmd = 0x00;
-	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_CMD]);
-	sOperCmdUnion_wifi.trycnt = 3;
-	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_CMD], sOperCmdUnion_wifi.len);
-	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
-
-	
+#else
+	connect_server();
+	set_send_mode(1);
+	entry_send_state();
+#endif
 }
 
 void connect_wifi_network()
@@ -303,7 +300,7 @@ int8_t WifiStateCheck(char *data)
 void wifi_msg_process()
 {
   int mrtn;
-  if(sOperCmdBuff.tid == 0xff)
+  if(sOperCmdBuff.tid == AT_IDLE_CMD)
   {
     if(FifoOut(&sOperCmdUnionFifo_wifi, &sOperCmdBuff) == ValFifoOperateOk)          //������������Ƿ�������
     {
@@ -491,9 +488,10 @@ void wifi_msg_process()
 			      }
 				}
 				break;
+				case AT_RECIVE_CMD:
 				default:
 				{
-					
+					rt_kprintf("RV:%s\r\n",FrameInBuff);
 				}
 				break;
 		 }

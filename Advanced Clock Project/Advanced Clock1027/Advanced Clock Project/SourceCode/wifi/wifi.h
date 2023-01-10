@@ -23,6 +23,9 @@
 #define  AT_SEND_DATA       	 20
 #define  AT_QUIRY_WEATHER_DATA   21
 
+#define  AT_IDLE_CMD             0xFF
+#define  AT_RECIVE_CMD           AT_IDLE_CMD
+
 
 enum 
 {
