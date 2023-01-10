@@ -7,8 +7,12 @@ unsigned char  WiFiNetCmd[][64]=
   {"AT+RST\x0d\x0a"},                                                              
   {"ATE0\x0d\x0a"},                                                         
   {"AT+CWMODE=1\x0d\x0a"},                                                        
-  {"AT+CWJAP=\"ZhangYixiSucceed\",\"qazwsx123\"\x0d\x0a"},                                                     
-  {"AT+CIPSTART=\"TCP\",\"api.k780.com\",80\x0d\x0a"},            
+  {"AT+CWJAP=\"ZhangYixiSucceed\",\"qazwsx123\"\x0d\x0a"}, 
+#ifdef BOOT
+  {"AT+CIPSTART=\"TCP\",\"192.168.0.141\",51230\x0d\x0a"},
+#else
+  {"AT+CIPSTART=\"TCP\",\"api.k780.com\",80\x0d\x0a"},	   
+#endif 
   {"AT+CIPMODE=1\x0d\x0a"},            
   {"AT+CIPSEND\x0d\x0a"},                                                   
   {"+++"},                                         
@@ -489,7 +493,7 @@ void wifi_msg_process()
 				break;
 				default:
 				{
-				
+					
 				}
 				break;
 		 }
