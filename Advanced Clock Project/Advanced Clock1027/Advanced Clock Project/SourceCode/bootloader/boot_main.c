@@ -13,7 +13,6 @@ int main()
   IWDG_Init();
 
   rt_kprintf((char*)Data);
-  rt_kprintf2((char*)Data);
 
   while(1)
   {
