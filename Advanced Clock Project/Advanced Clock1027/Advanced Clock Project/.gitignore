@@ -6,4 +6,5 @@ settings/
 *.board
 .vscode/
 Keil/ Project/
+IAR/ Project/
 
