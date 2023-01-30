@@ -327,9 +327,9 @@ void wifi_msg_process()
             sOperCmdBuff.tid = 0xff;
           }
        }
-   }
+   	}
      if(queue_out(&wifi_queue, FrameInBuff, &FrameInlen) == QUEUE_OPER_OK)         // ����IOT�˿�����        
-  {
+  	{
 		  memset(&FrameInBuff[FrameInlen],0x00,RX_BUFFER_SIZE - FrameInlen); 
 		  rt_kprintf("%s\r\n",FrameInBuff);
 		  switch(sOperCmdBuff.tid)
@@ -448,7 +448,7 @@ void wifi_msg_process()
 #endif
 				case AT_QUIRY_WIFI:
 				{
-				 mrtn = WifiStateCheck((char*)FrameInBuff);
+				  mrtn = WifiStateCheck((char*)FrameInBuff);
 			      if(mrtn == RESP_LIST_WIFI_INFO)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
@@ -480,15 +480,17 @@ void wifi_msg_process()
 				break;
 				case AT_QUIT_TCP_CONNECT:
 				{
-				 mrtn = WifiStateCheck((char*)FrameInBuff);
+				  mrtn = WifiStateCheck((char*)FrameInBuff);
 			      if(mrtn == RESP_WIFI_OK)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
-					 
 			      }
 				}
 				break;
 				case AT_RECIVE_CMD:
+				{
+					
+				}break;
 				default:
 				{
 					rt_kprintf("RV:%s\r\n",FrameInBuff);

@@ -12,7 +12,7 @@ void test2(uint32_t para1,uint32_t para2);
 void test3(uint32_t para1,uint32_t para2,uint32_t para3);
 int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_array[],int32_t max_para_num);
 
-
+typedef int32_t cmd_func_t(uint64_t arg1,uint64_t arg2,uint64_t arg3,uint64_t arg4);
 diag_cmd_descriptor_t* find_cmd(char* user_cmd_name);
 static __INLINE int  to_lower_character(int c);
 uint8_t diag_cmd_compare(char* user_cmd,char* diag_cmd);
@@ -364,12 +364,10 @@ int8_t diag_cmd_process(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		if(diag_cmd_para_array[i].para_type != diag_cmd_para_number)
 		{
 			
-rt_kprintf("Error: all the parameters msut be numbers\r\n");
+			rt_kprintf("Error: all the parameters msut be numbers\r\n");
 			return 3;
 		}
 	}
-
-	typedef int32_t cmd_func_t(uint64_t arg1,uint64_t arg2,uint64_t arg3,uint64_t arg4);
 
 	cmd_func_t* diag_cmd_func;
 	diag_cmd_func = (cmd_func_t*)curr_cmd->cmd_func;

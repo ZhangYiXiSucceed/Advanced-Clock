@@ -1,4 +1,9 @@
 #include "boot_main.h"
+
+/****  BootFlash 0x08000000 - 0x08008000   0   - 32k    ****/
+/****  DataFlash 0x08008000 - 0x08010000   32k - 64k    ****/
+/****  APPFlash  0x08010000 - 0x08040000   64k - 256K   ****/
+
 int main()
 {
   u8 Data[32]="go to while!\r\n";
