@@ -8,7 +8,10 @@ void jump_exec()
 }
 
 
-
+void check_crc()
+{
+    
+}
 
 
 
