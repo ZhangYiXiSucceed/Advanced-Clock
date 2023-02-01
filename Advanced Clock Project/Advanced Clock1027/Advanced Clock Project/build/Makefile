@@ -55,6 +55,7 @@ $(wildcard $(SOURCECODE)/uart/*.c)  	\
 $(wildcard $(SOURCECODE)/wdg/*.c)  		\
 $(wildcard $(SOURCECODE)/wifi/*.c)  	\
 $(wildcard $(SOURCECODE)/show/*.c)  	\
+$(wildcard $(SOURCECODE)/region_header/*.c)  	\
 
 # asm source file path
 ASM_SOURCE = \
@@ -82,6 +83,7 @@ C_INCLUDE  =							\
 -I$(SOURCECODE)/wdg/    				\
 -I$(SOURCECODE)/wifi/    				\
 -I$(SOURCECODE)/show/    				\
+-I$(SOURCECODE)/region_header/    		\
 
 # compiler exe 
 CC_EXEC := armcc.exe 

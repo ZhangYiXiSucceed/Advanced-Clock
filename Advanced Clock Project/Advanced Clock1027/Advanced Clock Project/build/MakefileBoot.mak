@@ -47,6 +47,7 @@ $(wildcard $(SOURCECODE)/wdg/*.c)  		\
 $(wildcard $(SOURCECODE)/wifi/*.c)  	\
 $(wildcard $(SOURCECODE)/flash/*.c)  	\
 $(wildcard $(SOURCECODE)/bootloader/*.c)  	\
+$(wildcard $(SOURCECODE)/region_header/*.c)  	\
 
 # asm source file path
 ASM_SOURCE = \
@@ -76,7 +77,8 @@ C_INCLUDE  =							\
 -I$(SOURCECODE)/oled/    				\
 -I$(SOURCECODE)/radio/    				\
 -I$(SOURCECODE)/rtc/    				\
--I$(SOURCECODE)/show/    				
+-I$(SOURCECODE)/show/    				\
+-I$(SOURCECODE)/region_header/    		\
 # compiler exe 
 CC_EXEC := armcc.exe 
 AR_EXEC := armar.exe
