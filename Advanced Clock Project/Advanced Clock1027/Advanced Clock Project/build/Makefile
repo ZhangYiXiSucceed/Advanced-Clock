@@ -160,7 +160,7 @@ $(BUILD_DEP_DIR):
 # dwonload 
 .PHONY : flash
 flash:
-	$(DOWNLOAD_EXEC) -c -SE 0 4  -V "while_programming" -P $(OUT_DIR)/$(TARGET).bin 0x08000000
+	$(DOWNLOAD_EXEC) -c -SE 0 4  -V "while_programming" -P $(OUT_DIR)/$(TARGET).bin 0x08010000
 	$(DOWNLOAD_EXEC) -Rst
 
 

@@ -24,6 +24,7 @@
 #include "bluetooth.h"
 #include "cJSON.h"
 #include "show.h"
+#include "region_header.h"
 
 #include <stdlib.h>
 #include <string.h>

@@ -18,7 +18,8 @@
 #include <stdarg.h>
 #include "struct.h"
 #include "math.h"
-
+#include "boot.h"
+#include "region_header.h"
 
 #endif
 

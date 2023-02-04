@@ -4,7 +4,8 @@
 int main()
 {
   u8 Data[32]="go to while!\r\n";
-  
+
+  NVIC_SetVectorTable(NVIC_VectTab_FLASH,APP_ADDR_OFFSET);
   SysTick_Config(SystemCoreClock/1000000);
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
   shell_init();
@@ -24,6 +25,7 @@ int main()
   
   IWDG_Init();
 
+  region_header_init(&region_header);
   rt_kprintf((char*)Data);
   rt_kprintf2((char*)Data);
 
