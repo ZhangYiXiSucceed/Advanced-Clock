@@ -21,6 +21,10 @@ void jump_exec(boot_region_header_t* region_header)
         __enable_fault_irq();
         jump_to_application();
    	}
+	else
+	{
+		rt_kprintf("sp = 0x%x\r\n", (*(__IO uint32_t*)region_header->load_address));
+	}
 }
 
 u8 check_crc(boot_region_header_t* region_header)

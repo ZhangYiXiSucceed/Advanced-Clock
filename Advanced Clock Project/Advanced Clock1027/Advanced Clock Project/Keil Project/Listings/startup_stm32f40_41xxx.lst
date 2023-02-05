@@ -62,7 +62,7 @@ ARM Macro Assembler    Page 1
    38 00000000         ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
    39 00000000         ; </h>
    40 00000000         
-   41 00000000 00000400 
+   41 00000000 00002000 
 
 
 
@@ -70,36 +70,37 @@ ARM Macro Assembler    Page 2
 
 
                        Stack_Size
-                               EQU              0x00000400
+                               EQU              0x2000
    42 00000000         
    43 00000000                 AREA             STACK, NOINIT, READWRITE, ALIGN
 =3
    44 00000000         Stack_Mem
                                SPACE            Stack_Size
-   45 00000400         __initial_sp
-   46 00000400         
-   47 00000400         
-   48 00000400         ; <h> Heap Configuration
-   49 00000400         ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
-   50 00000400         ; </h>
-   51 00000400         
-   52 00000400 00000200 
+   45 00002000         __initial_sp
+   46 00002000         
+   47 00002000         
+   48 00002000         ; <h> Heap Configuration
+   49 00002000         ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
+   50 00002000         ; </h>
+   51 00002000         
+   52 00002000 00001000 
                        Heap_Size
-                               EQU              0x00000200
-   53 00000400         
-   54 00000400                 AREA             HEAP, NOINIT, READWRITE, ALIGN=
+                               EQU              0x0001000   ; for json file par
+                                                            sing
+   53 00002000         
+   54 00002000                 AREA             HEAP, NOINIT, READWRITE, ALIGN=
 3
    55 00000000         __heap_base
    56 00000000         Heap_Mem
                                SPACE            Heap_Size
-   57 00000200         __heap_limit
-   58 00000200         
-   59 00000200                 PRESERVE8
-   60 00000200                 THUMB
-   61 00000200         
-   62 00000200         
-   63 00000200         ; Vector Table Mapped to Address 0 at Reset
-   64 00000200                 AREA             RESET, DATA, READONLY
+   57 00001000         __heap_limit
+   58 00001000         
+   59 00001000                 PRESERVE8
+   60 00001000                 THUMB
+   61 00001000         
+   62 00001000         
+   63 00001000         ; Vector Table Mapped to Address 0 at Reset
+   64 00001000                 AREA             RESET, DATA, READONLY
    65 00000000                 EXPORT           __Vectors
    66 00000000                 EXPORT           __Vectors_End
    67 00000000                 EXPORT           __Vectors_Size
@@ -127,13 +128,13 @@ ARM Macro Assembler    Page 2
    81 00000030 00000000        DCD              DebugMon_Handler ; Debug Monito
                                                             r Handler
    82 00000034 00000000        DCD              0           ; Reserved
-   83 00000038 00000000        DCD              PendSV_Handler ; PendSV Handler
 
 
 
 ARM Macro Assembler    Page 3 
 
 
+   83 00000038 00000000        DCD              PendSV_Handler ; PendSV Handler
                                                             
    84 0000003C 00000000        DCD              SysTick_Handler 
                                                             ; SysTick Handler
@@ -192,13 +193,13 @@ ARM Macro Assembler    Page 3
   100 00000074 00000000        DCD              DMA1_Stream2_IRQHandler ; DMA1 
                                                             Stream 2           
                                                                                
-                                                                 
 
 
 
 ARM Macro Assembler    Page 4 
 
 
+                                                                 
   101 00000078 00000000        DCD              DMA1_Stream3_IRQHandler ; DMA1 
                                                             Stream 3           
                                                                                
@@ -257,13 +258,13 @@ ARM Macro Assembler    Page 4
                                                                             
   116 000000B4 00000000        DCD              TIM3_IRQHandler ; TIM3         
                                                                                
-                                                                            
 
 
 
 ARM Macro Assembler    Page 5 
 
 
+                                                                            
   117 000000B8 00000000        DCD              TIM4_IRQHandler ; TIM4         
                                                                                
                                                                             
@@ -322,13 +323,13 @@ ARM Macro Assembler    Page 5
                                                             4
   133 000000F8 00000000        DCD              TIM8_CC_IRQHandler ; TIM8 Captu
                                                             re Compare         
-                                                                               
 
 
 
 ARM Macro Assembler    Page 6 
 
 
+                                                                               
                                                                    
   134 000000FC 00000000        DCD              DMA1_Stream7_IRQHandler ; DMA1 
                                                             Stream7            
@@ -387,13 +388,13 @@ ARM Macro Assembler    Page 6
                                                                     
   150 0000013C 00000000        DCD              CAN2_TX_IRQHandler ; CAN2 TX   
                                                                                
-                                                                               
 
 
 
 ARM Macro Assembler    Page 7 
 
 
+                                                                               
                                                                    
   151 00000140 00000000        DCD              CAN2_RX0_IRQHandler ; CAN2 RX0 
                                                                                
@@ -452,13 +453,13 @@ ARM Macro Assembler    Page 7
   165 00000178 00000000        DCD              DCMI_IRQHandler ; DCMI         
                                                                                
                                                                             
-  166 0000017C 00000000        DCD              CRYP_IRQHandler ; CRYP crypto  
 
 
 
 ARM Macro Assembler    Page 8 
 
 
+  166 0000017C 00000000        DCD              CRYP_IRQHandler ; CRYP crypto  
                                                                                
                                                                             
   167 00000180 00000000        DCD              HASH_RNG_IRQHandler 
@@ -517,13 +518,13 @@ K]
   210 00000010         UsageFault_Handler
                                PROC
   211 00000010                 EXPORT           UsageFault_Handler         [WEA
-K]
 
 
 
 ARM Macro Assembler    Page 9 
 
 
+K]
   212 00000010 E7FE            B                .
   213 00000012                 ENDP
   214 00000012         SVC_Handler
@@ -582,13 +583,13 @@ K]
    [WEAK]
   247 0000001A                 EXPORT           DMA1_Stream2_IRQHandler        
    [WEAK]
-  248 0000001A                 EXPORT           DMA1_Stream3_IRQHandler        
 
 
 
 ARM Macro Assembler    Page 10 
 
 
+  248 0000001A                 EXPORT           DMA1_Stream3_IRQHandler        
    [WEAK]
   249 0000001A                 EXPORT           DMA1_Stream4_IRQHandler        
    [WEAK]
@@ -647,13 +648,13 @@ ARM Macro Assembler    Page 10
   276 0000001A                 EXPORT           OTG_FS_WKUP_IRQHandler         
    [WEAK]
   277 0000001A                 EXPORT           TIM8_BRK_TIM12_IRQHandler      
-   [WEAK]
 
 
 
 ARM Macro Assembler    Page 11 
 
 
+   [WEAK]
   278 0000001A                 EXPORT           TIM8_UP_TIM13_IRQHandler       
    [WEAK]
   279 0000001A                 EXPORT           TIM8_TRG_COM_TIM14_IRQHandler  
@@ -712,13 +713,13 @@ ARM Macro Assembler    Page 11
    [WEAK]
   306 0000001A                 EXPORT           I2C3_EV_IRQHandler             
    [WEAK]
-  307 0000001A                 EXPORT           I2C3_ER_IRQHandler             
 
 
 
 ARM Macro Assembler    Page 12 
 
 
+  307 0000001A                 EXPORT           I2C3_ER_IRQHandler             
    [WEAK]
   308 0000001A                 EXPORT           OTG_HS_EP1_OUT_IRQHandler      
    [WEAK]
@@ -777,13 +778,13 @@ ARM Macro Assembler    Page 12
   354 0000001A         USART1_IRQHandler
   355 0000001A         USART2_IRQHandler
   356 0000001A         USART3_IRQHandler
-  357 0000001A         EXTI15_10_IRQHandler
 
 
 
 ARM Macro Assembler    Page 13 
 
 
+  357 0000001A         EXTI15_10_IRQHandler
   358 0000001A         RTC_Alarm_IRQHandler
   359 0000001A         OTG_FS_WKUP_IRQHandler
   360 0000001A         TIM8_BRK_TIM12_IRQHandler
@@ -842,13 +843,13 @@ ARM Macro Assembler    Page 13
   417 0000001C                 IMPORT           __use_two_region_memory
   418 0000001C                 EXPORT           __user_initial_stackheap
   419 0000001C         
-  420 0000001C         __user_initial_stackheap
 
 
 
 ARM Macro Assembler    Page 14 
 
 
+  420 0000001C         __user_initial_stackheap
   421 0000001C         
   422 0000001C 4804            LDR              R0, =  Heap_Mem
   423 0000001E 4905            LDR              R1, =(Stack_Mem + Stack_Size)
@@ -864,16 +865,15 @@ ARM Macro Assembler    Page 14
               00000000 
               00000000 
               00000000 
-              00000400 
-              00000200 
+              00002000 
+              00001000 
               00000000 
-Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
-erwork --depend=.\objects\startup_stm32f40_41xxx.d -o.\objects\startup_stm32f40
-_41xxx.o -I"D:\Learning Resource\Advanced Clock\Advanced Clock Project\Advanced
- Clock1027\Advanced Clock Project\Keil Project\RTE" -ID:\SoftWare\Keil\Keil\STM
-32F4xx_DFP\2.13.0 -ID:\SoftWare\Keil\system\ARM\CMSIS\Include --predefine="__UV
-ISION_VERSION SETA 514" --predefine="STM32F405xx SETA 1" --list=.\listings\star
-tup_stm32f40_41xxx.lst ..\Core\startup_stm32f40_41xxx.s
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\startup_stm32f40_41xxx.d -o.\objects\startup_stm32
+f40_41xxx.o -ID:\Software\Keil\pack\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Dev
+ice\ST\STM32F4xx\Include --predefine="__UVISION_VERSION SETA 537" --predefine="
+STM32F405xx SETA 1" --list=.\listings\startup_stm32f40_41xxx.lst ..\Core\startu
+p_stm32f40_41xxx.s
 
 
 
@@ -897,7 +897,7 @@ Symbol: Stack_Mem
       At line 423 in file ..\Core\startup_stm32f40_41xxx.s
       At line 425 in file ..\Core\startup_stm32f40_41xxx.s
 
-__initial_sp 00000400
+__initial_sp 00002000
 
 Symbol: __initial_sp
    Definitions
@@ -937,7 +937,7 @@ Symbol: __heap_base
    Uses
       None
 Comment: __heap_base unused
-__heap_limit 00000200
+__heap_limit 00001000
 
 Symbol: __heap_limit
    Definitions
@@ -1928,7 +1928,7 @@ Comment: __user_initial_stackheap used once
 ARM Macro Assembler    Page 1 Alphabetic symbol ordering
 Absolute symbols
 
-Heap_Size 00000200
+Heap_Size 00001000
 
 Symbol: Heap_Size
    Definitions
@@ -1937,7 +1937,7 @@ Symbol: Heap_Size
       At line 56 in file ..\Core\startup_stm32f40_41xxx.s
       At line 424 in file ..\Core\startup_stm32f40_41xxx.s
 
-Stack_Size 00000400
+Stack_Size 00002000
 
 Symbol: Stack_Size
    Definitions

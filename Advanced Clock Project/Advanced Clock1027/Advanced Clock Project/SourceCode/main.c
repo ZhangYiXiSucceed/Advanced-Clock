@@ -3,7 +3,7 @@
 
 int main()
 {
-  u8 Data[32]="go to while!\r\n";
+  u8 Data[32]="go to app!\r\n";
 
   NVIC_SetVectorTable(NVIC_VectTab_FLASH,APP_ADDR_OFFSET);
   SysTick_Config(SystemCoreClock/1000000);
@@ -37,9 +37,9 @@ int main()
     nrf_communication_service_msg_process();
     bluetooth_msg_porcess();
     shell_process();
-	  periodic_task_process();
+	periodic_task_process();
     wifi_msg_process();
-	  show_interface_oled();
+	show_interface_oled();
   }
 }
 

@@ -335,6 +335,28 @@ void OLED_DrawBMP(unsigned char x0, unsigned char y0,unsigned char x1, unsigned 
 	}
 } 
 
+/***********Show BMP Picture*****************/
+void OLED_DrawBMP_test(unsigned char x0, unsigned char y0,unsigned char x1, unsigned char y1,unsigned char BMP[],unsigned char state1,unsigned char state2)
+{ 	
+ unsigned int j=0;
+ unsigned char x,y;
+ unsigned char y_line_num;
+  
+	if(y1%8==0) 
+		y_line_num=y1/8;      
+	else 
+		y_line_num=y1/8+1;
+	for(y=y0;y<(y_line_num + ((y0%8)?(y0/8+1):(y0/8)));y++)
+	{
+		OLED_Set_Pos(x0,y);
+		for(x=x0;x<(x0+x1);x++)
+		{      
+			OLED_WR_Byte(BMP[j++],OLED_DATA);	    	
+		}
+	}
+} 
+
+
 void show_oled_char(int font_x,int font_y, char character,int font_size)
 {
 	unsigned char temp_character_position=0,character_offset=0;	

@@ -9,7 +9,7 @@
 #define APP_VERSION     0x12345678                
 
 #define SRAM_MIN_ADDR   0x20000000
-#define SRMA_MAX_ADDR   0x20010000
+#define SRMA_MAX_ADDR   0x20030000
 typedef struct boot_region_header_struct
 {
 	u32 marker;

@@ -98,6 +98,7 @@ ECHO := echo
 
 
 CMN_CFLAGS = --C99 -c --cpu Cortex-M4.fp.sp -g --apcs=interwork --split_sections \
+--use_frame_pointer \
 $(DEBUG) $(C_INCLUDE)  \
 --diag_suppress=1295,111,1293,167,513,177 \
 -ID:/Software/Keil/pack/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include \
@@ -160,7 +161,7 @@ $(BUILD_DEP_DIR):
 # dwonload 
 .PHONY : flash
 flash:
-	$(DOWNLOAD_EXEC) -c -SE 0 4  -V "while_programming" -P $(OUT_DIR)/$(TARGET).bin 0x08010000
+	$(DOWNLOAD_EXEC) -c -SE 4 5  -V "while_programming" -P $(OUT_DIR)/$(TARGET).bin 0x08010000
 	$(DOWNLOAD_EXEC) -Rst
 
 

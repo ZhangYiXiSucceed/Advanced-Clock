@@ -53,7 +53,7 @@ void region_header_init(boot_region_header_t* temp_region_header)
 {
 	memcpy(temp_region_header,(u8*)(APP_LOAD_ADDR + 0x25c),sizeof(boot_region_header_t));
 	rt_kprintf("marker=%x load_address=%x \r\n", temp_region_header->marker,\
-		temp_region_header->load_address);
+	temp_region_header->load_address);
 }
 
 #endif
