@@ -16,11 +16,10 @@ int main()
   
   init_wifi_network();
   IWDG_Init();
+  
+  rt_kprintf((char*)Data);
 
   region_header_init(&region_header);
-  rt_kprintf((char*)Data);
-  jump_exec(&region_header);
-  
   while(1)
   {
     IWDG_Feed();

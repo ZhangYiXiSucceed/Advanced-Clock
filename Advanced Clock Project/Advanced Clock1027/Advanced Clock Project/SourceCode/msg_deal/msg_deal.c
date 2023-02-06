@@ -578,7 +578,9 @@ void shell_init()
 {
   UART1Init();       /*common uart,can receive uart device(ch340) data and execute cmd*/
   queue_init(&MyQueue);
+  rt_kprintf("shell init ok\r\n");
   diag_cmd_start();
+  rt_kprintf("\r\n");
 }
 
 void diag_cmd_complete(int8_t status)

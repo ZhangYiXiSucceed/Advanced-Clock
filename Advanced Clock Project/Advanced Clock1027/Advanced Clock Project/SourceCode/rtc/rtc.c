@@ -53,7 +53,6 @@ u8 My_RTC_Init(void)
 	PWR_BackupAccessCmd(ENABLE);	//ʹ�ܺ󱸼Ĵ������� 
 	RTC_WriteBackupRegister(RTC_BKP_DR0,0x01);
 	u32 backup_value = RTC_ReadBackupRegister(RTC_BKP_DR0);
-	rt_kprintf("value=0x%x\r\n", backup_value);
 	if(backup_value !=0x5050)		//�Ƿ��һ������?
 	{
 		//RCC_LSEConfig(RCC_LSE_ON);//LSE ���� 

@@ -163,6 +163,6 @@ flash:
 
 # clean 
 .PHONY : clean
--clean:
+clean:
 	$(RM) obj_boot/*
 	$(RM) out/*

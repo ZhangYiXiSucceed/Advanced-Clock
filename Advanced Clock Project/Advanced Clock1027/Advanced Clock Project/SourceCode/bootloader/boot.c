@@ -1,3 +1,4 @@
+#include "uart.h"
 #include "boot.h"
 #include "crc32.h"
 
@@ -5,16 +6,17 @@
 typedef void (*pFunction)();
 void jump_exec(boot_region_header_t* region_header)
 {
-   	if (((*(__IO uint32_t*)region_header->load_address) >= SRAM_MIN_ADDR) && ((*(__IO uint32_t*)region_header->load_address) <= SRMA_MAX_ADDR))
+	enum
+	{
+		ARMV7M_VECTOR_SP = 0,
+		ARMV7M_VECTOR_RESET_HANDLER,
+	};
+	u32 *vector_addr = (u32*)region_header->load_address;
+	u32 sp = (u32)vector_addr[ARMV7M_VECTOR_SP];
+
+   	if ((sp >= SRAM_MIN_ADDR) && (sp <= SRMA_MAX_ADDR))
    	{ 	
-		enum
-		{
-			ARMV7M_VECTOR_SP = 0,
-			ARMV7M_VECTOR_RESET_HANDLER,
-		};
 		__disable_fault_irq();
-		u32 *vector_addr = (u32*)region_header->load_address;
-		u32 sp = (u32)vector_addr[ARMV7M_VECTOR_SP];
         u32 jump_address = (u32)vector_addr[ARMV7M_VECTOR_RESET_HANDLER];
         pFunction jump_to_application = (pFunction) jump_address;
         __set_MSP(sp);
@@ -23,7 +25,7 @@ void jump_exec(boot_region_header_t* region_header)
    	}
 	else
 	{
-		rt_kprintf("sp = 0x%x\r\n", (*(__IO uint32_t*)region_header->load_address));
+		rt_kprintf("sp=0x%x\r\n", (sp));
 	}
 }
 
@@ -47,6 +49,9 @@ u8 check_crc(boot_region_header_t* region_header)
 	return check_status;
 }
 
-
+u8 check_header(boot_region_header_t* region_header)
+{
+	return (STM32_MARKER != region_header->marker);
+}
 
 

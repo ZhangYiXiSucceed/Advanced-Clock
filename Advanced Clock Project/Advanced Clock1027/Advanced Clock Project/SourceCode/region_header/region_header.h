@@ -7,6 +7,7 @@
 #define APP_LOAD_ADDR   0x08010000
 #define APP_ADDR_OFFSET 0x10000
 #define APP_VERSION     0x12345678                
+#define REGION_OFFSET   0x25c
 
 #define SRAM_MIN_ADDR   0x20000000
 #define SRMA_MAX_ADDR   0x20030000

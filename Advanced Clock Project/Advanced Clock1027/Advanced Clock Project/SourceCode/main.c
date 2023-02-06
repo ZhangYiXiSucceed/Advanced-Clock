@@ -25,9 +25,10 @@ int main()
   
   IWDG_Init();
 
-  region_header_init(&region_header);
   rt_kprintf((char*)Data);
   rt_kprintf2((char*)Data);
+
+  region_header_init(&region_header);
 
   while(1)
   {
