@@ -8,8 +8,8 @@ uint8_t cmd_process_buff_index=0;
 
 void diag_help(void);
 void print_weather_and_time_info(void);
-void test2(uint32_t para1,uint32_t para2);
-void test3(uint32_t para1,uint32_t para2,uint32_t para3);
+void jump_app();
+void quit_send_mode();
 int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_array[],int32_t max_para_num);
 
 typedef int32_t cmd_func_t(uint64_t arg1,uint64_t arg2,uint64_t arg3,uint64_t arg4);
@@ -35,26 +35,26 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 		0,
 	},
 	{
-		"test2",
-		"test <number> <number>\r\n",
-		"test cmd can print some debug infomation\r\n",
-		test2,
-		2,
+		"jump",
+		"jump_app \r\n",
+		"jump_app cmd \r\n",
+		jump_app,
+		0,
 	},
 	{
-		"test3",
-		"test <number> <number> <number>\r\n",
-		"test cmd can print some debug infomation\r\n",
-		test3,
-		3,
+		"quit",
+		"quit_send_mode \r\n",
+		"quit_send_mode cmd\r\n",
+		quit_send_mode,
+		0,
 	},
 #ifndef BOOT
 	{
-			"wea",
-			"wea cmd\r\n",
-			"print weather and time info\r\n",
-			print_weather_and_time_info,
-			0,
+		"wea",
+		"wea cmd\r\n",
+		"print weather and time info\r\n",
+		print_weather_and_time_info,
+		0,
 	},
 	{
 		"OledClear",
@@ -93,16 +93,18 @@ void print_weather_and_time_info()
 	rt_kprintf("aqi=%d,temp=%d C,humi=%d %%\r\n",time_and_weather_g.api,time_and_weather_g.tempeture,time_and_weather_g.humidty);
 	rt_kprintf("id=%d city=%s \r\n",time_and_weather_g.city_id,time_and_weather_g.city);
 }
-
+#else
+void jump_app()
+{
+	jump_exec(&region_header);
+}
 #endif
 
-void test2(uint32_t para1,uint32_t para2)
+void quit_send_mode()
 {
-	rt_kprintf("para1=%d para2=%d\r\n",para1,para2);
-}
-void test3(uint32_t para1,uint32_t para2,uint32_t para3)
-{
-	rt_kprintf("para1=%d para2=%d para3=%d\r\n",para1,para2,para3);
+	quit_send_data_mode_cmd();
+	set_send_mode(0);
+	quit_network_connect_cmd();
 }
 
 

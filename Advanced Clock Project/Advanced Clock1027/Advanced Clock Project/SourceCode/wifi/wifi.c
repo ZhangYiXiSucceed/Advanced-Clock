@@ -331,7 +331,7 @@ void wifi_msg_process()
      if(queue_out(&wifi_queue, FrameInBuff, &FrameInlen) == QUEUE_OPER_OK)         // ����IOT�˿�����        
   	{
 		  memset(&FrameInBuff[FrameInlen],0x00,RX_BUFFER_SIZE - FrameInlen); 
-		  rt_kprintf("%s\r\n",FrameInBuff);
+		  rt_kprintf("tid=%d %s\r\n",sOperCmdBuff.tid,FrameInBuff);
 		  switch(sOperCmdBuff.tid)
 		  {
 		  		 case AT_CMD:                                                                 // 2�����CESQ
@@ -489,11 +489,11 @@ void wifi_msg_process()
 				break;
 				case AT_RECIVE_CMD:
 				{
-					
+					server_msg_process(FrameInBuff,FrameInlen);
 				}break;
 				default:
 				{
-					rt_kprintf("RV:%s\r\n",FrameInBuff);
+					server_msg_process(FrameInBuff,FrameInlen);
 				}
 				break;
 		 }

@@ -25,6 +25,7 @@
 #include "cJSON.h"
 #include "show.h"
 #include "region_header.h"
+#include "cmd.h"
 
 #include <stdlib.h>
 #include <string.h>

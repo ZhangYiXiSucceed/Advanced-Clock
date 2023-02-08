@@ -19,7 +19,9 @@
 #include "struct.h"
 #include "math.h"
 #include "boot.h"
+#include "crc32.h"
 #include "region_header.h"
+#include "cmd.h"
 
 #endif
 

@@ -49,6 +49,7 @@ $(wildcard $(SOURCECODE)/flash/*.c)  	\
 $(wildcard $(SOURCECODE)/bootloader/*.c)  	\
 $(wildcard $(SOURCECODE)/region_header/*.c)  	\
 $(wildcard $(SOURCECODE)/crc/*.c)  	\
+$(wildcard $(SOURCECODE)/cmd/*.c)  	\
 
 # asm source file path
 ASM_SOURCE = \
@@ -81,6 +82,7 @@ C_INCLUDE  =							\
 -I$(SOURCECODE)/show/    				\
 -I$(SOURCECODE)/region_header/    		\
 -I$(SOURCECODE)/crc/    				\
+-I$(SOURCECODE)/cmd/    				
 
 # compiler exe 
 CC_EXEC := armcc.exe 
