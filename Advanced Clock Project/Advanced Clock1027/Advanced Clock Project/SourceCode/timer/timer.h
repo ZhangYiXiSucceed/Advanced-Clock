@@ -6,6 +6,7 @@
 extern  unsigned int Systemtime;
 
 void TIM5_Init(void);
+void TIM4_Init(void);
 unsigned long GetSystemTime(void);
 #endif
 

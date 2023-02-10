@@ -1,4 +1,8 @@
+#ifdef BOOT
 #include "main.h"
+#else
+#include "boot_main.h"
+#endif
 
 struct SystemVar system_var;
 struct SystemData system_data;
@@ -10,6 +14,7 @@ void diag_help(void);
 void print_weather_and_time_info(void);
 void jump_app();
 void quit_send_mode();
+void timer_test(u8 test_action);
 int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_array[],int32_t max_para_num);
 
 typedef int32_t cmd_func_t(uint64_t arg1,uint64_t arg2,uint64_t arg3,uint64_t arg4);
@@ -35,18 +40,18 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 		0,
 	},
 	{
-		"jump",
-		"jump_app \r\n",
-		"jump_app cmd \r\n",
-		jump_app,
-		0,
-	},
-	{
 		"quit",
 		"quit_send_mode \r\n",
 		"quit_send_mode cmd\r\n",
 		quit_send_mode,
 		0,
+	},
+	{
+		"tim",
+		"timer test \r\n",
+		"timer test cmd\r\n",
+		timer_test,
+		1,
 	},
 #ifndef BOOT
 	{
@@ -61,6 +66,14 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 		"OledClear\r\n",
 		"OledClear clear the oled\r\n",
 		OLED_Clear,
+		0,
+	},
+#else
+	{
+		"jump",
+		"jump_app \r\n",
+		"jump_app cmd \r\n",
+		jump_app,
 		0,
 	},
 #endif
@@ -107,6 +120,44 @@ void quit_send_mode()
 	quit_network_connect_cmd();
 }
 
+
+void timer_test(u8 test_action)
+{
+	if(0 == test_action)
+	{
+		TIM_SetAutoreload(TIM4,(10000-1));
+		TIM_ARRPreloadConfig(TIM4,ENABLE);
+		TIM_Cmd(TIM4, ENABLE);  
+		rt_kprintf("cnt=%d\r\n", TIM_GetCounter(TIM4));
+	}
+	else if(1 == test_action)
+	{
+		TIM_SetAutoreload(TIM4,(10000-1));
+		TIM_Cmd(TIM4, ENABLE);  
+		rt_kprintf("cnt=%d\r\n", TIM_GetCounter(TIM4));
+	}
+	else if(2 == test_action)
+	{
+		TIM_Cmd(TIM4, ENABLE);  
+		rt_kprintf("cnt=%d\r\n", TIM_GetCounter(TIM4));
+	}
+	else if(3 == test_action)
+	{
+		TIM4_Init();  
+		rt_kprintf("cnt=%d\r\n", TIM_GetCounter(TIM4));
+	}
+	else if(4 == test_action)
+	{
+		TIM_SetAutoreload(TIM4,(10000-1));
+		TIM_ARRPreloadConfig(TIM4,DISABLE);
+		TIM_Cmd(TIM4, ENABLE);  
+		rt_kprintf("cnt=%d\r\n", TIM_GetCounter(TIM4));
+	}
+	else if(5 == test_action)
+	{
+		rt_kprintf("cnt=%d\r\n", TIM_GetCounter(TIM4));
+	}
+}
 
 
 
