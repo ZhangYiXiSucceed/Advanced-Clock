@@ -35,10 +35,10 @@ __attribute__((section("region_header")))   boot_region_header_t region_header =
 };
 void region_header_init(boot_region_header_t* temp_region_header)
 {
-	u32 IROM1_len = (u32)(&Image$$ER_IROM1$$Limit - &Image$$ER_IROM1$$Base);
-	u32 IROM2_len = (u32)(&Image$$ER_IROM2$$Limit - &Image$$ER_IROM2$$Base);
-	u32 IRAM1_RW_len = (u32)(&Image$$RW_IRAM1$$Limit - &Image$$RW_IRAM1$$Base);
-	u32 IRAM1_ZI_len = (u32)(&Image$$RW_IRAM1$$ZI$$Limit - &Image$$RW_IRAM1$$ZI$$Base);
+	u32 IROM1_len = (u32)((u32)&Image$$ER_IROM1$$Limit - (u32)&Image$$ER_IROM1$$Base);
+	u32 IROM2_len = (u32)((u32)&Image$$ER_IROM2$$Limit - (u32)&Image$$ER_IROM2$$Base);
+	u32 IRAM1_RW_len = (u32)((u32)&Image$$RW_IRAM1$$Limit - (u32)&Image$$RW_IRAM1$$Base);
+	u32 IRAM1_ZI_len = (u32)((u32)&Image$$RW_IRAM1$$ZI$$Limit - (u32)&Image$$RW_IRAM1$$ZI$$Base);
 	
 	temp_region_header->len = ((u32)&Image$$ER_IROM1$$Length + (u32)&Image$$ER_IROM2$$Length \
 							   + (u32)&Image$$RW_IRAM1$$Length + (u32)&Image$$RW_IRAM1$$ZI$$Length);
