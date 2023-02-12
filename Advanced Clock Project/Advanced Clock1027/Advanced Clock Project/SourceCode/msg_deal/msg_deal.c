@@ -1,4 +1,4 @@
-#ifdef BOOT
+#ifndef BOOT
 #include "main.h"
 #else
 #include "boot_main.h"
@@ -202,10 +202,11 @@ void shell_process()
 	}
 }
 
-#ifndef  BOOT
+
 void periodic_task_process()
 {
 	static int last_systime = 0;
+#ifndef  BOOT
 	if(system_var.TwoMinuteFlag ==1)
     {
         system_var.TwoMinuteFlag = 0;
@@ -221,8 +222,31 @@ void periodic_task_process()
  		LED_BreathingLight();
 		last_systime = Systemtime;
 	}
-}
+#else
+	static int cnt_count = 0;
+	if(last_systime == Systemtime)
+		return;
+	last_systime = Systemtime;
+	
+	cnt_count++;
+	if(cnt_count<=10)
+		return;
+	cnt_count = 0;
+	
+	if(!system_var.WIFIConnectFlag)
+		return;
+	if(0 == check_header(&region_header))
+	{
+		rt_kprintf(" header err\r\n");
+		return ;
+	}
+	rt_kprintf("timeout,jump app\r\n");
+	jump_exec(&region_header);
 #endif
+	
+
+}
+
 
 int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 {

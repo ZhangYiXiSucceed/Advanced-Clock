@@ -37,8 +37,8 @@ struct SystemVar
 	unsigned char WIFIConnectFlag;
 	unsigned char TimeGetFlag;
 
-	unsigned short int  Time_20_ms_flag;
-	unsigned short int  uart1_mode;
+	unsigned char   Time_20_ms_flag;
+	unsigned char   uart1_mode;
 };
 
 typedef struct STR_FrameHead  
