@@ -62,6 +62,22 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 		
 		}break;
 #endif
+		case PICTURE_CMD:
+		{
+			
+		}break;
+		case START_UPDATE:
+		{
+
+		}break;
+		case UPDATE_DATA:
+		{
+
+		}break;
+		case UPDATE_END:
+		{
+			
+		}break;
 		default:
 			rt_kprintf("cmd  err,0x%x\r\n", cmd_msg_frame->cmd);
 			return MSG_CMD_ERR;
