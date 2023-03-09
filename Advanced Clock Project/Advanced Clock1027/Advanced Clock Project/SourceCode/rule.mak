@@ -46,5 +46,5 @@ SRC :=   $(wildcard $(FIRMWARE_DIR)/SourceCode/*.c) \
 		 $(wildcard	$(FIRMWARE_DIR)/SourceCode/wifi/*.c)  
 
 $(FIRMWARE_DIR)/SourceCode/libSource.a : $(SRC:%.c=%.o)
-$(FIRMWARE_DIR)/build/Ad.axf : $(LIBS)
+
 								

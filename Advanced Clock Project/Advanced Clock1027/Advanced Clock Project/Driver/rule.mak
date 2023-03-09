@@ -1,9 +1,10 @@
 
 PRO_DIRS += \
-			$(FIRMWARE_DIR)/Driver/src
+			$(FIRMWARE_DIR)/Driver \
+			$(FIRMWARE_DIR)/Driver/src \
 
 SRC := $(wildcard $(FIRMWARE_DIR)/Driver/src/*.c)
 
 
-$(FIRMWARE_DIR)/Driver/libDriver.a:$(SRC:%.c=%.o)
+$(FIRMWARE_DIR)/Driver/libDriver.a : $(SRC:%.c=%.o)
 								

@@ -58,18 +58,21 @@ DOWNLOAD_EXEC := ST-LINK_CLI.exe
 
 FIRMWARE_DIR := ..
 PRO_DIRS = 
-$(FIRMWARE_DIR)/build/Ad.axf : $(LIBS)
 
--include ../SourceCode/rule.mak
--include ../Driver/rule.mak
--include ../Core/rule.mak
+LIBS  := ../Core/libCore.a \
+		 ../Driver/libDriver.a \
+		 ../SourceCode/libSource.a
+
+.PHONY : build
+build : Ad.axf
+
+-include    ../SourceCode/rule.mak ../Driver/rule.mak ../Core/rule.mak
+
+$(info SRC=$(SRC))
+Ad.axf : $(LIBS)
 
 VPATH = $(PRO_DIRS)
 $(info VPATH=$(VPATH))
-
-$(LIBS): ../Core/libCore.a \
-		 ../Driver/libDriver.a \
-		 ../SourceCode/libSource.a
 
 %.o:%.s
 	@echo "building $<"
@@ -86,3 +89,10 @@ $(LIBS): ../Core/libCore.a \
 %.axf:
 	@echo "Link $@"
 	@$(LINK_EXEC) $(CMN_LFLAGS) $^ -o $@
+
+
+.PHONY : clean
+clean:
+	-rm -rf ../Core/*.o  ../Core/*.a
+	-rm -rf ../Driver/src/*.o  ../Driver/*.a
+	-rm -rf ../SourceCode/*.o  ../SourceCode/*.a ../SourceCode/*/*.o
