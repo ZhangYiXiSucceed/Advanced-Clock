@@ -1,0 +1,10 @@
+build/obj
+build/obj_boot
+build/out
+SourceInsight/
+settings/
+*.board
+.vscode/
+Keil/ Project/
+IAR/ Project/
+
