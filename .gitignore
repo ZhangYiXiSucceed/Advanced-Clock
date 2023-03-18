@@ -1,6 +1,8 @@
 *.o
 *.log
 *.bin
+SoftWare/FirmWare/Keil\ Project/Listings
+SoftWare/FirmWare/Keil\ Project/Objects
 SoftWare/FirmWare/build/out
 SoftWare/FirmWare/build/obj
 SoftWare/FirmWare/build/dep_boot
