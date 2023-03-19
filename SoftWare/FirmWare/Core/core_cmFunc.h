@@ -44,8 +44,14 @@
     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
   @{
  */
+#if 1
 
-#if   defined ( __CC_ARM ) /*------------------RealView Compiler -----------------*/
+__attribute__( ( always_inline ) ) __STATIC_INLINE void __set_MSP(uint32_t topOfMainStack)
+{
+  __ASM volatile ("MSR msp, %0\n" : : "r" (topOfMainStack) : "sp");
+}
+
+#elif   defined ( __CC_ARM ) /*------------------RealView Compiler -----------------*/
 /* ARM armcc specific functions */
 
 #if (__ARMCC_VERSION < 400677)

@@ -19,8 +19,8 @@ void FifoInit(struct OperCmdUnionFifo *Queue)
 // Queue In   
 unsigned char FifoIn(struct OperCmdUnionFifo *Queue, struct OperCmdUnion *sdat)   
 {   
-  IntsStorage;
-  StoreDisableInts;
+   
+   
   
   if((Queue->front == Queue->rear) && (Queue->count == ValFifoSize))   
   {  
@@ -28,7 +28,7 @@ unsigned char FifoIn(struct OperCmdUnionFifo *Queue, struct OperCmdUnion *sdat)
       Queue->rear  = (Queue->rear  + 1) & (ValFifoSize-1);  //------------------ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½queuesizeï¿½ï¿½ï¿½ï¿½Îª2ï¿½ï¿½nï¿½Î·ï¿½
       Queue->front = (Queue->front + 1) & (ValFifoSize-1);
       
-      RestoreInts;
+       
       return ValFifoFull;  // full    
   }
   else
@@ -38,7 +38,7 @@ unsigned char FifoIn(struct OperCmdUnionFifo *Queue, struct OperCmdUnion *sdat)
       Queue->rear  = (Queue->rear + 1) & (ValFifoSize-1);  //------------------ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½queuesizeï¿½ï¿½ï¿½ï¿½Îª2ï¿½ï¿½nï¿½Î·ï¿½
       Queue->count = Queue->count + 1;
       
-      RestoreInts;
+       
       return ValFifoOperateOk;   
   }
 }
@@ -48,13 +48,13 @@ unsigned char FifoIn(struct OperCmdUnionFifo *Queue, struct OperCmdUnion *sdat)
 unsigned char FifoOut(struct OperCmdUnionFifo *Queue, struct OperCmdUnion *sdat)   
 {   
   
-  IntsStorage;
-  StoreDisableInts;
+   
+   
   
   if((Queue->front == Queue->rear) && (Queue->count == 0))   
   {   
       // empty   
-      RestoreInts;
+       
       return ValFifoEmpty;   
   }
   else    
@@ -64,7 +64,7 @@ unsigned char FifoOut(struct OperCmdUnionFifo *Queue, struct OperCmdUnion *sdat)
       Queue->front = (Queue->front + 1) & (ValFifoSize-1);
       Queue->count = Queue->count - 1;
       
-      RestoreInts;
+       
       return ValFifoOperateOk;   
   }   
 } 
@@ -73,8 +73,8 @@ unsigned char FifoOut(struct OperCmdUnionFifo *Queue, struct OperCmdUnion *sdat)
 // Queue In   
 unsigned char FifoBack(struct OperCmdUnionFifo *Queue, struct OperCmdUnion *sdat)   
 {   
-  IntsStorage;
-  StoreDisableInts;
+   
+   
   
   if((Queue->front == Queue->rear) && (Queue->count == ValFifoSize))            // ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½Ô»ï¿½Ñ¹ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ðµï¿½ï¿½ï¿½
   {  
@@ -82,7 +82,7 @@ unsigned char FifoBack(struct OperCmdUnionFifo *Queue, struct OperCmdUnion *sdat
       Queue->rear  = (Queue->rear  + 1) & (ValFifoSize-1);  //------------------ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½queuesizeï¿½ï¿½ï¿½ï¿½Îª2ï¿½ï¿½nï¿½Î·ï¿½
       Queue->front = (Queue->front + 1) & (ValFifoSize-1);
       
-      RestoreInts;
+       
       return ValFifoFull;  // full    
   }
   else
@@ -100,7 +100,7 @@ unsigned char FifoBack(struct OperCmdUnionFifo *Queue, struct OperCmdUnion *sdat
       // Queue->rear  = (Queue->rear + 1) & (ValFifoSize-1);  //------------------ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½queuesizeï¿½ï¿½ï¿½ï¿½Îª2ï¿½ï¿½nï¿½Î·ï¿½
       Queue->count = Queue->count + 1;
       
-      RestoreInts;
+       
       return ValFifoOperateOk;   
   }
 }
@@ -133,14 +133,14 @@ void queue_init(fifo_queue_t *queue)
 // Queue In   
 unsigned char queue_in(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short len)   
 {   
-  IntsStorage;
-  StoreDisableInts;
+   
+   
   
   if(len > (QUEUE_MAX_LEN)) len = QUEUE_MAX_LEN;
   if((queue->front == queue->rear) && (queue->count == QUEUE_SIZE))   
   {  
       // full   
-      RestoreInts;
+       
       return QUEUE_FULL;   
   }
   else
@@ -151,7 +151,7 @@ unsigned char queue_in(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short len)
       queue->rear  = (queue->rear + 1) & (QUEUE_SIZE-1);  //---------------------¼ÓÂú»º³åÇøÒÔºó¾ÍÇå³ý0£¬queuesize±ØÐëÎª2µÄn´Î·½
       queue->count = queue->count + 1;
       
-      RestoreInts;
+       
       return QUEUE_OPER_OK;   
   }
 }
@@ -160,13 +160,13 @@ unsigned char queue_in(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short len)
 unsigned char queue_out(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short *len)   
 {   
   
-  IntsStorage;
-  StoreDisableInts;
+   
+   
   
   if((queue->front == queue->rear) && (queue->count == 0))   
   {   
       // empty 
-      RestoreInts;  
+         
       return QUEUE_EMPTY;   
   }
   else    
@@ -179,7 +179,7 @@ unsigned char queue_out(fifo_queue_t *queue, ELEM_TYPE *sdat, unsigned short *le
       queue->front = (queue->front + 1) & (QUEUE_SIZE-1);
       queue->count = queue->count - 1;
       
-      RestoreInts;
+       
       return QUEUE_OPER_OK;   
   }   
 } 

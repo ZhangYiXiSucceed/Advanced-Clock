@@ -137,13 +137,13 @@ void bluetooth_msg_porcess()
 		}break;
 		case RESP_BLE_CLOSE_INT:
 		{
-			IntsStorage;
-			StoreDisableInts;
+			 
+			 
 		}break;
 		case RESP_BLE_OPEN_INT:
 		{
-			IntsStorage = 0;
-			RestoreInts;
+			 
+			 
 		}break;
 		case RESP_BLE_SEND_NRF24L01:
 		{

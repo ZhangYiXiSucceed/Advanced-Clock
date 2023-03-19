@@ -66,12 +66,13 @@ int8_t GetCesqValue(char *data)
     int8_t rtn   = 0;
     unsigned char start = 0; 
     unsigned char end   = 0;
+	  char ii;
     // rtn: CESQ
     point = strstr(data, "+CESQ: ");  // CGATT:1
     if(point != NULL)                   // ´æÔÚCESQ
     {
       //rt_kprintf("*: %c%c%c%c%c%c%c\n", point[1], point[4], point[5],point[6],point[7],point[8],point[9]);
-      for(char ii=0;ii<10;ii++)
+      for( ii=0;ii<10;ii++)
       {
           if(point[ii] ==':') start = ii;
           if(point[ii] ==',') end   = ii;
@@ -79,7 +80,7 @@ int8_t GetCesqValue(char *data)
       if((start ==0)||(end==0))return (-2);
       // rt_kprintf("*: %c %c %c %c \n", point[start],point[start+1], point[end-1], point[end]); 
       // rt_kprintf("*: s=%d e=%d \n", start,end); 
-      for(char ii=0;ii<end-start-1;ii++)
+      for( ii=0;ii<end-start-1;ii++)
       {
         if((point[end-1-ii] >='0')&&(point[end-1-ii] <='9'))
         {
