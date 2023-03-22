@@ -14,6 +14,7 @@ class AdvancedClock : public QMainWindow
 public:
     AdvancedClock(QWidget *parent = nullptr);
     ~AdvancedClock();
+     QTabWidget *MyTabWidget;
 
 private:
     Ui::AdvancedClock *ui;

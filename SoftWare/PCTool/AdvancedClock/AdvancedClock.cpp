@@ -3,7 +3,8 @@
 
 AdvancedClock::AdvancedClock(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::AdvancedClock)
+    , ui(new Ui::AdvancedClock),
+    MyTabWidget(new QTabWidget)
 {
     ui->setupUi(this);
 }
