@@ -87,6 +87,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			{
 				rt_kprintf("data len err,%d\r\n", data_len);
 				return MSG_LEN_ERR;
+				
 			}
 		}break;
 		case UPDATE_END:
