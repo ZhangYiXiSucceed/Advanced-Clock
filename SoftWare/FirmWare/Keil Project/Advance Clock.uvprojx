@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\Driver\inc;..\SourceCode\led;..\SourceCode\uart;..\SourceCode\timer;..\SourceCode\key;..\SourceCode\queue;..\SourceCode\msg_deal;..\SourceCode\ht_sensor;..\SourceCode\wdg;..\SourceCode\rtc;..\SourceCode;..\SourceCode\radio;..\SourceCode\common;..\SourceCode\nrf24l01;..\SourceCode\wifi;..\SourceCode\cJson;..\SourceCode\oled;..\SourceCode\bluetooth;..\SourceCode\show</IncludePath>
+              <IncludePath>..\Core;..\Driver\inc;..\SourceCode\led;..\SourceCode\uart;..\SourceCode\timer;..\SourceCode\key;..\SourceCode\queue;..\SourceCode\msg_deal;..\SourceCode\ht_sensor;..\SourceCode\wdg;..\SourceCode\rtc;..\SourceCode;..\SourceCode\radio;..\SourceCode\common;..\SourceCode\nrf24l01;..\SourceCode\wifi;..\SourceCode\cJson;..\SourceCode\oled;..\SourceCode\bluetooth;..\SourceCode\show;..\SourceCode\region_header;..\SourceCode\cmd</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -362,7 +362,7 @@
             </VariousControls>
           </Aads>
           <LDads>
-            <umfTarg>1</umfTarg>
+            <umfTarg>0</umfTarg>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
             <noStLib>0</noStLib>
@@ -371,7 +371,7 @@
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile></ScatterFile>
+            <ScatterFile>..\build\AdvanceClock.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -593,6 +593,16 @@
               <FileName>show.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SourceCode\show\show.c</FilePath>
+            </File>
+            <File>
+              <FileName>region_header.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\region_header\region_header.c</FilePath>
+            </File>
+            <File>
+              <FileName>cmd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SourceCode\cmd\cmd.c</FilePath>
             </File>
           </Files>
         </Group>

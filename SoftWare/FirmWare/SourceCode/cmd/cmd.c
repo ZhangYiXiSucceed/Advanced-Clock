@@ -73,15 +73,31 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 		}break;
 		case START_UPDATE:
 		{
-
+			u16 data_len = cmd_msg_frame->data_len;
+			if(data_len > 0x40)
+			{
+				rt_kprintf("data len err,%d\r\n", data_len);
+				return MSG_LEN_ERR;
+			}
 		}break;
 		case UPDATE_DATA:
 		{
-
+			u16 data_len = cmd_msg_frame->data_len;
+			if(data_len > 0x40)
+			{
+				rt_kprintf("data len err,%d\r\n", data_len);
+				return MSG_LEN_ERR;
+				
+			}
 		}break;
 		case UPDATE_END:
 		{
-			
+			u16 data_len = cmd_msg_frame->data_len;
+			if(data_len > 0x40)
+			{
+				rt_kprintf("data len err,%d\r\n", data_len);
+				return MSG_LEN_ERR;
+			}
 		}break;
 		default:
 			rt_kprintf("cmd  err,0x%x\r\n", cmd_msg_frame->cmd);
