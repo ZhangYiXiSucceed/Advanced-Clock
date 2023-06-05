@@ -96,7 +96,7 @@ RM   := rm -rf
 ECHO := echo
 
 
-CMN_CFLAGS = --C99 -c --cpu Cortex-M4.fp.sp -g --apcs=interwork --split_sections \
+CMN_CFLAGS = --C99  --cpu Cortex-M4.fp.sp -g --apcs=interwork --split_sections \
 $(DEBUG) $(C_INCLUDE)  \
 --diag_suppress=1295,111,1293,167,513,177 \
 -ID:/Software/Keil/pack/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include \
@@ -135,6 +135,7 @@ $(OUT_DIR)/$(TARGET).axf: $(OBJECTS)
 
 
 -include $(DEPS)
+$(info deps = $(DEPS))
 #compiler process
 $(BUILD_OBJ_DIR)/%.o : %.d
 $(BUILD_OBJ_DIR)/%.o : %.c
@@ -147,11 +148,11 @@ $(BUILD_OBJ_DIR)/%.o : %.s Makefile | $(BUILD_OBJ_DIR)
 	@$(ASM_EXEC)  $(CMN_AFLAGS) $< -o $@ 
 
 
-$(BUILD_DEP_DIR)/%.d : OBJ_BNAME=$(basename $(notdir $@))
-$(BUILD_DEP_DIR)/%.d : %.c
-	@$(ECHO) 'Update dependency Compiling' $<
-	@$(CC_EXEC) -M   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o > $@
-	@$(CC_EXEC) -c   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o
+$(BUILD_DEP_DIR)/%.d : OBJ_BNAME=$(basename $(notdir $@)) 
+$(BUILD_DEP_DIR)/%.d : %.c 
+	$(ECHO) 'Update dependency Compiling' $<
+	$(CC_EXEC) -M   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o > $@
+	$(CC_EXEC) -c   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o
 
 
 $(OUT_DIR):

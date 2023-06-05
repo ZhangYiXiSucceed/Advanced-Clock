@@ -267,7 +267,8 @@ void rt_kprintf(const char *fmt, ...)
       va_list args;
       int16_t length;
       static char rt_log_buf[TX_BUFFER_SIZE];
-
+    
+      memset(rt_log_buf,0x00,TX_BUFFER_SIZE);
       va_start(args, fmt);
       // the return value of vsnprintf is the number of bytes that would be
       // written to buffer had if the size of the buffer been sufficiently

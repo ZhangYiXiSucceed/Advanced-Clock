@@ -15,6 +15,7 @@ void print_weather_and_time_info(void);
 void jump_app();
 void quit_send_mode();
 void timer_test(u8 test_action);
+void shell_reset_cmd_handler();
 int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_array[],int32_t max_para_num);
 
 typedef int32_t cmd_func_t(uint64_t arg1,uint64_t arg2,uint64_t arg3,uint64_t arg4);
@@ -34,7 +35,7 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 	},
 	{
 		"ls",
-		"list  cmd\r\n",
+		"list cmd\r\n",
 		"list  cmd can print all cmd\r\n",
 		diag_help,
 		0,
@@ -51,6 +52,13 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 		"timer test \r\n",
 		"timer test cmd\r\n",
 		timer_test,
+		1,
+	},
+	{
+		"reset",
+		"reset test \r\n",
+		"reset test cmd\r\n",
+		shell_reset_cmd_handler,
 		1,
 	},
 #ifndef BOOT
@@ -159,6 +167,11 @@ void timer_test(u8 test_action)
 	}
 }
 
+void shell_reset_cmd_handler()
+{
+	__disable_fiq();
+	NVIC_SystemReset();
+}
 
 
 void shell_process()
@@ -667,7 +680,7 @@ void diag_cmd_complete(int8_t status)
 
 void diag_cmd_start()
 {
-	rt_kprintf("%s","DiagMgr> ");
+	rt_kprintf("%s","shell> ");
 }
 
 

@@ -133,6 +133,7 @@ build :  $(OUT_DIR)/$(TARGET).axf
 $(OUT_DIR)/$(TARGET).axf: $(OBJECTS) 
 	@$(ECHO) Link $@ ...
 	@$(LINK_EXEC) $(OBJECTS) $(CMN_LFLAGS) -o $@ --map --info totals --list_mapping_symbols --list=$(OUT_DIR)/$(TARGET).map 
+	@$(ECHO) image $(TARGET).bin ...
 	@$(FROMELF_EXEC) --bin --output $(OUT_DIR)/$(TARGET).bin $@
 
 $(BUILD_OBJ_DIR)/%.o : %.s Makefile | $(BUILD_OBJ_DIR)
