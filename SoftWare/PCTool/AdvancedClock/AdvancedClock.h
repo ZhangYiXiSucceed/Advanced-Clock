@@ -2,6 +2,9 @@
 #define ADVANCEDCLOCK_H
 
 #include <QMainWindow>
+#include <TimeShow.h>
+#include <PictureShow.h>
+#include <OTA.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AdvancedClock; }
@@ -13,10 +16,14 @@ class AdvancedClock : public QMainWindow
 
 public:
     AdvancedClock(QWidget *parent = nullptr);
+    void InitUI();
     ~AdvancedClock();
      QTabWidget *MyTabWidget;
 
 private:
     Ui::AdvancedClock *ui;
+    TimeShow *MyTimeShow;
+    PictureShow *MyPictureShow;
+    OTA *MyOTA;
 };
 #endif // ADVANCEDCLOCK_H
