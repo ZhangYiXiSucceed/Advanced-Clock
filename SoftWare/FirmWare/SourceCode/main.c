@@ -32,6 +32,7 @@ int main()
   rt_kprintf2((char*)Data);
   region_header_init(&region_header);
 
+
   while(1)
   {
     IWDG_Feed();
@@ -40,9 +41,9 @@ int main()
     nrf_communication_service_msg_process();
     bluetooth_msg_porcess();
     shell_process();
-	periodic_task_process();
+	  periodic_task_process();
     wifi_msg_process();
-	show_interface_oled();
+	  show_interface_oled();
   }
 }
 
