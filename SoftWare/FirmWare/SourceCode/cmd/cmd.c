@@ -34,7 +34,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			}
 			u8* msg_data = (u8*)(cmd_msg_frame + 1);
 			server_heart_rsp_t *server_heart_rsp = (server_heart_rsp_t *)msg_data;
-			rt_kprintf("addr=%x weather=%x\r\n", server_heart_rsp->device_addr,server_heart_rsp->weather);
+			rt_kprintf("res=%x\r\n", server_heart_rsp->rsp_res);
 		}
 		break;
 #ifdef BOOT

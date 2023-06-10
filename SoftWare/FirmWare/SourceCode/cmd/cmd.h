@@ -40,13 +40,7 @@ typedef struct cmd_msg_frame_struct
 
 typedef struct server_heart_rsp_struct
 {
-	u32 gmt;
-	u16 device_addr;
-	u8  weather;
-	u8  tempture;
-	u32 rsv1;
-	u32 rsv2;
-	u32 rsv3;
+	u8 rsp_res;
 }server_heart_rsp_t;
 
 

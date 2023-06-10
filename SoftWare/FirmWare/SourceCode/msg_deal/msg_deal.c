@@ -242,7 +242,7 @@ void periodic_task_process()
 	last_systime = Systemtime;
 	
 	cnt_count++;
-	if(cnt_count<=10)
+	if(cnt_count<= 60)
 		return;
 	cnt_count = 0;
 	
@@ -253,8 +253,8 @@ void periodic_task_process()
 		rt_kprintf(" header err\r\n");
 		return ;
 	}
-	rt_kprintf("timeout,jump app\r\n");
-	jump_exec(&region_header);
+	//rt_kprintf("timeout,jump app\r\n");
+	//jump_exec(&region_header);
 #endif
 	
 

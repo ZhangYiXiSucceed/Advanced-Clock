@@ -19,7 +19,7 @@ int main()
 
 
   rt_kprintf("*******************************************\r\n");
-  rt_kprintf((char*)Data);
+  rt_kprintf("%s, time=%s date=%s\r\n",(char*)Data, __TIME__,__DATE__);
   rt_kprintf("*******************************************\r\n");
 
   region_header_init(&region_header);

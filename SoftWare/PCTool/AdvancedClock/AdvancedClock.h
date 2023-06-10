@@ -5,6 +5,8 @@
 #include <TimeShow.h>
 #include <PictureShow.h>
 #include <OTA.h>
+#include <QLabel>
+#include <QTextCodec>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AdvancedClock; }
@@ -17,13 +19,23 @@ class AdvancedClock : public QMainWindow
 public:
     AdvancedClock(QWidget *parent = nullptr);
     void InitUI();
+    void InitConnect();
     ~AdvancedClock();
      QTabWidget *MyTabWidget;
 
+private slots:
+     void ShowSystemMessage(QString Message,uint16_t ShowTime);
+     void ShowParameter(QString InternetIP,QString Port);
 private:
+
     Ui::AdvancedClock *ui;
     TimeShow *MyTimeShow;
     PictureShow *MyPictureShow;
     OTA *MyOTA;
+
+    QLabel *InternetIP;
+    QLabel *Port;
+
+    QString TextMessage;
 };
 #endif // ADVANCEDCLOCK_H

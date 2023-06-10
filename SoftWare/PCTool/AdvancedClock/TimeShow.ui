@@ -6,71 +6,71 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>812</width>
-    <height>554</height>
+    <width>780</width>
+    <height>561</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QGroupBox" name="groupBox">
+  <widget class="QGroupBox" name="weather_group">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>290</y>
-     <width>791</width>
-     <height>251</height>
+     <y>360</y>
+     <width>761</width>
+     <height>151</height>
     </rect>
    </property>
    <property name="title">
     <string>GroupBox</string>
    </property>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="WeatherIcon1">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>171</width>
-      <height>221</height>
+      <width>141</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="text">
      <string>PushButton</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="WeatherIcon2">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>190</x>
       <y>20</y>
-      <width>171</width>
-      <height>221</height>
+      <width>141</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="text">
      <string>PushButton</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="WeatherIcon3">
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>430</x>
       <y>20</y>
-      <width>171</width>
-      <height>221</height>
+      <width>141</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="text">
      <string>PushButton</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="WeatherIcon4">
     <property name="geometry">
      <rect>
       <x>610</x>
       <y>20</y>
-      <width>171</width>
-      <height>221</height>
+      <width>141</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="text">
@@ -81,21 +81,21 @@
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>10</x>
      <y>10</y>
-     <width>501</width>
-     <height>271</height>
+     <width>611</width>
+     <height>341</height>
     </rect>
    </property>
    <property name="title">
     <string>GroupBox</string>
    </property>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="DateShow">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>80</x>
       <y>20</y>
-      <width>281</width>
+      <width>451</width>
       <height>41</height>
      </rect>
     </property>
@@ -109,12 +109,12 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="TimeShow_2">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>80</y>
-      <width>481</width>
+      <width>571</width>
       <height>121</height>
      </rect>
     </property>
@@ -134,7 +134,7 @@
      <bool>false</bool>
     </property>
     <property name="text">
-     <string>12 : 00 : 00</string>
+     <string>12:00:00</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -146,13 +146,13 @@
      <string>12:00:00</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
+   <widget class="QLineEdit" name="NiceWords">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>220</y>
-      <width>281</width>
-      <height>41</height>
+      <x>30</x>
+      <y>240</y>
+      <width>541</width>
+      <height>81</height>
      </rect>
     </property>
     <property name="text">
@@ -163,31 +163,57 @@
     </property>
    </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBox_3">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>131</width>
-     <height>271</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>GroupBox</string>
-   </property>
-  </widget>
   <widget class="QGroupBox" name="groupBox_4">
    <property name="geometry">
     <rect>
-     <x>660</x>
+     <x>630</x>
      <y>10</y>
      <width>141</width>
-     <height>271</height>
+     <height>341</height>
     </rect>
    </property>
    <property name="title">
     <string>GroupBox</string>
    </property>
+   <widget class="QPushButton" name="OpenDevice">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>121</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>打开设备</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="CloseDevice">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>121</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>关闭设备</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="WriteTestData">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>180</y>
+      <width>121</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>写数据</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
