@@ -214,6 +214,19 @@
      <string>写数据</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="ConnectDevice">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>260</y>
+      <width>121</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>连接设备</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

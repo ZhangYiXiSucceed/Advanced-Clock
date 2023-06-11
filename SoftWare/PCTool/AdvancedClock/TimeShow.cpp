@@ -1,6 +1,7 @@
 #include "TimeShow.h"
 #include <QMessageBox>
 #include <iostream>
+#include <iomanip>
 #include "Cmd.h"
 #include "ui_TimeShow.h"
 using namespace std;
@@ -117,9 +118,17 @@ void TimeShow::NewConnect()
 
 void TimeShow::ReadData()
 {
+    QString disp_string,S;
     QByteArray buffer = currentClient->readAll();
+    cout <<"len=" <<buffer.size()<<endl;;
+
     for(int i=0;i<buffer.size();i++)
-        cout << buffer.at(i) <<endl;
+    {
+        S.sprintf("0x%02x, ", (unsigned char)buffer.at(i));
+        disp_string += S;
+    }
+
+    cout << disp_string.toStdString()<<endl;
     RspDataProcess(buffer);
 }
 
@@ -163,12 +172,19 @@ void TimeShow::RspDataProcess(QByteArray buf)
             break;
         case JUMP_CMD:
         {
-
+            QMessageBox::information(NULL, "info", "jump ok", QMessageBox::Yes, QMessageBox::NoButton);
         }
         break;
         case CONNECT_CMD:
         {
-
+            uint32_t cal_sum = CalCheckSum(data,sizeof(cmd_msg_frame_t) + 1);
+            uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + 1));
+            if(cal_sum != read_sum)
+            {
+                cout <<"frame check err,cal=" << cal_sum <<"read= "<< cal_sum << endl;
+                return;
+            }
+            QMessageBox::information(NULL, "info", "connect ok", QMessageBox::Yes, QMessageBox::NoButton);
         }
         break;
         default:
@@ -209,23 +225,20 @@ void TimeShow::HeartCmdRsp()
 
 void TimeShow::WriteTestData()
 {
-    uint8_t buf[sizeof(cmd_msg_frame_t) + sizeof(server_heart_rsp_t) + sizeof(uint32_t)];
-    uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(server_heart_rsp_t) + sizeof(uint32_t);
+    uint8_t buf[sizeof(cmd_msg_frame_t) +  sizeof(uint32_t)];
+    uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(uint32_t);
     QByteArray Sendata;
     Sendata.resize(len);
 
     cmd_msg_frame_t *msg = (cmd_msg_frame_t *)buf;
     msg->header = MSG_FRAME_HEADER;
     msg->device_addr = 0x00;
-    msg->cmd = HEART_CMD;
+    msg->cmd = JUMP_CMD;
     msg->seq = 0x00;
-    msg->data_len = 1;
+    msg->data_len = 0x00;
 
-    server_heart_rsp_t *rsp = (server_heart_rsp_t *)(msg + 1);
-    rsp->rsp_res = 0x00;
-
-    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + sizeof(server_heart_rsp_t));
-    uint32_t *check_sum = (uint32_t *)(rsp+1);
+    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t));
+    uint32_t *check_sum = (uint32_t *)(msg+1);
     *check_sum = CheckSum;
 
     memcpy((void*)Sendata.data(),buf,len);
@@ -251,7 +264,7 @@ void TimeShow::ConnectCmd()
     msg->data_len = 0;
 
     int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t));
-    uint32_t *check_sum = (uint32_t *)(rsp+1);
+    uint32_t *check_sum = (uint32_t *)(msg+1);
     *check_sum = CheckSum;
 
     memcpy((void*)Sendata.data(),buf,len);

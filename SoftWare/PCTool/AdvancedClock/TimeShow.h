@@ -31,6 +31,7 @@ private slots:
     void ReadData();
     void disconnectedSlot();
     void WriteTestData();
+    void ConnectCmd();
 private:
     Ui::TimeShow *ui;
     QTcpServer *MyTcpServer;
