@@ -4,6 +4,15 @@
 #include "boot_main.h"
 #endif
 
+u32 CalCheckSum(uint8_t* Data, uint16_t len)
+{
+    int CheckSum = 0;
+    for(int i=0;i<len;i++)
+    {
+        CheckSum+=Data[i];
+    }
+    return CheckSum;
+}
 
 cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 {
@@ -25,8 +34,8 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
 				return MSG_LEN_ERR;
 			}
-			u32 cal_sum = 0;
-			u32 read_sum = 0;
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t) + sizeof(server_heart_rsp_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t) + sizeof(server_heart_rsp_t)));
 			if(cal_sum != read_sum)
 			{
 				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
@@ -35,6 +44,23 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			u8* msg_data = (u8*)(cmd_msg_frame + 1);
 			server_heart_rsp_t *server_heart_rsp = (server_heart_rsp_t *)msg_data;
 			rt_kprintf("res=%x\r\n", server_heart_rsp->rsp_res);
+		}
+		break;
+		case CONNECT_CMD:
+		{
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + 4;
+			if(cmd_len != len)
+			{
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
+				return MSG_LEN_ERR;
+			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				return MSG_CRC_ERR;
+			}
 		}
 		break;
 #ifdef BOOT

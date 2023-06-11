@@ -12,7 +12,8 @@ enum
     START_UPDATE,
     UPDATE_DATA,
     UPDATE_END,
-    JUMP_CMD
+    JUMP_CMD,
+    CONNECT_CMD,
 };
 
 

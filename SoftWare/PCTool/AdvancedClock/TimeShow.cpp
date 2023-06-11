@@ -31,6 +31,7 @@ void TimeShow::InitConnect()
     connect(ui->OpenDevice,SIGNAL(clicked(bool)),this,SLOT(ScanInternet()));
     connect(ui->CloseDevice,SIGNAL(clicked(bool)),this,SLOT(CloseInternetConnect()));
     connect(ui->WriteTestData,SIGNAL(clicked(bool)),this,SLOT(WriteTestData()));
+    connect(ui->ConnectDevice,SIGNAL(clicked(bool)),this,SLOT(ConnectCmd()));
 
     connect(MyTcpServer,SIGNAL(newConnection()),this,SLOT(NewConnect()));
 }
@@ -165,6 +166,11 @@ void TimeShow::RspDataProcess(QByteArray buf)
 
         }
         break;
+        case CONNECT_CMD:
+        {
+
+        }
+        break;
         default:
         {
 
@@ -229,6 +235,33 @@ void TimeShow::WriteTestData()
         QMessageBox::warning(NULL, "warning", "send failed", QMessageBox::Yes, QMessageBox::NoButton);
     }
 }
+
+void TimeShow::ConnectCmd()
+{
+    uint8_t buf[sizeof(cmd_msg_frame_t) +  sizeof(uint32_t)];
+    uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(uint32_t);
+    QByteArray Sendata;
+    Sendata.resize(len);
+
+    cmd_msg_frame_t *msg = (cmd_msg_frame_t *)buf;
+    msg->header = MSG_FRAME_HEADER;
+    msg->device_addr = 0x00;
+    msg->cmd = CONNECT_CMD;
+    msg->seq = 0x00;
+    msg->data_len = 0;
+
+    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t));
+    uint32_t *check_sum = (uint32_t *)(rsp+1);
+    *check_sum = CheckSum;
+
+    memcpy((void*)Sendata.data(),buf,len);
+    qint64 res = currentClient->write(Sendata);
+    if( -1 == res)
+    {
+        QMessageBox::warning(NULL, "warning", "send failed", QMessageBox::Yes, QMessageBox::NoButton);
+    }
+}
+
 TimeShow::~TimeShow()
 {
     delete ui;

@@ -25,7 +25,8 @@ enum
 	START_UPDATE,
 	UPDATE_DATA,
 	UPDATE_END,
-	JUMP_CMD
+	JUMP_CMD,
+	CONNECT_CMD,
 };
 	
 typedef struct cmd_msg_frame_struct
