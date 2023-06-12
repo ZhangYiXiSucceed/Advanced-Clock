@@ -133,9 +133,11 @@ void timer_interval_func_task()
     if(GetSystemTime() < timer_func_g.target_time)
       return;
 
+    rt_kprintf("exec fun\r\n");
     if(NULL != timer_func_g.cb)
     {
-        timer_func_g.cb(timer_func_g.para);
+       
+        //(*timer_func_g.cb)(timer_func_g.para);
         timer_func_is_running_g = 0;
     }
 }
