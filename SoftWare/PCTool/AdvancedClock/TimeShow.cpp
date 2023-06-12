@@ -59,7 +59,7 @@ void TimeShow::ScanInternet()
             /* find the match ip */
             int lastDot = temp_str.lastIndexOf('.') + 1;
             int IPLastNum = temp_str.mid(lastDot,temp_str.length()).toInt();
-            cout << IPLastNum <<endl;
+            /*cout << IPLastNum <<endl;*/
 
             /* the last num is 1, the ip is  gateway */
             if(1 != IPLastNum)

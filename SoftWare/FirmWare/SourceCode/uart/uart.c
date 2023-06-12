@@ -267,19 +267,20 @@ void rt_kprintf(const char *fmt, ...)
       va_list args;
       int16_t length;
       static char rt_log_buf[TX_BUFFER_SIZE];
-    
       memset(rt_log_buf,0x00,TX_BUFFER_SIZE);
+
+      int16_t header_len = sprintf(rt_log_buf,"[%d]", system_data.SystemGMTTime);
       va_start(args, fmt);
       // the return value of vsnprintf is the number of bytes that would be
       // written to buffer had if the size of the buffer been sufficiently
       // large excluding the terminating null byte. If the output string
       // would be larger than the rt_log_buf, we have to adjust the output
       // length. 
-      length = vsnprintf(rt_log_buf, sizeof(rt_log_buf) - 1, fmt, args);
+      length = vsnprintf(&rt_log_buf[header_len], sizeof(rt_log_buf) - 1, fmt, args);
       if ((length > TX_BUFFER_SIZE) || (length == -1))
           length = TX_BUFFER_SIZE;
 
-      rt_hw_console_output(rt_log_buf,length);
+      rt_hw_console_output(rt_log_buf,header_len + length);
 
       va_end(args);
 }

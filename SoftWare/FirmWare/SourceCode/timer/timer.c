@@ -1,8 +1,7 @@
 #include "main.h"
-
-
+timer_interval_func_t timer_func_g;
+uint8_t timer_func_is_running_g = 0;
 unsigned int Systemtime;
-
 void TIM5_Init(void)
 {
     TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -114,4 +113,31 @@ unsigned long GetSystemTime(void)
    return system_data.SystemGMTTime;
 	
 }
+
+
+void timer_set_func(timer_interval_func_t* para)
+{
+  if(0 == timer_func_is_running_g)
+  {
+    timer_func_is_running_g = 1;
+    timer_func_g = *para;
+  }
+}
+
+
+void timer_interval_func_task()
+{
+    if(0 == timer_func_is_running_g)
+     return;
+
+    if(GetSystemTime() < timer_func_g.target_time)
+      return;
+
+    if(NULL != timer_func_g.cb)
+    {
+        timer_func_g.cb(timer_func_g.para);
+        timer_func_is_running_g = 0;
+    }
+}
+
 

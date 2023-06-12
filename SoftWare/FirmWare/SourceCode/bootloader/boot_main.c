@@ -27,8 +27,9 @@ int main()
   {
     IWDG_Feed();
     shell_process();
-	periodic_task_process();
+	  periodic_task_process();
     wifi_msg_process();
+    timer_interval_func_task();
   }
 }
 

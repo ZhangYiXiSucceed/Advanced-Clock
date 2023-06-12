@@ -237,24 +237,24 @@ void periodic_task_process()
 	}
 #else
 	static int cnt_count = 0;
-	if(last_systime == Systemtime)
+	if(last_systime == system_data.SystemGMTTime)
 		return;
-	last_systime = Systemtime;
-	
+	//rt_kprintf("last_systime=%d,Systemtime=%d\r\n", last_systime, system_data.SystemGMTTime);
+	last_systime = system_data.SystemGMTTime;
 	cnt_count++;
 	if(cnt_count<= 60)
 		return;
 	cnt_count = 0;
 	
-	if(!system_var.WIFIConnectFlag)
+	if(system_var.WIFIConnectFlag)
 		return;
 	if(0 == check_header(&region_header))
 	{
 		rt_kprintf(" header err\r\n");
 		return ;
 	}
-	//rt_kprintf("timeout,jump app\r\n");
-	//jump_exec(&region_header);
+	rt_kprintf("timeout,jump app\r\n");
+	jump_exec(&region_header);
 #endif
 	
 
