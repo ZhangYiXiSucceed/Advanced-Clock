@@ -119,12 +119,12 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			*check_sum = CalCheckSum(connect_cmd_data,sizeof(cmd_msg_frame_t) + 1);
 
 			PrintfIOTPort4(connect_cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
-			timer_interval_func_t *para;
-			para->interval = 10 ;
-			para->target_time = para->interval + GetSystemTime();
-			para->cb = (timer_callback)quit_send_data_mode_cmd;
-			para->para = NULL;
-			timer_set_func(para);
+			timer_interval_func_t para;
+			para.interval = 10 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)quit_send_data_mode_cmd;
+			para.para = NULL;
+			timer_set_func(&para);
 		}break;
 #endif
 		case PICTURE_CMD:

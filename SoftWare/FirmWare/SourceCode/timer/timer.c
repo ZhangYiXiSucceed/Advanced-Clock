@@ -121,6 +121,7 @@ void timer_set_func(timer_interval_func_t* para)
   {
     timer_func_is_running_g = 1;
     timer_func_g = *para;
+    rt_kprintf(" target = %d\r\n",timer_func_g.target_time);
   }
 }
 
@@ -137,7 +138,7 @@ void timer_interval_func_task()
     if(NULL != timer_func_g.cb)
     {
        
-        //(*timer_func_g.cb)(timer_func_g.para);
+        (*timer_func_g.cb)(timer_func_g.para);
         timer_func_is_running_g = 0;
     }
 }
