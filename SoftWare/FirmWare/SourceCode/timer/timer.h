@@ -16,7 +16,7 @@ extern  unsigned int Systemtime;
 void TIM5_Init(void);
 void TIM4_Init(void);
 unsigned long GetSystemTime(void);
-void timer_set_func(timer_interval_func_t* para);
+s8 timer_set_func(timer_interval_func_t* para);
 void timer_interval_func_task();
 #endif
 

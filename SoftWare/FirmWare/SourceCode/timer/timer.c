@@ -1,6 +1,15 @@
 #include "main.h"
-timer_interval_func_t timer_func_g;
-uint8_t timer_func_is_running_g = 0;
+#define TIMER_FUNC_MAX_NUM  8
+typedef struct timer_func_list_struct
+{
+  timer_interval_func_t timer_func[TIMER_FUNC_MAX_NUM];
+  uint8_t timer_func_header_index;
+  uint8_t timer_func_tail_index;
+  uint8_t timer_func_num;
+}timer_func_list_t;
+
+timer_func_list_t timer_func_list_g;
+
 unsigned int Systemtime;
 void TIM5_Init(void)
 {
@@ -115,31 +124,35 @@ unsigned long GetSystemTime(void)
 }
 
 
-void timer_set_func(timer_interval_func_t* para)
+s8 timer_set_func(timer_interval_func_t* para)
 {
-  if(0 == timer_func_is_running_g)
+  if(TIMER_FUNC_MAX_NUM > timer_func_list_g.timer_func_num)
   {
-    timer_func_is_running_g = 1;
-    timer_func_g = *para;
-    rt_kprintf(" target = %d\r\n",timer_func_g.target_time);
+    timer_func_list_g.timer_func[timer_func_list_g.timer_func_header_index] = *para;
+    timer_func_list_g.timer_func_num++;
+    timer_func_list_g.timer_func_header_index = (timer_func_list_g.timer_func_header_index++) % TIMER_FUNC_MAX_NUM;
+    rt_kprintf(" target = %d num=%d\r\n",para->target_time,timer_func_list_g.timer_func_num);
+    return timer_func_list_g.timer_func_num;
   }
+  return -1;
 }
 
 
 void timer_interval_func_task()
 {
-    if(0 == timer_func_is_running_g)
+    if(0 == timer_func_list_g.timer_func_num)
      return;
 
-    if(GetSystemTime() < timer_func_g.target_time)
+    if(GetSystemTime() < timer_func_list_g.timer_func[timer_func_list_g.timer_func_tail_index].target_time)
       return;
 
     rt_kprintf("exec fun\r\n");
-    if(NULL != timer_func_g.cb)
+    if(NULL != timer_func_list_g.timer_func[timer_func_list_g.timer_func_tail_index].cb)
     {
        
-        (*timer_func_g.cb)(timer_func_g.para);
-        timer_func_is_running_g = 0;
+        (*timer_func_list_g.timer_func[timer_func_list_g.timer_func_tail_index].cb)(timer_func_list_g.timer_func[timer_func_list_g.timer_func_tail_index].para);
+        timer_func_list_g.timer_func_num --;
+        timer_func_list_g.timer_func_tail_index = (timer_func_list_g.timer_func_tail_index++) % TIMER_FUNC_MAX_NUM;
     }
 }
 

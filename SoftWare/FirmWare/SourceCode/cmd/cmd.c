@@ -125,6 +125,18 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			para.cb = (timer_callback)quit_send_data_mode_cmd;
 			para.para = NULL;
 			timer_set_func(&para);
+
+			para.interval = 10 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)set_send_mode;
+			para.para = NULL;
+			timer_set_func(&para);
+
+			para.interval = 10 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)jump_exec;
+			para.para = &region_header;
+			timer_set_func(&para);
 		}break;
 #endif
 		case PICTURE_CMD:
