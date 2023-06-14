@@ -56,6 +56,9 @@ void AdvancedClock::InitConnect()
 {
     connect(MyTimeShow,SIGNAL(ShowParameter(QString,QString)),this,SLOT(ShowParameter(QString,QString)));
     connect(MyTimeShow,SIGNAL(ShowSystemMessage(QString,uint16_t)),this,SLOT(ShowSystemMessage(QString,uint16_t)));
+
+    connect(MyOTA,SIGNAL(SendReq2Device(QByteArray)),MyTimeShow,SLOT(SendData2Device(QByteArray)));
+    connect(MyTimeShow,SIGNAL(SendData2OTA(QByteArray)),MyOTA,SLOT(RspDataProcess(QByteArray)));
 }
 
 /************************************************************************************************************

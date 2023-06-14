@@ -113,6 +113,19 @@
      <string>打开设备</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="ResetDevice">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>190</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>复位设备</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">

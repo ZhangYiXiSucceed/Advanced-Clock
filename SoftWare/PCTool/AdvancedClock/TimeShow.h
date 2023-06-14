@@ -21,9 +21,11 @@ public:
     void InitConnect();
     void RspDataProcess(QByteArray buf);
     void HeartCmdRsp();
+
 signals:
     void ShowParameter(QString, QString);
     void ShowSystemMessage(QString,uint16_t);
+    void SendData2OTA(QByteArray Data);
 private slots:
     void ScanInternet();
     void CloseInternetConnect();
@@ -32,6 +34,7 @@ private slots:
     void disconnectedSlot();
     void WriteTestData();
     void ConnectCmd();
+    void SendData2Device(QByteArray Data);
 private:
     Ui::TimeShow *ui;
     QTcpServer *MyTcpServer;

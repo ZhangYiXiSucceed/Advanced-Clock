@@ -187,6 +187,11 @@ void TimeShow::RspDataProcess(QByteArray buf)
             QMessageBox::information(NULL, "info", "connect ok", QMessageBox::Yes, QMessageBox::NoButton);
         }
         break;
+        case Reset_Cmd:
+        {
+            emit SendData2OTA(buf);
+        }
+        break;
         default:
         {
 
@@ -215,12 +220,7 @@ void TimeShow::HeartCmdRsp()
     *check_sum = CheckSum;
 
     memcpy((void*)Sendata.data(),buf,len);
-    qint64 res = currentClient->write(Sendata);
-    cout << res << endl;
-    if( 0 != res)
-    {
-        QMessageBox::warning(NULL, "warning", "send failed", QMessageBox::Yes, QMessageBox::NoButton);
-    }
+    SendData2Device(Sendata);
 }
 
 void TimeShow::WriteTestData()
@@ -242,11 +242,7 @@ void TimeShow::WriteTestData()
     *check_sum = CheckSum;
 
     memcpy((void*)Sendata.data(),buf,len);
-    qint64 res = currentClient->write(Sendata);
-    if( -1 == res)
-    {
-        QMessageBox::warning(NULL, "warning", "send failed", QMessageBox::Yes, QMessageBox::NoButton);
-    }
+    SendData2Device(Sendata);
 }
 
 void TimeShow::ConnectCmd()
@@ -268,13 +264,17 @@ void TimeShow::ConnectCmd()
     *check_sum = CheckSum;
 
     memcpy((void*)Sendata.data(),buf,len);
-    qint64 res = currentClient->write(Sendata);
+    SendData2Device(Sendata);
+}
+
+void TimeShow::SendData2Device(QByteArray Data)
+{
+    qint64 res = currentClient->write(Data);
     if( -1 == res)
     {
         QMessageBox::warning(NULL, "warning", "send failed", QMessageBox::Yes, QMessageBox::NoButton);
     }
 }
-
 TimeShow::~TimeShow()
 {
     delete ui;

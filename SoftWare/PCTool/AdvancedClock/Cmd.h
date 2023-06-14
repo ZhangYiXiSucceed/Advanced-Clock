@@ -14,6 +14,7 @@ enum
     UPDATE_END,
     JUMP_CMD,
     CONNECT_CMD,
+    Reset_Cmd,
 };
 
 
@@ -30,5 +31,5 @@ typedef struct server_heart_rsp_struct
     uint8_t rsp_res;
 }server_heart_rsp_t;
 
-
+int CalCheckSum(uint8_t* Data, uint16_t len);
 #endif // CMD_H
