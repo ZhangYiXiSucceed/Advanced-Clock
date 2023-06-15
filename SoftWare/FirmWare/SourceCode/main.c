@@ -43,7 +43,9 @@ int main()
     shell_process();
 	  periodic_task_process();
     wifi_msg_process();
+    timer_interval_func_task();
 	  show_interface_oled();
+    
   }
 }
 

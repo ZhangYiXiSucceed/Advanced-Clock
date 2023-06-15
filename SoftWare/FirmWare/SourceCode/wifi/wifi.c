@@ -21,7 +21,8 @@ unsigned char  WiFiNetCmd[][64]=
   {"AT+CWLAP=\"ZhangYixiSucceed\"\x0d\x0a"},
   {"AT+CIPCLOSE\x0d\x0a"},
   {"AT+CIPSTA?\x0d\x0a"},
-  {"AT+CIPAPMAC?\x0d\x0a"}
+  {"AT+CIPAPMAC?\x0d\x0a"},
+  {"AT+CIPSTART=\"TCP\",\"192.168.0.141\",51230\x0d\x0a"},
 };
 
 
@@ -78,9 +79,7 @@ void init_wifi_network()
 #ifndef BOOT
 	get_network_time_cmds();
 #else
-	connect_server();
-	set_send_mode(1);
-	entry_send_state();
+	connect_host();
 #endif
 }
 
@@ -143,6 +142,17 @@ void connect_server()
 	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
+void connect_host_ip()
+{
+	sOperCmdUnion_wifi.tid = AT_HOST_IP_CONNECT;
+	sOperCmdUnion_wifi.cmd = 0x0F;
+	sOperCmdUnion_wifi.len = sizeof(WiFiNetCmd[AT_HOST_IP_CONNECT]);
+	sOperCmdUnion_wifi.trycnt = 3;
+	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_HOST_IP_CONNECT], sOperCmdUnion_wifi.len);
+	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
+}
+
+
 void set_send_mode(unsigned char mode)
 {
 	if(0 == mode)
@@ -203,6 +213,20 @@ void get_network_time_cmds()
 
 	set_send_mode(0);
 
+	quit_network_connect_cmd();
+}
+
+void connect_host()
+{
+	connect_host_ip();
+	set_send_mode(1);
+	entry_send_state();
+}
+
+void leave_host()
+{
+	quit_send_data_mode_cmd();
+	set_send_mode(0);
 	quit_network_connect_cmd();
 }
 

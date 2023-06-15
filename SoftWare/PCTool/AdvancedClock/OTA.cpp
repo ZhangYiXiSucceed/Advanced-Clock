@@ -68,7 +68,7 @@ void OTA::RspDataProcess(QByteArray Data)
                 cout <<"frame check err,cal=" << cal_sum <<"read= "<< cal_sum << endl;
                 return;
             }
-            QMessageBox::information(NULL, "info", "connect ok", QMessageBox::Yes, QMessageBox::NoButton);
+            QMessageBox::information(NULL, "info", "reset ok", QMessageBox::Yes, QMessageBox::NoButton);
         }
         break;
         default:

@@ -219,15 +219,28 @@ void shell_process()
 void periodic_task_process()
 {
 	static int last_systime = 0;
+	static u8 connect_state_change = 0;
 #ifndef  BOOT
 	if(system_var.TwoMinuteFlag ==1)
     {
-        system_var.TwoMinuteFlag = 0;
+		connect_state_change = (connect_state_change + 1) % 3;
+		system_var.TwoMinuteFlag = 0;
 		rt_kprintf("*: two minute\r\n"); 
-		get_network_time_cmds();
-		PrintHTInfo();
-		print_wifi_weather_time_info();
-		OLED_Clear();
+		if(0 == connect_state_change)
+		{
+			get_network_time_cmds();
+			PrintHTInfo();
+			print_wifi_weather_time_info();
+			OLED_Clear();
+		}
+		else if(1 == connect_state_change)
+		{
+ 			connect_host();
+		}
+		else
+		{
+			leave_host();
+		}
     }
 	
 	if(last_systime != Systemtime)
