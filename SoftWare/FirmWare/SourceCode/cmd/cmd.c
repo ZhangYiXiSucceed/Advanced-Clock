@@ -80,6 +80,59 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			PrintfIOTPort4(connect_cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
 		}
 		break;
+		case RESET_CMD:
+		{
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + 4;
+			if(cmd_len != len)
+			{
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
+				return MSG_LEN_ERR;
+			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				return MSG_CRC_ERR;
+			}
+
+			u8 connect_cmd_data[sizeof(cmd_msg_frame_t) + 1 + 4];
+			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)connect_cmd_data;
+
+			msg->header = MSG_FRAME_HEADER;
+			msg->cmd = 	RESET_CMD;
+			msg->device_addr = 0x00;
+			msg->seq = 0x00;
+			msg->data_len = 0x01;
+
+			u8* err_code = (u8*)&connect_cmd_data[sizeof(cmd_msg_frame_t)];
+			*err_code = 0x00;
+
+			u32* check_sum = (u32*)&connect_cmd_data[sizeof(cmd_msg_frame_t) + 1 ];
+			*check_sum = CalCheckSum(connect_cmd_data,sizeof(cmd_msg_frame_t) + 1);
+
+			PrintfIOTPort4(connect_cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
+
+
+			timer_interval_func_t para;
+			para.interval = 10 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)quit_send_data_mode_cmd;
+			para.para = NULL;
+			timer_set_func(&para);
+
+			para.interval = 15 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)set_send_mode;
+			para.para = NULL;
+			timer_set_func(&para);
+
+			para.interval = 20 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)NVIC_SystemReset;
+			para.para = NULL;
+			timer_set_func(&para);
+		}break;
 #ifdef BOOT
 		case JUMP_CMD:
 		{
