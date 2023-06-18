@@ -817,14 +817,13 @@ void paraing_time_string(char* temp_time_date_str,char* temp_week)
 	min = (temp_time_date_str[14]-'0')*10+(temp_time_date_str[15]-'0');
 	sec = (temp_time_date_str[17]-'0')*10+(temp_time_date_str[18]-'0');	
 
-	char weak = 0; 
 	
 	if('0' == temp_week[0])
-		weak = RTC_Weekday_Sunday;
+		week = RTC_Weekday_Sunday;
 	else
-		weak = temp_week[0]-'0';
+		week = temp_week[0]-'0';
 	
-	RTC_Set_Date(year,month,day,weak);
+	RTC_Set_Date(year,month,day,week);
 	RTC_Set_Time(hour,min,sec,RTC_H12_PM);	
 	
 	time_and_weather_g.year   = year;
