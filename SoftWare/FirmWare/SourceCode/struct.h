@@ -39,6 +39,7 @@ struct SystemVar
 
 	unsigned char   Time_20_ms_flag;
 	unsigned char   uart1_mode;
+	unsigned char   host_cmd_flag;
 };
 
 typedef struct STR_FrameHead  
@@ -62,7 +63,7 @@ typedef struct time_and_weather_struct{
 	unsigned char  hour;	
 	unsigned char  minute;
 	unsigned char  second;
-	unsigned char  weak;
+	unsigned char  week;
 
 	char tempeture;
 	char humidty;

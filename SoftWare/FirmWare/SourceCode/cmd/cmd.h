@@ -39,6 +39,26 @@ typedef struct cmd_msg_frame_struct
 	u16 data_len;
 }cmd_msg_frame_t;
 
+typedef struct heart_data_struct
+{
+	u8 tempture;
+	u8 humidty;
+	
+	u16 year;
+	u8 month;
+	u8 day;
+	u8 week;
+	
+	u8 hour;
+	u8 minute;
+	u8 second;
+
+	u8 city_id;
+	u8 weather_id;
+
+	u32 rsv1;
+	u32 rsv2;
+}heart_data_t;
 
 typedef struct server_heart_rsp_struct
 {
@@ -47,6 +67,6 @@ typedef struct server_heart_rsp_struct
 
 
 cmd_process_errcode_e server_msg_process(u8* packet,u16 len);
-
+u32 CalCheckSum(uint8_t* Data, uint16_t len);
 #endif
 

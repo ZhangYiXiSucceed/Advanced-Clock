@@ -17,7 +17,7 @@ u32 CalCheckSum(uint8_t* Data, uint16_t len)
 cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 {
     cmd_msg_frame_t *cmd_msg_frame = (cmd_msg_frame_t *)packet;
-
+	system_var.host_cmd_flag = 1;
 	if(MSG_FRAME_HEADER  != cmd_msg_frame->header)
 	{
 		rt_kprintf("frame header err,0x%x\r\n", cmd_msg_frame->header);
@@ -179,13 +179,13 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			para.para = NULL;
 			timer_set_func(&para);
 
-			para.interval = 10 ;
+			para.interval = 12 ;
 			para.target_time = para.interval + GetSystemTime();
 			para.cb = (timer_callback)set_send_mode;
 			para.para = NULL;
 			timer_set_func(&para);
 
-			para.interval = 10 ;
+			para.interval = 14 ;
 			para.target_time = para.interval + GetSystemTime();
 			para.cb = (timer_callback)jump_exec;
 			para.para = &region_header;

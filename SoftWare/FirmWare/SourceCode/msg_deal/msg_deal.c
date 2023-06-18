@@ -215,6 +215,40 @@ void shell_process()
 	}
 }
 
+#ifndef  BOOT
+void send_heart_data()
+{
+	u8 buff[sizeof(cmd_msg_frame_t) + sizeof(heart_data_t) + sizeof(u32)];
+
+	cmd_msg_frame_t* msg=(cmd_msg_frame_t*)buff;
+	msg->header = MSG_FRAME_HEADER;
+	msg->cmd = 	HEART_CMD;
+	msg->device_addr = 0x00;
+	msg->seq = 0x00;
+	msg->data_len = sizeof(heart_data_t);
+
+	heart_data_t* heart_data = (heart_data_t*)(msg + 1);
+	heart_data->year = time_and_weather_g.year;
+	heart_data->month = time_and_weather_g.month;
+	heart_data->day = time_and_weather_g.day;
+	heart_data->week = time_and_weather_g.week;
+
+	heart_data->hour = time_and_weather_g.hour;
+	heart_data->minute = time_and_weather_g.minute;
+	heart_data->second = time_and_weather_g.second;
+
+	heart_data->tempture = time_and_weather_g.tempeture;
+	heart_data->humidty = time_and_weather_g.humidty;
+
+	heart_data->city_id = time_and_weather_g.city_id;
+	heart_data->weather_id = 0;
+
+	u32* check_sum = (u32*)(heart_data+1);
+	*check_sum = CalCheckSum(buff,sizeof(cmd_msg_frame_t) + sizeof(heart_data_t));
+
+	PrintfIOTPort4(buff,sizeof(cmd_msg_frame_t) + sizeof(heart_data_t) + sizeof(u32));
+}
+#endif
 
 void periodic_task_process()
 {
@@ -223,7 +257,7 @@ void periodic_task_process()
 #ifndef  BOOT
 	if(system_var.TwoMinuteFlag ==1)
     {
-		connect_state_change = (connect_state_change + 1) % 3;
+		connect_state_change = (connect_state_change + 1) % 2;
 		system_var.TwoMinuteFlag = 0;
 		rt_kprintf("*: two minute\r\n"); 
 		if(0 == connect_state_change)
@@ -233,13 +267,26 @@ void periodic_task_process()
 			print_wifi_weather_time_info();
 			OLED_Clear();
 		}
-		else if(1 == connect_state_change)
+		else 
 		{
- 			connect_host();
-		}
-		else
-		{
-			leave_host();
+			timer_interval_func_t para;
+			para.interval = 10 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)connect_host;
+			para.para = NULL;
+			timer_set_func(&para);
+
+			para.interval = 20 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)send_heart_data;
+			para.para = NULL;
+			timer_set_func(&para);
+
+			para.interval = 30 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)leave_host;
+			para.para = NULL;
+			timer_set_func(&para);
 		}
     }
 	
@@ -259,7 +306,7 @@ void periodic_task_process()
 		return;
 	cnt_count = 0;
 	
-	if(system_var.WIFIConnectFlag)
+	if(system_var.host_cmd_flag)
 		return;
 	if(0 == check_header(&region_header))
 	{
@@ -267,7 +314,24 @@ void periodic_task_process()
 		return ;
 	}
 	rt_kprintf("timeout,jump app\r\n");
-	jump_exec(&region_header);
+	timer_interval_func_t para;
+	para.interval = 10 ;
+	para.target_time = para.interval + GetSystemTime();
+	para.cb = (timer_callback)quit_send_data_mode_cmd;
+	para.para = NULL;
+	timer_set_func(&para);
+
+	para.interval = 15 ;
+	para.target_time = para.interval + GetSystemTime();
+	para.cb = (timer_callback)set_send_mode;
+	para.para = NULL;
+	timer_set_func(&para);
+
+	para.interval = 10 ;
+	para.target_time = para.interval + GetSystemTime();
+	para.cb = (timer_callback)jump_exec;
+	para.para = &region_header;
+	timer_set_func(&para);
 #endif
 	
 

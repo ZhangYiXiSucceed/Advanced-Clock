@@ -198,6 +198,7 @@ void send_weather_data(char* demo_data,unsigned char data_len)
 	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
+
 void get_network_time_cmds()
 {
 	connect_server();
@@ -249,7 +250,6 @@ void quit_network_connect_cmd()
 	memcpy(sOperCmdUnion_wifi.buffer, &WiFiNetCmd[AT_QUIT_TCP_CONNECT], sOperCmdUnion_wifi.len);
 	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
-
 
 void quiry_wifi()
 {
@@ -511,6 +511,16 @@ void wifi_msg_process()
 			      }
 				}
 				break;
+				case AT_HOST_IP_CONNECT:
+				{
+				  mrtn = WifiStateCheck((char*)FrameInBuff);
+			      if(mrtn == RESP_IP_CONNECT)
+			      {                                                                     // recv ok
+			          sOperCmdBuff.tid = 0xff;
+						
+			      }
+				}
+				break;
 				case AT_RECIVE_CMD:
 				{
 					server_msg_process(FrameInBuff,FrameInlen);
@@ -732,7 +742,7 @@ void print_wifi_weather_time_info()
 	rt_kprintf2("**********weather and time**********\r\n");
 	
 	rt_kprintf2("date:%d-%d-%d,week=%d\r\n",time_and_weather_g.year,time_and_weather_g.month,\
-											time_and_weather_g.day,time_and_weather_g.weak);
+											time_and_weather_g.day,time_and_weather_g.week);
 	rt_kprintf2("time:%d-%d-%d\r\n",time_and_weather_g.hour,time_and_weather_g.minute,\
 											time_and_weather_g.second);
 	
@@ -825,7 +835,7 @@ void paraing_time_string(char* temp_time_date_str,char* temp_week)
 	time_and_weather_g.minute = min;
 	time_and_weather_g.second = sec;
 
-	time_and_weather_g.weak   = weak;
+	time_and_weather_g.week   = week;
 }
 
 int parsing_the_str(char* str)

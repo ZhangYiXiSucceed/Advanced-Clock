@@ -1,7 +1,7 @@
 #ifndef __WIFI_H__
 #define __WIFI_H__
 
-
+#include "struct.h"
 
 #define  AT_CMD             0
 #define  AT_RST             1
@@ -27,7 +27,7 @@
 #define  AT_IDLE_CMD             0xFF
 #define  AT_RECIVE_CMD           AT_IDLE_CMD
 
-
+extern time_and_weather_t  time_and_weather_g;
 enum 
 {
 	RESP_WIFI_OK          = 0x00,
