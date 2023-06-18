@@ -26,6 +26,27 @@ typedef struct cmd_msg_frame_struct{
     uint16_t data_len;
 }cmd_msg_frame_t;
 
+typedef struct heart_data_struct
+{
+    uint8_t tempture;
+    uint8_t humidty;
+
+    uint16_t year;
+    uint8_t month;
+    uint8_t day;
+    uint8_t week;
+
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t second;
+
+    uint8_t city_id;
+    uint8_t weather_id;
+
+    uint32_t rsv1;
+    uint32_t rsv2;
+}heart_data_t;
+
 typedef struct server_heart_rsp_struct
 {
     uint8_t rsp_res;

@@ -160,6 +160,7 @@ void TimeShow::RspDataProcess(QByteArray buf)
 
     if(MSG_FRAME_HEADER != msg->header)
     {
+        cout <<"header err" << msg->header << endl;
         return;
     }
 
@@ -167,6 +168,13 @@ void TimeShow::RspDataProcess(QByteArray buf)
     {
         case HEART_CMD:
         {
+            uint32_t cal_sum = CalCheckSum(data,sizeof(cmd_msg_frame_t) + sizeof(heart_data_t));
+            uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + sizeof(heart_data_t)));
+            if(cal_sum != read_sum)
+            {
+                cout <<"frame check err,cal=" << cal_sum <<"read= "<< cal_sum << endl;
+                return;
+            }
             HeartCmdRsp();
         }
             break;

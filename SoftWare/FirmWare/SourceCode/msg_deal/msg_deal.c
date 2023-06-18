@@ -270,19 +270,19 @@ void periodic_task_process()
 		else 
 		{
 			timer_interval_func_t para;
-			para.interval = 10 ;
+			para.interval = 0 ;
 			para.target_time = para.interval + GetSystemTime();
 			para.cb = (timer_callback)connect_host;
 			para.para = NULL;
 			timer_set_func(&para);
 
-			para.interval = 20 ;
+			para.interval = 15 ;
 			para.target_time = para.interval + GetSystemTime();
 			para.cb = (timer_callback)send_heart_data;
 			para.para = NULL;
 			timer_set_func(&para);
 
-			para.interval = 30 ;
+			para.interval = 20 ;
 			para.target_time = para.interval + GetSystemTime();
 			para.cb = (timer_callback)leave_host;
 			para.para = NULL;
@@ -302,7 +302,7 @@ void periodic_task_process()
 	//rt_kprintf("last_systime=%d,Systemtime=%d\r\n", last_systime, system_data.SystemGMTTime);
 	last_systime = system_data.SystemGMTTime;
 	cnt_count++;
-	if(cnt_count<= 60)
+	if(cnt_count<= 30)
 		return;
 	cnt_count = 0;
 	
@@ -327,7 +327,7 @@ void periodic_task_process()
 	para.para = NULL;
 	timer_set_func(&para);
 
-	para.interval = 10 ;
+	para.interval = 20 ;
 	para.target_time = para.interval + GetSystemTime();
 	para.cb = (timer_callback)jump_exec;
 	para.para = &region_header;

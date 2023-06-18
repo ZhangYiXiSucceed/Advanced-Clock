@@ -82,7 +82,7 @@ void TIM5_IRQHandler(void)
 		{
 			system_data.SystemGMTTime++;
 		}
-        if(Systemtime % 120000 == 0)
+        if(Systemtime % 30000 == 0)
         {
           system_var.TwoMinuteFlag = 1;
         }
@@ -130,8 +130,9 @@ s8 timer_set_func(timer_interval_func_t* para)
   {
     timer_func_list_g.timer_func[timer_func_list_g.timer_func_header_index] = *para;
     timer_func_list_g.timer_func_num++;
-    timer_func_list_g.timer_func_header_index = (timer_func_list_g.timer_func_header_index++) % TIMER_FUNC_MAX_NUM;
-    rt_kprintf(" target = %d num=%d\r\n",para->target_time,timer_func_list_g.timer_func_num);
+    timer_func_list_g.timer_func_header_index++;
+    timer_func_list_g.timer_func_header_index = (timer_func_list_g.timer_func_header_index) % TIMER_FUNC_MAX_NUM;
+    rt_kprintf(" target = %d num=%d index=%d\r\n",para->target_time,timer_func_list_g.timer_func_num,timer_func_list_g.timer_func_header_index);
     return timer_func_list_g.timer_func_num;
   }
   return -1;
@@ -152,7 +153,8 @@ void timer_interval_func_task()
        
         (*timer_func_list_g.timer_func[timer_func_list_g.timer_func_tail_index].cb)(timer_func_list_g.timer_func[timer_func_list_g.timer_func_tail_index].para);
         timer_func_list_g.timer_func_num --;
-        timer_func_list_g.timer_func_tail_index = (timer_func_list_g.timer_func_tail_index++) % TIMER_FUNC_MAX_NUM;
+        timer_func_list_g.timer_func_tail_index++;
+        timer_func_list_g.timer_func_tail_index = (timer_func_list_g.timer_func_tail_index) % TIMER_FUNC_MAX_NUM;
     }
 }
 
