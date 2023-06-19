@@ -6,9 +6,11 @@
 #include "ui_TimeShow.h"
 using namespace std;
 
+
 TimeShow::TimeShow(QWidget *parent) :
     QWidget(parent),
     MyTcpServer(new QTcpServer),
+    MyTimeShowTimer(new QTimer),
     ui(new Ui::TimeShow)
 {
     ui->setupUi(this);
@@ -25,6 +27,13 @@ void TimeShow::InitUI()
 {
     ui->CloseDevice->setEnabled(false);
     ui->OpenDevice->setEnabled(true);
+
+    QFont Ft("Microsoft YaHei");
+    Ft.setPointSize(25);
+    ui->DateShow->setStyleSheet("color:blue");
+    ui->DateShow->setFont(Ft);
+
+    ui->NowShow->setStyleSheet("color:red");
 }
 
 void TimeShow::InitConnect()
@@ -35,6 +44,9 @@ void TimeShow::InitConnect()
     connect(ui->ConnectDevice,SIGNAL(clicked(bool)),this,SLOT(ConnectCmd()));
 
     connect(MyTcpServer,SIGNAL(newConnection()),this,SLOT(NewConnect()));
+    connect(this,SIGNAL(SetTimeReq(int,int,int)),this,SLOT(SetTime(int,int,int)));
+
+    connect(MyTimeShowTimer,SIGNAL(timeout()),this,SLOT(TimerUpdate()));
 }
 
 
@@ -175,7 +187,15 @@ void TimeShow::RspDataProcess(QByteArray buf)
                 cout <<"frame check err,cal=" << cal_sum <<"read= "<< cal_sum << endl;
                 return;
             }
+            heart_data_t* heart_data = (heart_data_t*)((cmd_msg_frame_t*)data + 1);
+            weather_and_time_data_g = *heart_data;
             HeartCmdRsp();
+            SetDate(weather_and_time_data_g.year,weather_and_time_data_g.month,\
+                    weather_and_time_data_g.day,weather_and_time_data_g.week);
+            if(MyTimeShowTimer->isActive() == false)
+            {
+                MyTimeShowTimer->start(1000);
+            }
         }
             break;
         case JUMP_CMD:
@@ -282,6 +302,51 @@ void TimeShow::SendData2Device(QByteArray Data)
     {
         QMessageBox::warning(NULL, "warning", "send failed", QMessageBox::Yes, QMessageBox::NoButton);
     }
+}
+
+void TimeShow::SetDate(int year,int month,int day,int week)
+{
+    QString date_str = tr("20");
+    date_str += QString::number(year);
+    date_str += tr("--");
+
+    date_str += QString::number(month);
+    date_str += tr("--");
+
+    date_str += QString::number(day);
+
+    ui->DateShow->setText(date_str);
+}
+
+void TimeShow::SetTime(int hour,int minute,int second)
+{
+    QString time_str ;
+    time_str += QString::number(hour);
+    time_str += tr(":");
+
+    time_str += QString::number(minute);
+    time_str += tr(":");
+
+    time_str += QString::number(second);
+    ui->NowShow->setText(time_str);
+}
+
+void TimeShow::TimerUpdate()
+{
+    weather_and_time_data_g.second++;
+    if(weather_and_time_data_g.second>=60)
+    {
+        weather_and_time_data_g.second = 0;
+        weather_and_time_data_g.minute++;
+        if(weather_and_time_data_g.minute>=60)
+        {
+            weather_and_time_data_g.minute = 0;
+            weather_and_time_data_g.hour++;
+        }
+    }
+    emit SetTimeReq(weather_and_time_data_g.hour,weather_and_time_data_g.minute,\
+                    weather_and_time_data_g.second);
+
 }
 TimeShow::~TimeShow()
 {

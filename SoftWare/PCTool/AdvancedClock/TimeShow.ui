@@ -109,7 +109,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLineEdit" name="TimeShow_2">
+   <widget class="QLineEdit" name="NowShow">
     <property name="geometry">
      <rect>
       <x>20</x>
