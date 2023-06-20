@@ -2,6 +2,12 @@
 #include <QMessageBox>
 #include <iostream>
 #include <iomanip>
+#include <string>
+#include <sys/types.h>
+#include <io.h>
+#include <fstream>
+#include <qtextcodec.h>
+#include <QFile>
 #include "Cmd.h"
 #include "ui_TimeShow.h"
 using namespace std;
@@ -13,14 +19,15 @@ TimeShow::TimeShow(QWidget *parent) :
 {
     MyTcpServer = new QTcpServer;
     MyTimeShowTimer = new QTimer;
-    ui->setupUi(this);
-    InitUI();
-    InitConnect();
 
     InternetPort = 51230;
     ConnectIP = nullptr;
-
     currentClient = nullptr;
+
+    ui->setupUi(this);
+    InitUI();
+    InitConnect();
+    ReadNiceWordsTxt(NiceWords);
 }
 
 void TimeShow::InitUI()
@@ -34,6 +41,9 @@ void TimeShow::InitUI()
     ui->DateShow->setFont(Ft);
 
     ui->NowShow->setStyleSheet("color:red");
+    Ft.setPointSize(20);
+    ui->NiceWords->setFont(Ft);
+    ui->NiceWords->setStyleSheet("color:blue");
 }
 
 void TimeShow::InitConnect()
@@ -349,30 +359,24 @@ void TimeShow::TimerUpdate()
 
 }
 
-void ReadNiceWordsTxt()
+void TimeShow::ReadNiceWordsTxt(QList<QString> &NiceWordsList)
 {
-    char buf[READ_MAX_LENGTH];
-    ifstream inFile(white_list_path, ios::in | ios::binary);
-    string assert_info;
+    char buf[READMAXLENGTH];
+    ifstream inFile(NICEWORDSPATH, ios::in|ios::binary);
+    QString words_info;
     if (!inFile)
     {
-        fprintf(stderr,"read white list err\r\n");
-        exit(-1);
+        cout <<"read NiceWordsTxT err!\n"<<endl;
+        QMessageBox::warning(NULL, "warning", "open failed", QMessageBox::Yes, QMessageBox::NoButton);
+        return;
     }
-    while(inFile.getline(buf, READ_MAX_LENGTH))
+    while(inFile.getline(buf, READMAXLENGTH))
     {
-        fprintf(stdout,"%s",buf);
-        if(strstr(buf,func_name))
-        {
-          assert_info = (string)buf;
-          size_t position = assert_info.find(func_name,0);
-          if(position != string::npos)
-          {
-            string temp_info = (string)(&buf[position]);
-            white_list.push_back(temp_info);
-          }
-        }
+        words_info = QString::fromLocal8Bit(buf);
+        cout << words_info.toLocal8Bit().data() << endl;
+        NiceWordsList.push_back(words_info);
     }
+    ui->NiceWords->setText(words_info.toLocal8Bit().data());
    inFile.close();
 }
 TimeShow::~TimeShow()

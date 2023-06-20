@@ -6,10 +6,14 @@
 #include <QTcpSocket>
 #include <QNetworkInterface>
 #include <QTimer>
+#include <string>
+#include <sys/types.h>
+#include <io.h>
+#include <fstream>
 #include "Cmd.h"
 
-#define NiceWordsPath
-
+#define NICEWORDSPATH "D:\\Workspace\\DesignProject\\AdvancedClock\\Advanced-Clock\\SoftWare\\PCTool\\AdvancedClock\\NiceWords.txt"
+#define READMAXLENGTH  512
 namespace Ui {
 class TimeShow;
 }
@@ -25,7 +29,7 @@ public:
     void InitConnect();
     void RspDataProcess(QByteArray buf);
     void HeartCmdRsp();
-
+    void ReadNiceWordsTxt(QList<QString> &NiceWordsList);
 signals:
     void ShowParameter(QString, QString);
     void ShowSystemMessage(QString,uint16_t);
@@ -54,6 +58,8 @@ private:
     int InternetPort;
     QString ConnectIP;
     heart_data_t weather_and_time_data_g;
+
+    QList<QString> NiceWords;
 };
 
 #endif // TIMESHOW_H
