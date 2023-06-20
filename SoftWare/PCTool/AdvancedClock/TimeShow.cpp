@@ -19,6 +19,7 @@ TimeShow::TimeShow(QWidget *parent) :
 {
     MyTcpServer = new QTcpServer;
     MyTimeShowTimer = new QTimer;
+    MyNiceWordsShowTimer = new QTimer;
 
     InternetPort = 51230;
     ConnectIP = nullptr;
@@ -28,6 +29,8 @@ TimeShow::TimeShow(QWidget *parent) :
     InitUI();
     InitConnect();
     ReadNiceWordsTxt(NiceWords);
+
+    MyNiceWordsShowTimer->start(5000);
 }
 
 void TimeShow::InitUI()
@@ -37,13 +40,19 @@ void TimeShow::InitUI()
 
     QFont Ft("Microsoft YaHei");
     Ft.setPointSize(25);
-    ui->DateShow->setStyleSheet("color:blue");
     ui->DateShow->setFont(Ft);
+    ui->DateShow->setStyleSheet("QLineEdit{background-color:transparent}"
+                                 "QLineEdit{border-width:0;border-style:outset}"
+                                 "QLineEdit{color:blue}");
 
-    ui->NowShow->setStyleSheet("color:red");
+    ui->NowShow->setStyleSheet("QLineEdit{background-color:transparent}"
+                                 "QLineEdit{border-width:0;border-style:outset}"
+                                 "QLineEdit{color:red}");
     Ft.setPointSize(20);
     ui->NiceWords->setFont(Ft);
-    ui->NiceWords->setStyleSheet("color:blue");
+    ui->NiceWords->setStyleSheet("QLineEdit{background-color:transparent}"
+                                 "QLineEdit{border-width:0;border-style:outset}"
+                                 "QLineEdit{color:orange}");
 }
 
 void TimeShow::InitConnect()
@@ -57,6 +66,7 @@ void TimeShow::InitConnect()
     connect(this,SIGNAL(SetTimeReq(int,int,int)),this,SLOT(SetTime(int,int,int)));
 
     connect(MyTimeShowTimer,SIGNAL(timeout()),this,SLOT(TimerUpdate()));
+    connect(MyNiceWordsShowTimer,SIGNAL(timeout()),this,SLOT(NiceWordsShowUpdate()));
 }
 
 
@@ -361,23 +371,34 @@ void TimeShow::TimerUpdate()
 
 void TimeShow::ReadNiceWordsTxt(QList<QString> &NiceWordsList)
 {
-    char buf[READMAXLENGTH];
-    ifstream inFile(NICEWORDSPATH, ios::in|ios::binary);
-    QString words_info;
-    if (!inFile)
+    char Buf[READMAXLENGTH];
+    ifstream InFile(NICEWORDSPATH, ios::in|ios::binary);
+    QString WordsInfo;
+    if (!InFile)
     {
         cout <<"read NiceWordsTxT err!\n"<<endl;
         QMessageBox::warning(NULL, "warning", "open failed", QMessageBox::Yes, QMessageBox::NoButton);
         return;
     }
-    while(inFile.getline(buf, READMAXLENGTH))
+    while(InFile.getline(Buf, READMAXLENGTH))
     {
-        words_info = QString::fromLocal8Bit(buf);
-        cout << words_info.toLocal8Bit().data() << endl;
-        NiceWordsList.push_back(words_info);
+        WordsInfo = QString::fromLocal8Bit(Buf);
+        cout << WordsInfo.toLocal8Bit().data() << endl;
+        NiceWordsList.push_back(WordsInfo);
     }
-    ui->NiceWords->setText(words_info.toLocal8Bit().data());
-   inFile.close();
+    ui->NiceWords->setText(WordsInfo);
+    InFile.close();
+}
+
+void TimeShow::NiceWordsShowUpdate()
+{
+    int WrodsSize = NiceWords.size();
+    static int Index = 0;
+    QString OneWords = NiceWords.at(Index);
+    ui->NiceWords->setText(OneWords);
+    Index++;
+    if(Index >= WrodsSize)
+        Index = 0;
 }
 TimeShow::~TimeShow()
 {

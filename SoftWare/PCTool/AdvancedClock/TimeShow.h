@@ -47,6 +47,7 @@ private slots:
     void SetDate(int year,int month,int day,int week);
     void SetTime(int hour,int minute,int second);
     void TimerUpdate();
+    void NiceWordsShowUpdate();
 private:
     Ui::TimeShow *ui;
     QTcpServer *MyTcpServer;
@@ -54,6 +55,7 @@ private:
     QTcpSocket *currentClient;
 
     QTimer  *MyTimeShowTimer;
+    QTimer  *MyNiceWordsShowTimer;
 
     int InternetPort;
     QString ConnectIP;

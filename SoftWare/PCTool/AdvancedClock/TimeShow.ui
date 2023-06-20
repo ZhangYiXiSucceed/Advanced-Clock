@@ -149,11 +149,14 @@
    <widget class="QLineEdit" name="NiceWords">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>10</x>
       <y>240</y>
-      <width>541</width>
+      <width>591</width>
       <height>81</height>
      </rect>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::NoContextMenu</enum>
     </property>
     <property name="text">
      <string>心灵鸡汤</string>
