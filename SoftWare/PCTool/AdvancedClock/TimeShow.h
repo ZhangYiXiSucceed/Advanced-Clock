@@ -8,6 +8,8 @@
 #include <QTimer>
 #include "Cmd.h"
 
+#define NiceWordsPath
+
 namespace Ui {
 class TimeShow;
 }

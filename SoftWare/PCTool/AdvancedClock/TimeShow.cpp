@@ -9,10 +9,10 @@ using namespace std;
 
 TimeShow::TimeShow(QWidget *parent) :
     QWidget(parent),
-    MyTcpServer(new QTcpServer),
-    MyTimeShowTimer(new QTimer),
     ui(new Ui::TimeShow)
 {
+    MyTcpServer = new QTcpServer;
+    MyTimeShowTimer = new QTimer;
     ui->setupUi(this);
     InitUI();
     InitConnect();
@@ -347,6 +347,33 @@ void TimeShow::TimerUpdate()
     emit SetTimeReq(weather_and_time_data_g.hour,weather_and_time_data_g.minute,\
                     weather_and_time_data_g.second);
 
+}
+
+void ReadNiceWordsTxt()
+{
+    char buf[READ_MAX_LENGTH];
+    ifstream inFile(white_list_path, ios::in | ios::binary);
+    string assert_info;
+    if (!inFile)
+    {
+        fprintf(stderr,"read white list err\r\n");
+        exit(-1);
+    }
+    while(inFile.getline(buf, READ_MAX_LENGTH))
+    {
+        fprintf(stdout,"%s",buf);
+        if(strstr(buf,func_name))
+        {
+          assert_info = (string)buf;
+          size_t position = assert_info.find(func_name,0);
+          if(position != string::npos)
+          {
+            string temp_info = (string)(&buf[position]);
+            white_list.push_back(temp_info);
+          }
+        }
+    }
+   inFile.close();
 }
 TimeShow::~TimeShow()
 {
