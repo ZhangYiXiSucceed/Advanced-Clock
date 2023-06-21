@@ -62,6 +62,12 @@ private:
     heart_data_t weather_and_time_data_g;
 
     QList<QString> NiceWords;
+
+    QPixmap WeatherCloudy=tr(":/Image/cloudy.png");
+    QPixmap WeatherRainy=tr(":/Image/rainy.png");
+    QPixmap WeatherSnowy=tr(":/Image/snowy.png");
+    QPixmap WeatherSunny=tr(":/Image/sunny.png");
+    QPixmap WeatherWindy=tr(":/Image/windy.png");
 };
 
 #endif // TIMESHOW_H

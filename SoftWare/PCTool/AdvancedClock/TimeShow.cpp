@@ -53,6 +53,39 @@ void TimeShow::InitUI()
     ui->NiceWords->setStyleSheet("QLineEdit{background-color:transparent}"
                                  "QLineEdit{border-width:0;border-style:outset}"
                                  "QLineEdit{color:orange}");
+
+    ui->WeatherIcon1->setIcon(WeatherRainy);
+    ui->WeatherIcon1->setIconSize(WeatherRainy.size());
+    ui->WeatherIcon1->setStyleSheet("QPushButton{background-color:transparent}"
+                                 "QPushButton{border-width:0;border-style:outset}"
+                                 "QPushButton{color:orange}");
+
+    ui->WeatherIcon2->setIcon(WeatherSunny);
+    ui->WeatherIcon2->setIconSize(WeatherSunny.size());
+    ui->WeatherIcon2->setStyleSheet("QPushButton{background-color:transparent}"
+                                 "QPushButton{border-width:0;border-style:outset}"
+                                 "QPushButton{color:orange}");
+
+    ui->WeatherIcon3->setIcon(WeatherCloudy);
+    ui->WeatherIcon3->setIconSize(WeatherCloudy.size());
+    ui->WeatherIcon3->setStyleSheet("QPushButton{background-color:transparent}"
+                                 "QPushButton{border-width:0;border-style:outset}"
+                                 "QPushButton{color:orange}");
+
+    ui->WeatherIcon4->setIcon(WeatherSnowy);
+    ui->WeatherIcon4->setIconSize(WeatherSnowy.size());
+    ui->WeatherIcon4->setStyleSheet("QPushButton{background-color:transparent}"
+                                 "QPushButton{border-width:0;border-style:outset}"
+                                 "QPushButton{color:orange}");
+    Ft.setPointSize(12);
+    ui->LabelDay1->setFont(Ft);
+    ui->LabelDay1->setStyleSheet("QLabel{color:blue}");
+    ui->LabelDay2->setFont(Ft);
+    ui->LabelDay2->setStyleSheet("QLabel{color:blue}");
+    ui->LabelDay3->setFont(Ft);
+    ui->LabelDay3->setStyleSheet("QLabel{color:blue}");
+    ui->LabelDay4->setFont(Ft);
+    ui->LabelDay4->setStyleSheet("QLabel{color:blue}");
 }
 
 void TimeShow::InitConnect()

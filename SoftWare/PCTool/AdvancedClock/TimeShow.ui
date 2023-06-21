@@ -17,9 +17,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>360</y>
+     <y>320</y>
      <width>761</width>
-     <height>151</height>
+     <height>201</height>
     </rect>
    </property>
    <property name="title">
@@ -30,51 +30,121 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>141</width>
-      <height>121</height>
+      <width>161</width>
+      <height>131</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>120</width>
+      <height>120</height>
+     </size>
     </property>
    </widget>
    <widget class="QPushButton" name="WeatherIcon2">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>200</x>
       <y>20</y>
-      <width>141</width>
-      <height>121</height>
+      <width>161</width>
+      <height>131</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string/>
     </property>
    </widget>
    <widget class="QPushButton" name="WeatherIcon3">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>390</x>
       <y>20</y>
-      <width>141</width>
-      <height>121</height>
+      <width>161</width>
+      <height>131</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string/>
     </property>
    </widget>
    <widget class="QPushButton" name="WeatherIcon4">
     <property name="geometry">
      <rect>
-      <x>610</x>
+      <x>580</x>
       <y>20</y>
-      <width>141</width>
-      <height>121</height>
+      <width>161</width>
+      <height>131</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="LabelDay1">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>160</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Day1</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="LabelDay2">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>160</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Day2</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="LabelDay4">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>160</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Day4</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="LabelDay3">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>160</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Day3</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
@@ -82,9 +152,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
+     <y>0</y>
      <width>611</width>
-     <height>341</height>
+     <height>321</height>
     </rect>
    </property>
    <property name="title">
@@ -150,7 +220,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>240</y>
+      <y>220</y>
       <width>591</width>
       <height>81</height>
      </rect>
@@ -170,9 +240,9 @@
    <property name="geometry">
     <rect>
      <x>630</x>
-     <y>10</y>
+     <y>0</y>
      <width>141</width>
-     <height>341</height>
+     <height>321</height>
     </rect>
    </property>
    <property name="title">
@@ -195,7 +265,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>100</y>
+      <y>90</y>
       <width>121</width>
       <height>51</height>
      </rect>
@@ -208,7 +278,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>180</y>
+      <y>160</y>
       <width>121</width>
       <height>51</height>
      </rect>
@@ -221,7 +291,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>260</y>
+      <y>240</y>
       <width>121</width>
       <height>51</height>
      </rect>

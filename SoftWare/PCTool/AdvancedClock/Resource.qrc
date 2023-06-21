@@ -1,3 +1,9 @@
 <RCC>
-    <qresource prefix="/"/>
+    <qresource prefix="/">
+        <file>Image/cloudy.png</file>
+        <file>Image/rainy.png</file>
+        <file>Image/snowy.png</file>
+        <file>Image/sunny.png</file>
+        <file>Image/windy.png</file>
+    </qresource>
 </RCC>
