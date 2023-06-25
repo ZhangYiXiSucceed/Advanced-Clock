@@ -22,6 +22,8 @@ signals:
     void SendReq2Device(QByteArray Data);
     void OpenDeviceReq();
     void CloseDeviceReq();
+    void ShowParameter(QString, QString);
+    void ShowSystemMessage(QString,uint16_t);
 private slots:
     void RspDataProcess(QByteArray Data);
     void on_ResetDevice_pressed();
@@ -30,9 +32,12 @@ private slots:
     void ConnectDeviceCmd();
     void OpenDevice();
     void CloseDevice();
-
+    void SelectOTABin();
+    void StartUpgrade();
 private:
     Ui::OTA *ui;
+    QString FileAddress;          //the address of upgrade bin file
+    quint64 BinSize;              //the size of bin file
 };
 
 #endif // OTA_H

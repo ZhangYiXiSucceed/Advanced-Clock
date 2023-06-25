@@ -153,7 +153,7 @@
     <rect>
      <x>10</x>
      <y>0</y>
-     <width>611</width>
+     <width>761</width>
      <height>321</height>
     </rect>
    </property>
@@ -165,7 +165,7 @@
      <rect>
       <x>80</x>
       <y>20</y>
-      <width>451</width>
+      <width>601</width>
       <height>41</height>
      </rect>
     </property>
@@ -184,7 +184,7 @@
      <rect>
       <x>20</x>
       <y>80</y>
-      <width>571</width>
+      <width>721</width>
       <height>121</height>
      </rect>
     </property>
@@ -221,7 +221,7 @@
      <rect>
       <x>10</x>
       <y>220</y>
-      <width>591</width>
+      <width>741</width>
       <height>81</height>
      </rect>
     </property>
@@ -233,71 +233,6 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_4">
-   <property name="geometry">
-    <rect>
-     <x>630</x>
-     <y>0</y>
-     <width>141</width>
-     <height>321</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>GroupBox</string>
-   </property>
-   <widget class="QPushButton" name="OpenDevice">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>121</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>打开设备</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="CloseDevice">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>121</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>关闭设备</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="WriteTestData">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>160</y>
-      <width>121</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>写数据</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="ConnectDevice">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>240</y>
-      <width>121</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>连接设备</string>
     </property>
    </widget>
   </widget>

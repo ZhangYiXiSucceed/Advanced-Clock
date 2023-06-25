@@ -240,7 +240,7 @@
      <string>升级文件：</string>
     </property>
    </widget>
-   <widget class="QToolButton" name="SelectUpgradBinFIle">
+   <widget class="QToolButton" name="SelectUpgradBinFile">
     <property name="geometry">
      <rect>
       <x>100</x>
@@ -264,6 +264,78 @@
     </property>
     <property name="text">
      <string>开始升级</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="UpgradBinFileNameLable">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>80</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>升级文件名：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="UpgradBinFileAddress">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>80</y>
+      <width>381</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="UpgradBinFileSizeLable">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>120</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>升级文件大小：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="UpgradBinFileSize">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>120</y>
+      <width>371</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

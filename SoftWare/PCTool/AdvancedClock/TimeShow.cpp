@@ -35,9 +35,6 @@ TimeShow::TimeShow(QWidget *parent) :
 
 void TimeShow::InitUI()
 {
-    ui->CloseDevice->setEnabled(false);
-    ui->OpenDevice->setEnabled(true);
-
     QFont Ft("Microsoft YaHei");
     Ft.setPointSize(25);
     ui->DateShow->setFont(Ft);
@@ -94,10 +91,6 @@ void TimeShow::InitUI()
 
 void TimeShow::InitConnect()
 {
-    connect(ui->OpenDevice,SIGNAL(clicked(bool)),this,SLOT(ScanInternet()));
-    connect(ui->CloseDevice,SIGNAL(clicked(bool)),this,SLOT(CloseInternetConnect()));
-    connect(ui->WriteTestData,SIGNAL(clicked(bool)),this,SLOT(WriteTestData()));
-    connect(ui->ConnectDevice,SIGNAL(clicked(bool)),this,SLOT(ConnectCmd()));
 
     connect(MyTcpServer,SIGNAL(newConnection()),this,SLOT(NewConnect()));
     connect(this,SIGNAL(SetTimeReq(int,int,int)),this,SLOT(SetTime(int,int,int)));
@@ -145,8 +138,6 @@ void TimeShow::ScanInternet()
     }
 
     emit ShowParameter(ConnectIP,QString::number(InternetPort));
-    ui->OpenDevice->setEnabled(false);
-    ui->CloseDevice->setEnabled(true);
     bool is_ok = MyTcpServer->listen(QHostAddress(ConnectIP),InternetPort);
     if(is_ok)
     {
@@ -165,8 +156,6 @@ void TimeShow::CloseInternetConnect()
         currentClient->close();
     }
 
-    ui->OpenDevice->setEnabled(true);
-    ui->CloseDevice->setEnabled(false);
     QMessageBox::information(NULL, "info", "close listen", QMessageBox::Yes, QMessageBox::NoButton);
 }
 
@@ -260,19 +249,12 @@ void TimeShow::RspDataProcess(QByteArray buf)
             break;
         case JUMP_CMD:
         {
-            QMessageBox::information(NULL, "info", "jump ok", QMessageBox::Yes, QMessageBox::NoButton);
+            emit SendData2OTA(buf);
         }
         break;
         case CONNECT_CMD:
         {
-            uint32_t cal_sum = CalCheckSum(data,sizeof(cmd_msg_frame_t) + 1);
-            uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + 1));
-            if(cal_sum != read_sum)
-            {
-                cout <<"frame check err,cal=" << cal_sum <<"read= "<< cal_sum << endl;
-                return;
-            }
-            QMessageBox::information(NULL, "info", "connect ok", QMessageBox::Yes, QMessageBox::NoButton);
+            emit SendData2OTA(buf);
         }
         break;
         case Reset_Cmd:

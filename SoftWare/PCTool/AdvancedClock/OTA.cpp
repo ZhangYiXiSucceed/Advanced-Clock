@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <iostream>
 #include <iomanip>
+#include <QFileDialog>
 using namespace std;
 
 OTA::OTA(QWidget *parent) :
@@ -17,28 +18,68 @@ OTA::OTA(QWidget *parent) :
 
 void OTA::InitUI()
 {
-
+    ui->OpenDevice->setEnabled(true);
+    ui->CloseDevice->setEnabled(false);
 }
 void OTA::InitConnect()
 {
     connect(ui->ResetDevice,SIGNAL(clicked(bool)),this,SLOT(ResetDeviceCmd()));
-    connect(ui->ConnectDevice,SIGNAL(clicked(bool)),this,SLOT(JumpDeviceCmd()));
-    connect(ui->JumpDevice,SIGNAL(clicked(bool)),this,SLOT(ConnectDeviceCmd()));
+    connect(ui->ConnectDevice,SIGNAL(clicked(bool)),this,SLOT(ConnectDeviceCmd()));
+    connect(ui->JumpDevice,SIGNAL(clicked(bool)),this,SLOT(JumpDeviceCmd()));
 
     connect(ui->OpenDevice,SIGNAL(clicked(bool)),this,SLOT(OpenDevice()));
     connect(ui->CloseDevice,SIGNAL(clicked(bool)),this,SLOT(CloseDevice()));
+
+    connect(ui->SelectUpgradBinFile,SIGNAL(clicked(bool)),this,SLOT(SelectOTABin()));
 }
 
 void OTA::OpenDevice()
 {
     emit OpenDeviceReq();
+    ui->OpenDevice->setEnabled(false);
+    ui->CloseDevice->setEnabled(true);
 }
 
 void OTA::CloseDevice()
 {
     emit CloseDeviceReq();
+    ui->OpenDevice->setEnabled(true);
+    ui->CloseDevice->setEnabled(false);
 }
 
+void OTA::SelectOTABin()
+{
+    FileAddress = QFileDialog::getOpenFileName(this,tr("Open File"),FileAddress,tr("(*.bin);;(*.hex);;(*.axf);;(*.txt);;All Files(*.*)"));
+    ui->UpgradBinFileAddress->setText(FileAddress);
+    if(FileAddress != NULL)
+    {
+        QFileInfo *Temp = new QFileInfo(FileAddress);
+        BinSize = Temp->size();
+        //添加日期等
+        QFile *BinFile = new QFile(FileAddress);
+        if(BinFile->open(QIODevice::ReadOnly))
+        {
+            emit ShowSystemMessage(tr("打开文件成功，并获取相关信息！"),1500);
+            if(BinSize<2014)
+                ui->UpgradBinFileSize->setText(tr("%1B\n").arg(BinSize));
+            else if(BinSize<1024*1024)
+                ui->UpgradBinFileSize->setText(tr("%1K %2B\n").arg(BinSize/1024).arg(BinSize%1024));
+            else
+                ui->UpgradBinFileSize->setText(tr("%1M %2K %3B\n").arg(BinSize/1024/1024).arg(BinSize/1024%1024).arg(BinSize%1024));
+            BinFile->close();
+        }
+        delete BinFile;
+        delete Temp;
+    }
+    else
+    {
+        emit ShowSystemMessage(tr("未打开任何文件！"),1500);
+    }
+}
+void OTA::StartUpgrade()
+{
+
+}
 void OTA::ResetDeviceCmd()
 {
     uint8_t buf[sizeof(cmd_msg_frame_t) +  sizeof(uint32_t)];
