@@ -78,14 +78,18 @@ void TimeShow::InitUI()
                                  "QPushButton{border-width:0;border-style:outset}"
                                  "QPushButton{color:orange}");
     Ft.setPointSize(12);
+    Ft.setBold(true);
     ui->LabelDay1->setFont(Ft);
-    ui->LabelDay1->setStyleSheet("QLabel{color:blue}");
+    ui->LabelDay1->setStyleSheet("QLabel{color:green}");
     ui->LabelDay2->setFont(Ft);
-    ui->LabelDay2->setStyleSheet("QLabel{color:blue}");
+    ui->LabelDay2->setStyleSheet("QLabel{color:green}");
     ui->LabelDay3->setFont(Ft);
-    ui->LabelDay3->setStyleSheet("QLabel{color:blue}");
+    ui->LabelDay3->setStyleSheet("QLabel{color:green}");
     ui->LabelDay4->setFont(Ft);
-    ui->LabelDay4->setStyleSheet("QLabel{color:blue}");
+    ui->LabelDay4->setStyleSheet("QLabel{color:green}");
+
+    ui->weather_group->setFont(Ft);
+    ui->TimeAndDate->setFont(Ft);
 }
 
 void TimeShow::InitConnect()
@@ -155,8 +159,11 @@ void TimeShow::CloseInternetConnect()
     MyTcpServer->disconnect();
     MyTcpServer->close();
 
-    currentClient->disconnect();
-    currentClient->close();
+    if(currentClient != NULL)
+    {
+        currentClient->disconnect();
+        currentClient->close();
+    }
 
     ui->OpenDevice->setEnabled(true);
     ui->CloseDevice->setEnabled(false);

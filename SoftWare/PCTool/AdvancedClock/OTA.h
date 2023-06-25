@@ -20,10 +20,16 @@ public:
 
 signals:
     void SendReq2Device(QByteArray Data);
+    void OpenDeviceReq();
+    void CloseDeviceReq();
 private slots:
     void RspDataProcess(QByteArray Data);
     void on_ResetDevice_pressed();
     void ResetDeviceCmd();
+    void JumpDeviceCmd();
+    void ConnectDeviceCmd();
+    void OpenDevice();
+    void CloseDevice();
 
 private:
     Ui::OTA *ui;

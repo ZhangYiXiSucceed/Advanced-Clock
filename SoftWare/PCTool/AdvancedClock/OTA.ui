@@ -104,7 +104,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>130</y>
+      <y>250</y>
       <width>101</width>
       <height>41</height>
      </rect>
@@ -124,6 +124,45 @@
     </property>
     <property name="text">
      <string>复位设备</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="ConnectDevice">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>190</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>连接设备</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="CloseDevice">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>250</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>关闭设备</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="JumpDevice">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>130</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>设备跳转</string>
     </property>
    </widget>
   </widget>

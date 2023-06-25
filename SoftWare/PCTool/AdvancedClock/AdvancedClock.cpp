@@ -58,7 +58,12 @@ void AdvancedClock::InitConnect()
     connect(MyTimeShow,SIGNAL(ShowSystemMessage(QString,uint16_t)),this,SLOT(ShowSystemMessage(QString,uint16_t)));
 
     connect(MyOTA,SIGNAL(SendReq2Device(QByteArray)),MyTimeShow,SLOT(SendData2Device(QByteArray)));
+    connect(MyOTA,SIGNAL(OpenDeviceReq()),MyTimeShow,SLOT(ScanInternet()));
+    connect(MyOTA,SIGNAL(CloseDeviceReq()),MyTimeShow,SLOT(CloseInternetConnect()));
+
     connect(MyTimeShow,SIGNAL(SendData2OTA(QByteArray)),MyOTA,SLOT(RspDataProcess(QByteArray)));
+
+
 }
 
 /************************************************************************************************************
