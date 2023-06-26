@@ -17,9 +17,14 @@ OTA::OTA(QWidget *parent) :
     MyStartConnectTimer->start(5000);
     MyStartConnectTimer->setSingleShot(true);
     BinBuf = new quint8[1024];
+    MyThread = new QThreadRun;
 
+    MyThread->SetSwitch(true);
+    MyThread->SetCallBackFunc((ThreadCallback)&PrintMsg,NULL);
+    MyThread->start();
     InitUI();
     InitConnect();
+    PrintMsg();
 }
 
 void OTA::InitUI()
@@ -39,6 +44,13 @@ void OTA::InitConnect()
     connect(ui->SelectUpgradBinFile,SIGNAL(clicked(bool)),this,SLOT(SelectOTABin()));
 
     connect(MyStartConnectTimer,SIGNAL(timeout()),this,SLOT(OpenDevice()));
+}
+
+void PrintMsg()
+{
+    static int Count = 0;
+    cout << "PrintMsg " << Count++ << endl;
+    QThread::msleep(1000);
 }
 
 void OTA::OpenDevice()
@@ -74,7 +86,7 @@ void OTA::SelectOTABin()
                 ui->UpgradBinFileSize->setText(tr("%1K %2B\n").arg(BinSize/1024).arg(BinSize%1024));
             else
                 ui->UpgradBinFileSize->setText(tr("%1M %2K %3B\n").arg(BinSize/1024/1024).arg(BinSize/1024%1024).arg(BinSize%1024));
-            BinFile->read(BinBuf,0);
+            BinFile->read((char*)BinBuf,0);
             BinFile->close();
         }
         delete BinFile;
@@ -132,6 +144,28 @@ void OTA::TransmitBinInfo()
 
     int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t));
     uint32_t *check_sum = (uint32_t *)(&buf[sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t) + 1]);
+    *check_sum = CheckSum;
+
+    memcpy((void*)Sendata.data(),buf,len);
+    emit SendReq2Device(Sendata);
+}
+
+void OTA::TransmitBinEnd()
+{
+    uint8_t buf[sizeof(cmd_msg_frame_t) +  sizeof(uint32_t)];
+    uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(uint32_t);
+    QByteArray Sendata;
+    Sendata.resize(len);
+
+    cmd_msg_frame_t *msg = (cmd_msg_frame_t *)buf;
+    msg->header = MSG_FRAME_HEADER;
+    msg->device_addr = 0x00;
+    msg->cmd = UPDATE_END;
+    msg->seq = 0x00;
+    msg->data_len = 0x00;
+
+    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t));
+    uint32_t *check_sum = (uint32_t *)(msg+1);
     *check_sum = CheckSum;
 
     memcpy((void*)Sendata.data(),buf,len);
@@ -274,3 +308,31 @@ void OTA::on_ResetDevice_pressed()
 
 }
 
+QThreadRun::QThreadRun()
+{
+    StartFlag = false;
+}
+
+QThreadRun::~QThreadRun()
+{
+
+}
+
+void QThreadRun::SetSwitch(bool flag)
+{
+    StartFlag = flag;
+}
+
+void QThreadRun::SetCallBackFunc(ThreadCallback Func,void* Arg)
+{
+    CallBack = Func;
+    CallBackArg = Arg;
+}
+
+void QThreadRun::run()
+{
+    while(StartFlag)
+    {
+        (*CallBack)(CallBackArg);
+    }
+}
