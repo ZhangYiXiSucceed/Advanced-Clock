@@ -52,5 +52,13 @@ typedef struct server_heart_rsp_struct
     uint8_t rsp_res;
 }server_heart_rsp_t;
 
+typedef struct ota_package_info_struct
+{
+    uint32_t bin_size;
+    uint32_t package_num;
+    uint32_t check_sum;
+    uint32_t rsv;
+}ota_package_info_t;
+
 int CalCheckSum(uint8_t* Data, uint16_t len);
 #endif // CMD_H

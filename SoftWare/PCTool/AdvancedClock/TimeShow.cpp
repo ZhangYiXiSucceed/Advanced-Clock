@@ -24,13 +24,15 @@ TimeShow::TimeShow(QWidget *parent) :
     InternetPort = 51230;
     ConnectIP = nullptr;
     currentClient = nullptr;
+    MyNiceWordsShowTimer->start(5000);
 
     ui->setupUi(this);
     InitUI();
     InitConnect();
     ReadNiceWordsTxt(NiceWords);
 
-    MyNiceWordsShowTimer->start(5000);
+
+
 }
 
 void TimeShow::InitUI()
@@ -141,7 +143,8 @@ void TimeShow::ScanInternet()
     bool is_ok = MyTcpServer->listen(QHostAddress(ConnectIP),InternetPort);
     if(is_ok)
     {
-        QMessageBox::information(NULL, "info", "Listening Client", QMessageBox::Yes, QMessageBox::NoButton);
+        //QMessageBox::information(NULL, "info", "Listening Client", QMessageBox::Yes, QMessageBox::NoButton);
+        emit ShowSystemMessage("start Listening Client",2000);
     }
 }
 

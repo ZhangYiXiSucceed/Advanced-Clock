@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <QFileDialog>
+#include <QFile>
 using namespace std;
 
 OTA::OTA(QWidget *parent) :
@@ -12,6 +13,11 @@ OTA::OTA(QWidget *parent) :
     ui(new Ui::OTA)
 {
     ui->setupUi(this);
+    MyStartConnectTimer = new QTimer;
+    MyStartConnectTimer->start(5000);
+    MyStartConnectTimer->setSingleShot(true);
+    BinBuf = new quint8[1024];
+
     InitUI();
     InitConnect();
 }
@@ -31,6 +37,8 @@ void OTA::InitConnect()
     connect(ui->CloseDevice,SIGNAL(clicked(bool)),this,SLOT(CloseDevice()));
 
     connect(ui->SelectUpgradBinFile,SIGNAL(clicked(bool)),this,SLOT(SelectOTABin()));
+
+    connect(MyStartConnectTimer,SIGNAL(timeout()),this,SLOT(OpenDevice()));
 }
 
 void OTA::OpenDevice()
@@ -66,6 +74,7 @@ void OTA::SelectOTABin()
                 ui->UpgradBinFileSize->setText(tr("%1K %2B\n").arg(BinSize/1024).arg(BinSize%1024));
             else
                 ui->UpgradBinFileSize->setText(tr("%1M %2K %3B\n").arg(BinSize/1024/1024).arg(BinSize/1024%1024).arg(BinSize%1024));
+            BinFile->read(BinBuf,0);
             BinFile->close();
         }
         delete BinFile;
@@ -76,6 +85,59 @@ void OTA::SelectOTABin()
         emit ShowSystemMessage(tr("未打开任何文件！"),1500);
     }
 }
+
+void OTA::TransmitBinData(uint8_t cnt)
+{
+    uint8_t buf[sizeof(cmd_msg_frame_t) +  OTA_ONE_PACKAGE_SIZE + sizeof(uint32_t)];
+    uint16_t len = sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE + sizeof(uint32_t);
+    QByteArray Sendata;
+    Sendata.resize(len);
+
+    cmd_msg_frame_t *msg = (cmd_msg_frame_t *)buf;
+    msg->header = MSG_FRAME_HEADER;
+    msg->device_addr = 0x00;
+    msg->cmd = UPDATE_DATA;
+    msg->seq = cnt;
+    msg->data_len = OTA_ONE_PACKAGE_SIZE;
+
+    uint8_t *data =(uint8_t *)(msg+1);
+    memcpy(data,BinBuf+cnt*OTA_ONE_PACKAGE_SIZE,OTA_ONE_PACKAGE_SIZE);
+
+    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE);
+    uint32_t *check_sum = (uint32_t *)(&buf[sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE + 1]);
+    *check_sum = CheckSum;
+
+    memcpy((void*)Sendata.data(),buf,len);
+    emit SendReq2Device(Sendata);
+}
+
+void OTA::TransmitBinInfo()
+{
+    uint8_t buf[sizeof(cmd_msg_frame_t) +  sizeof(ota_package_info_t) + sizeof(uint32_t)];
+    uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t) + sizeof(uint32_t);
+    QByteArray Sendata;
+    Sendata.resize(len);
+
+    cmd_msg_frame_t *msg = (cmd_msg_frame_t *)buf;
+    msg->header = MSG_FRAME_HEADER;
+    msg->device_addr = 0x00;
+    msg->cmd = START_UPDATE;
+    msg->seq = 0;
+    msg->data_len = sizeof(ota_package_info_t);
+
+    ota_package_info_t *info =(ota_package_info_t *)(msg+1);
+    info->bin_size = BinSize;
+    info->package_num = (BinSize % OTA_ONE_PACKAGE_SIZE)?(BinSize/OTA_ONE_PACKAGE_SIZE + 1):(BinSize/OTA_ONE_PACKAGE_SIZE);
+    info->check_sum = CalCheckSum(BinBuf,BinSize);
+
+    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t));
+    uint32_t *check_sum = (uint32_t *)(&buf[sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t) + 1]);
+    *check_sum = CheckSum;
+
+    memcpy((void*)Sendata.data(),buf,len);
+    emit SendReq2Device(Sendata);
+}
+
 void OTA::StartUpgrade()
 {
 
@@ -203,6 +265,7 @@ void OTA::RspDataProcess(QByteArray Data)
 
 OTA::~OTA()
 {
+    delete BinBuf;
     delete ui;
 }
 

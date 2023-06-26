@@ -2,7 +2,9 @@
 #define OTA_H
 
 #include <QWidget>
-
+#include <QTimer>
+#define  OTA_BIN_SIZE   0x20000
+#define  OTA_ONE_PACKAGE_SIZE   64
 namespace Ui {
 class OTA;
 }
@@ -16,7 +18,7 @@ public:
     ~OTA();
     void InitUI();
     void InitConnect();
-
+    void TransmitBinData(uint8_t cnt);
 
 signals:
     void SendReq2Device(QByteArray Data);
@@ -34,10 +36,14 @@ private slots:
     void CloseDevice();
     void SelectOTABin();
     void StartUpgrade();
+    void TransmitBinInfo();
 private:
     Ui::OTA *ui;
     QString FileAddress;          //the address of upgrade bin file
     quint64 BinSize;              //the size of bin file
+    quint8  *BinBuf;
+
+    QTimer  *MyStartConnectTimer;
 };
 
 #endif // OTA_H
