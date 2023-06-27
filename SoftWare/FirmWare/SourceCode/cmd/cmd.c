@@ -61,8 +61,8 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
 				return MSG_CRC_ERR;
 			}
-			u8 connect_cmd_data[sizeof(cmd_msg_frame_t) + 1 + 4];
-			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)connect_cmd_data;
+			u8 cmd_data[sizeof(cmd_msg_frame_t) + 1 + 4];
+			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)cmd_data;
 
 			msg->header = MSG_FRAME_HEADER;
 			msg->cmd = CONNECT_CMD;
@@ -70,14 +70,14 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			msg->seq = 0x00;
 			msg->data_len = 0x01;
 
-			u8* err_code = (u8*)&connect_cmd_data[sizeof(cmd_msg_frame_t)];
+			u8* err_code = (u8*)&cmd_data[sizeof(cmd_msg_frame_t)];
 			*err_code = 0x00;
 
-			u32* check_sum = (u32*)&connect_cmd_data[sizeof(cmd_msg_frame_t) + 1 ];
-			*check_sum = CalCheckSum(connect_cmd_data,sizeof(cmd_msg_frame_t) + 1);
+			u32* check_sum = (u32*)&cmd_data[sizeof(cmd_msg_frame_t) + 1 ];
+			*check_sum = CalCheckSum(cmd_data,sizeof(cmd_msg_frame_t) + 1);
 
 
-			PrintfIOTPort4(connect_cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
+			PrintfIOTPort4(cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
 		}
 		break;
 		case RESET_CMD:
@@ -96,8 +96,8 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 				return MSG_CRC_ERR;
 			}
 
-			u8 connect_cmd_data[sizeof(cmd_msg_frame_t) + 1 + 4];
-			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)connect_cmd_data;
+			u8 cmd_data[sizeof(cmd_msg_frame_t) + 1 + 4];
+			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)cmd_data;
 
 			msg->header = MSG_FRAME_HEADER;
 			msg->cmd = 	RESET_CMD;
@@ -105,13 +105,13 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			msg->seq = 0x00;
 			msg->data_len = 0x01;
 
-			u8* err_code = (u8*)&connect_cmd_data[sizeof(cmd_msg_frame_t)];
+			u8* err_code = (u8*)&cmd_data[sizeof(cmd_msg_frame_t)];
 			*err_code = 0x00;
 
-			u32* check_sum = (u32*)&connect_cmd_data[sizeof(cmd_msg_frame_t) + 1 ];
-			*check_sum = CalCheckSum(connect_cmd_data,sizeof(cmd_msg_frame_t) + 1);
+			u32* check_sum = (u32*)&cmd_data[sizeof(cmd_msg_frame_t) + 1 ];
+			*check_sum = CalCheckSum(cmd_data,sizeof(cmd_msg_frame_t) + 1);
 
-			PrintfIOTPort4(connect_cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
+			PrintfIOTPort4(cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
 
 
 			timer_interval_func_t para;
@@ -156,8 +156,8 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			}
 			rt_kprintf("enter jump\r\n");
 
-			u8 connect_cmd_data[sizeof(cmd_msg_frame_t) + 1 + 4];
-			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)connect_cmd_data;
+			u8 cmd_data[sizeof(cmd_msg_frame_t) + 1 + 4];
+			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)cmd_data;
 
 			msg->header = MSG_FRAME_HEADER;
 			msg->cmd = 	JUMP_CMD;
@@ -165,13 +165,13 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			msg->seq = 0x00;
 			msg->data_len = 0x01;
 
-			u8* err_code = (u8*)&connect_cmd_data[sizeof(cmd_msg_frame_t)];
+			u8* err_code = (u8*)&cmd_data[sizeof(cmd_msg_frame_t)];
 			*err_code = 0x00;
 
-			u32* check_sum = (u32*)&connect_cmd_data[sizeof(cmd_msg_frame_t) + 1 ];
-			*check_sum = CalCheckSum(connect_cmd_data,sizeof(cmd_msg_frame_t) + 1);
+			u32* check_sum = (u32*)&cmd_data[sizeof(cmd_msg_frame_t) + 1 ];
+			*check_sum = CalCheckSum(cmd_data,sizeof(cmd_msg_frame_t) + 1);
 
-			PrintfIOTPort4(connect_cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
+			PrintfIOTPort4(cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
 			timer_interval_func_t para;
 			para.interval = 10 ;
 			para.target_time = para.interval + GetSystemTime();
@@ -203,31 +203,109 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 		}break;
 		case START_UPDATE:
 		{
-			u16 data_len = cmd_msg_frame->data_len;
-			if(data_len > 0x40)
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + 4;
+			if(cmd_len != len)
 			{
-				rt_kprintf("data len err,%d\r\n", data_len);
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
 				return MSG_LEN_ERR;
 			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				return MSG_CRC_ERR;
+			}
+			
+			u8* msg_data = (u8*)(cmd_msg_frame + 1);
+			ota_package_info_t *info = (ota_package_info_t *)msg_data;
+
+			rt_kprintf("ota info, package num=%d, bin size=%d, check_sum=%d\r\n", info->package_num, info->bin_size, info->check_sum);
+
+			u8 cmd_data[sizeof(cmd_msg_frame_t) + 1 + 4];
+			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)cmd_data;
+
+			msg->header = MSG_FRAME_HEADER;
+			msg->cmd = 	START_UPDATE;
+			msg->device_addr = 0x00;
+			msg->seq = 0x00;
+			msg->data_len = 0x01;
+
+			u8* err_code = (u8*)&cmd_data[sizeof(cmd_msg_frame_t)];
+			*err_code = 0x00;
+
+			u32* check_sum = (u32*)&cmd_data[sizeof(cmd_msg_frame_t) + 1 ];
+			*check_sum = CalCheckSum(cmd_data,sizeof(cmd_msg_frame_t) + 1);
+
+			PrintfIOTPort4(cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
 		}break;
 		case UPDATE_DATA:
 		{
-			u16 data_len = cmd_msg_frame->data_len;
-			if(data_len > 0x40)
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + 4;
+			if(cmd_len != len)
 			{
-				rt_kprintf("data len err,%d\r\n", data_len);
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
 				return MSG_LEN_ERR;
-				
 			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				return MSG_CRC_ERR;
+			}
+
+			rt_kprintf("ota seq=%d\r\n", cmd_msg_frame->seq);
+
+			u8 cmd_data[sizeof(cmd_msg_frame_t) + 1 + 4];
+			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)cmd_data;
+
+			msg->header = MSG_FRAME_HEADER;
+			msg->cmd = 	UPDATE_DATA;
+			msg->device_addr = 0x00;
+			msg->seq = 0x00;
+			msg->data_len = 0x01;
+
+			u8* err_code = (u8*)&cmd_data[sizeof(cmd_msg_frame_t)];
+			*err_code = 0x00;
+
+			u32* check_sum = (u32*)&cmd_data[sizeof(cmd_msg_frame_t) + 1 ];
+			*check_sum = CalCheckSum(cmd_data,sizeof(cmd_msg_frame_t) + 1);
+
+			PrintfIOTPort4(cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
 		}break;
 		case UPDATE_END:
 		{
-			u16 data_len = cmd_msg_frame->data_len;
-			if(data_len > 0x40)
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + 4;
+			if(cmd_len != len)
 			{
-				rt_kprintf("data len err,%d\r\n", data_len);
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
 				return MSG_LEN_ERR;
 			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				return MSG_CRC_ERR;
+			}
+
+			u8 cmd_data[sizeof(cmd_msg_frame_t) + 1 + 4];
+			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)cmd_data;
+
+			msg->header = MSG_FRAME_HEADER;
+			msg->cmd = 	UPDATE_END;
+			msg->device_addr = 0x00;
+			msg->seq = 0x00;
+			msg->data_len = 0x01;
+
+			u8* err_code = (u8*)&cmd_data[sizeof(cmd_msg_frame_t)];
+			*err_code = 0x00;
+
+			u32* check_sum = (u32*)&cmd_data[sizeof(cmd_msg_frame_t) + 1 ];
+			*check_sum = CalCheckSum(cmd_data,sizeof(cmd_msg_frame_t) + 1);
+
+			PrintfIOTPort4(cmd_data,sizeof(cmd_msg_frame_t) + 1 + 4);
 		}break;
 		default:
 			rt_kprintf("cmd  err,0x%x\r\n", cmd_msg_frame->cmd);

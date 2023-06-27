@@ -41,8 +41,9 @@ typedef struct ota_info_manager_struct
     QString FileAddress;          //the address of upgrade bin file
     quint64 BinSize;              //the size of bin file
     quint8  *BinBuf;
-    quint16 package_num;
     quint32 check_sum;
+    quint16 package_num;
+    quint16 curr_package_num;
     ota_transmit_state_t state;
 }ota_info_manager_t;
 
@@ -61,11 +62,14 @@ public:
     ~OTA();
     void InitUI();
     void InitConnect();
+
     void TransmitBinInfo();
     void TransmitBinData(uint8_t cnt);
     void TransmitBinEnd();
+
     void UpgradeBinThread();
     void set_ota_transmit_state(ota_transmit_state_t state);
+
 signals:
     void SendReq2Device(QByteArray Data);
     void OpenDeviceReq();

@@ -23,7 +23,7 @@ OTA::OTA(QWidget *parent) :
     MyThread = new QThreadRun;
 
     MyThread->SetSwitch(true);
-    MyThread->SetCallBackFunc((ThreadCallback)&PrintMsg,NULL);
+    MyThread->SetCallBackFunc(&OTA::UpgradeBinThread,NULL);
 
     InitUI();
     InitConnect();
@@ -131,7 +131,7 @@ void OTA::CloseDevice()
 
 void OTA::SelectOTABin()
 {
-    ota_info_manager.FileAddress = QFileDialog::getOpenFileName(this,tr("Open File"),FileAddress,tr("(*.bin);;(*.hex);;(*.axf);;(*.txt);;All Files(*.*)"));
+    ota_info_manager.FileAddress = QFileDialog::getOpenFileName(this,tr("Open File"),ota_info_manager.FileAddress,tr("(*.bin);;(*.hex);;(*.axf);;(*.txt);;All Files(*.*)"));
     ui->UpgradBinFileAddress->setText(ota_info_manager.FileAddress);
     if(ota_info_manager.FileAddress != NULL)
     {
