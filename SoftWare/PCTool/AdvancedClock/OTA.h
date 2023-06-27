@@ -26,6 +26,27 @@ private:
     void* CallBackArg;
 };
 
+typedef enum ota_transmit_state_enum
+{
+    START_OTA_TRNASMIT_INFO=0x1,
+    START_OTA_TRNASMIT_INFO_RSP,
+    OTA_TRANSMIT_DATA,
+    OTA_TRANSMIT_DATA_RSP,
+    OTA_TRANSMIT_END,
+    OTA_TRANSMIT_END_RSP,
+}ota_transmit_state_t;
+
+typedef struct ota_info_manager_struct
+{
+    QString FileAddress;          //the address of upgrade bin file
+    quint64 BinSize;              //the size of bin file
+    quint8  *BinBuf;
+    quint16 package_num;
+    quint32 check_sum;
+    ota_transmit_state_t state;
+}ota_info_manager_t;
+
+
 namespace Ui {
 class OTA;
 }
@@ -43,8 +64,8 @@ public:
     void TransmitBinInfo();
     void TransmitBinData(uint8_t cnt);
     void TransmitBinEnd();
-
-
+    void UpgradeBinThread();
+    void set_ota_transmit_state(ota_transmit_state_t state);
 signals:
     void SendReq2Device(QByteArray Data);
     void OpenDeviceReq();
@@ -65,9 +86,7 @@ private slots:
 
 private:
     Ui::OTA *ui;
-    QString FileAddress;          //the address of upgrade bin file
-    quint64 BinSize;              //the size of bin file
-    quint8  *BinBuf;
+    ota_info_manager_t  ota_info_manager;
 
     QTimer  *MyStartConnectTimer;
     QThreadRun *MyThread;
