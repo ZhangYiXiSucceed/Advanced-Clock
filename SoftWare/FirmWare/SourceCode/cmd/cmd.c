@@ -203,17 +203,23 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 		}break;
 		case START_UPDATE:
 		{
-			u16 cmd_len = sizeof(cmd_msg_frame_t) + 4;
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t) + 4;
 			if(cmd_len != len)
 			{
 				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
 				return MSG_LEN_ERR;
 			}
-			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t));
-			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
+			u8 i;
+			for(i=0;i<len;i++)
+			{
+				rt_kprintf("0x%x ",packet[i]);
+			}
+			rt_kprintf("\r\n");
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t)));
 			if(cal_sum != read_sum)
 			{
-				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
 				return MSG_CRC_ERR;
 			}
 			
@@ -241,7 +247,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 		}break;
 		case UPDATE_DATA:
 		{
-			u16 cmd_len = sizeof(cmd_msg_frame_t) + 4;
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + 64 + 4;
 			if(cmd_len != len)
 			{
 				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);

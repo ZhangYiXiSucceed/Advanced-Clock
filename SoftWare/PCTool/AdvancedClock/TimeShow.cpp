@@ -250,24 +250,9 @@ void TimeShow::RspDataProcess(QByteArray buf)
             }
         }
             break;
-        case JUMP_CMD:
-        {
-            emit SendData2OTA(buf);
-        }
-        break;
-        case CONNECT_CMD:
-        {
-            emit SendData2OTA(buf);
-        }
-        break;
-        case Reset_Cmd:
-        {
-            emit SendData2OTA(buf);
-        }
-        break;
         default:
         {
-
+             emit SendData2OTA(buf);
         }
     }
 }

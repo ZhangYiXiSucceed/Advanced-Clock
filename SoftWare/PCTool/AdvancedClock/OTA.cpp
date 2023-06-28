@@ -76,7 +76,7 @@ void OTA::UpgradeBinThread()
         break;
         case START_OTA_TRNASMIT_INFO_RSP:
         {
-            QThread::msleep(1000);
+
         }
         break;
         case OTA_TRANSMIT_DATA:
@@ -94,7 +94,7 @@ void OTA::UpgradeBinThread()
         break;
         case OTA_TRANSMIT_DATA_RSP:
         {
-            QThread::msleep(1000);
+
         }
         break;
         case OTA_TRANSMIT_END:
@@ -106,7 +106,7 @@ void OTA::UpgradeBinThread()
         break;
         case OTA_TRANSMIT_END_RSP:
         {
-            QThread::msleep(1000);
+
         }
         break;
         default:
@@ -185,7 +185,7 @@ void OTA::TransmitBinInfo()
     ota_info_manager.package_num =  info->package_num;
 
     int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t));
-    uint32_t *check_sum = (uint32_t *)(&buf[sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t) + 1]);
+    uint32_t *check_sum = (uint32_t *)(&buf[sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t)]);
     *check_sum = CheckSum;
 
     memcpy((void*)Sendata.data(),buf,len);
@@ -359,12 +359,13 @@ void OTA::RspDataProcess(QByteArray Data)
         break;
         case START_UPDATE:
         {
+            set_ota_transmit_state(OTA_TRANSMIT_DATA);
 
         }
         break;
         case UPDATE_DATA:
         {
-
+            set_ota_transmit_state(OTA_TRANSMIT_DATA);
         }
         break;
         case UPDATE_END:
@@ -416,6 +417,6 @@ void QThreadRun::run()
     while(StartFlag)
     {
         emit RunFunc();
-        msleep(50);
+        msleep(1000);
     }
 }
