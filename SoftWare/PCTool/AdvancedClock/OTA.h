@@ -19,6 +19,8 @@ public:
     void SetSwitch(bool Flag);
     void SetCallBackFunc(ThreadCallback Func,void* Arg);
     void run();
+signals:
+    void RunFunc();
 
 private:
     bool StartFlag;
@@ -67,7 +69,6 @@ public:
     void TransmitBinData(uint8_t cnt);
     void TransmitBinEnd();
 
-    void UpgradeBinThread();
     void set_ota_transmit_state(ota_transmit_state_t state);
 
 signals:
@@ -87,6 +88,7 @@ private slots:
     void CloseDevice();
     void SelectOTABin();
     void StartUpgrade();
+    void UpgradeBinThread();
 
 private:
     Ui::OTA *ui;

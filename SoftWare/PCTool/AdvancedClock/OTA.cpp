@@ -23,7 +23,6 @@ OTA::OTA(QWidget *parent) :
     MyThread = new QThreadRun;
 
     MyThread->SetSwitch(true);
-    MyThread->SetCallBackFunc(&OTA::UpgradeBinThread,NULL);
 
     InitUI();
     InitConnect();
@@ -48,6 +47,8 @@ void OTA::InitConnect()
     connect(ui->StartUpgrade,SIGNAL(clicked(bool)),this,SLOT(StartUpgrade()));
 
     connect(MyStartConnectTimer,SIGNAL(timeout()),this,SLOT(OpenDevice()));
+
+    connect(MyThread,SIGNAL(RunFunc()),this,SLOT(UpgradeBinThread()));
 }
 
 void PrintMsg()
@@ -414,6 +415,7 @@ void QThreadRun::run()
 {
     while(StartFlag)
     {
-        (*CallBack)(CallBackArg);
+        emit RunFunc();
+        msleep(50);
     }
 }
