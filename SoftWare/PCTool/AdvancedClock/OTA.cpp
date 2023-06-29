@@ -360,6 +360,7 @@ void OTA::RspDataProcess(QByteArray Data)
         case START_UPDATE:
         {
             set_ota_transmit_state(OTA_TRANSMIT_DATA);
+            emit ShowSystemMessage("rsp start update",1500);
         }
         break;
         case UPDATE_DATA:
@@ -370,14 +371,14 @@ void OTA::RspDataProcess(QByteArray Data)
             }
             else
             {
-                 set_ota_transmit_state(OTA_TRANSMIT_END);
+                 set_ota_transmit_state(OTA_TRANSMIT_END );
             }
-
         }
         break;
         case UPDATE_END:
         {
-
+            set_ota_transmit_state(OTA_TRANSMIT_END );
+            emit ShowSystemMessage("rsp end update",1500);
         }
         break;
         default:
