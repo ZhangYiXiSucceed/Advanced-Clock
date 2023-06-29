@@ -360,12 +360,19 @@ void OTA::RspDataProcess(QByteArray Data)
         case START_UPDATE:
         {
             set_ota_transmit_state(OTA_TRANSMIT_DATA);
-
         }
         break;
         case UPDATE_DATA:
         {
-            set_ota_transmit_state(OTA_TRANSMIT_DATA);
+            if(ota_info_manager.curr_package_num < ota_info_manager.package_num)
+            {
+                set_ota_transmit_state(OTA_TRANSMIT_DATA);
+            }
+            else
+            {
+                 set_ota_transmit_state(OTA_TRANSMIT_END);
+            }
+
         }
         break;
         case UPDATE_END:
