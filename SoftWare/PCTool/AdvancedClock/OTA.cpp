@@ -63,6 +63,10 @@ void OTA::set_ota_transmit_state(ota_transmit_state_t state)
     ota_info_manager.state = state;
 }
 
+ota_transmit_state_t OTA::get_ota_transmit_state()
+{
+    return ota_info_manager.state;
+}
 void OTA::UpgradeBinThread()
 {
     switch(ota_info_manager.state)
@@ -72,6 +76,7 @@ void OTA::UpgradeBinThread()
             TransmitBinInfo();
             set_ota_transmit_state(START_OTA_TRNASMIT_INFO_RSP);
             emit ShowSystemMessage(tr(" start ota transmit info"),1500);
+            ota_info_manager.curr_package_num = 0;
         }
         break;
         case START_OTA_TRNASMIT_INFO_RSP:
@@ -84,6 +89,7 @@ void OTA::UpgradeBinThread()
             if(ota_info_manager.curr_package_num < ota_info_manager.package_num)
             {
                 TransmitBinData(ota_info_manager.curr_package_num);
+                ota_info_manager.curr_package_num++;
                 set_ota_transmit_state(OTA_TRANSMIT_DATA_RSP);
             }
             else
@@ -192,7 +198,7 @@ void OTA::TransmitBinInfo()
     emit SendReq2Device(Sendata);
 }
 
-void OTA::TransmitBinData(uint8_t cnt)
+void OTA::TransmitBinData(uint16_t cnt)
 {
     uint8_t buf[sizeof(cmd_msg_frame_t) +  OTA_ONE_PACKAGE_SIZE + sizeof(uint32_t)];
     uint16_t len = sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE + sizeof(uint32_t);
@@ -241,7 +247,14 @@ void OTA::TransmitBinEnd()
 
 void OTA::StartUpgrade()
 {
-    MyThread->start();
+    if(OTA_TRANSMIT_END_RSP == get_ota_transmit_state())
+    {
+        set_ota_transmit_state(START_OTA_TRNASMIT_INFO);
+    }
+    else
+    {
+        MyThread->start();
+    }
 }
 void OTA::ResetDeviceCmd()
 {
@@ -377,7 +390,6 @@ void OTA::RspDataProcess(QByteArray Data)
         break;
         case UPDATE_END:
         {
-            set_ota_transmit_state(OTA_TRANSMIT_END );
             emit ShowSystemMessage("rsp end update",1500);
         }
         break;
@@ -425,6 +437,6 @@ void QThreadRun::run()
     while(StartFlag)
     {
         emit RunFunc();
-        msleep(1000);
+        msleep(100);
     }
 }

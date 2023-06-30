@@ -15,6 +15,7 @@ void print_weather_and_time_info(void);
 void jump_app();
 void quit_send_mode();
 void timer_test(u8 test_action);
+void flash_test(u32 addr, u32 len);
 void shell_reset_cmd_handler();
 int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_array[],int32_t max_para_num);
 
@@ -53,6 +54,13 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 		"timer test cmd\r\n",
 		timer_test,
 		1,
+	},
+	{
+		"flash",
+		"flash test \r\n",
+		"flash test cmd\r\n",
+		flash_test,
+		2,
 	},
 	{
 		"reset",
@@ -166,6 +174,24 @@ void timer_test(u8 test_action)
 		rt_kprintf("cnt=%d\r\n", TIM_GetCounter(TIM4));
 	}
 }
+
+
+void flash_test(u32 addr, u32 len)
+{
+	u32 i;
+	u8 buf[1024];
+	STMFLASH_Read(addr,(u32*)buf, len/4);
+	rt_kprintf("addr=0x%x len=%d\r\n", addr, len);
+	for(i=0;i<len;i++)
+	{
+		if((1!=0) && (i%16 == 0))
+		{
+			shell_printf("\r\n");
+		}
+		shell_printf("0x%x ",buf[i]);
+	}
+}
+
 
 void shell_reset_cmd_handler()
 {
@@ -354,7 +380,7 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		if((TERMINAL_NEWLINE == cmd_buff[cmd_buff_len-1]) || \
 			(RETURN == cmd_buff[cmd_buff_len-1]))
 		{
-			rt_kprintf("\r\n");
+			shell_printf("\r\n");
 			
 			cmd_process_buff[cmd_process_buff_index]=0;
 			cmd_process_buff_index++;
@@ -365,7 +391,7 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		else 
 		{
 			cmd_buff[1]=0;
-			rt_kprintf(cmd_buff);
+			shell_printf(cmd_buff);
 			cmd_process_buff[cmd_process_buff_index]=cmd_buff[0];
 			cmd_process_buff_index++;
 			if(cmd_process_buff_index >= (CMD_BUFF_MAX_SIZE-1))
@@ -380,8 +406,8 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		if((RETURN == cmd_buff[cmd_buff_len-1]) && (TERMINAL_NEWLINE != cmd_buff[cmd_buff_len-2]))
 		{
 			cmd_buff[cmd_buff_len-1] = 0;
-			rt_kprintf(cmd_buff);
-			rt_kprintf("\r\n");
+			shell_printf(cmd_buff);
+			shell_printf("\r\n");
 
 			if((cmd_process_buff_index +cmd_buff_len)  <= (CMD_BUFF_MAX_SIZE-1))
 			{
@@ -396,8 +422,8 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		{
 			cmd_buff[cmd_buff_len-2] = 0;
 			cmd_buff[cmd_buff_len-1] = 0;
-			rt_kprintf(cmd_buff);
-			rt_kprintf("\r\n");
+			shell_printf(cmd_buff);
+			shell_printf("\r\n");
 
 			if((cmd_process_buff_index +cmd_buff_len-1)  <= (CMD_BUFF_MAX_SIZE-1))
 			{
@@ -412,8 +438,8 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		else if((TERMINAL_NEWLINE == cmd_buff[cmd_buff_len-1]))
 		{
 			cmd_buff[cmd_buff_len-1] = 0;
-			rt_kprintf(cmd_buff);
-			rt_kprintf("\r\n");
+			shell_printf(cmd_buff);
+			shell_printf("\r\n");
 
 			if((cmd_process_buff_index +cmd_buff_len)  <= (CMD_BUFF_MAX_SIZE-1))
 			{
@@ -426,7 +452,7 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 			return status;
 		}
 		cmd_buff[cmd_buff_len]=0;
-		rt_kprintf(cmd_buff);
+		shell_printf(cmd_buff);
 		if((cmd_process_buff_index +cmd_buff_len)  <= (CMD_BUFF_MAX_SIZE-1))
 		{
 			memcpy(&cmd_process_buff[cmd_process_buff_index],cmd_buff,cmd_buff_len);
@@ -504,6 +530,7 @@ int8_t diag_cmd_process(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 	
 	diag_cmd_para_num = diag_cmd_para_parse(cmd_para,diag_cmd_para_array,MAX_CMD_PARA);
 
+	shell_printf("%d %d %d %d\r\n", diag_cmd_para_array[0].value,diag_cmd_para_array[1].value,diag_cmd_para_array[2].value,diag_cmd_para_array[3].value);
 	if(diag_cmd_para_num < 0)
 	{
 		rt_kprintf("Error: too many parameters\r\n");
@@ -543,6 +570,8 @@ int8_t diag_cmd_process(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 				  diag_cmd_para_array[1].value,
 				  diag_cmd_para_array[2].value,
 				  diag_cmd_para_array[3].value);
+
+	
 	
 	return 0;
 }
@@ -666,13 +695,13 @@ int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_ar
 		else if(('0' < user_para_str[curr_index]) && ('9' > user_para_str[curr_index]))
 		{
 			
-temp_para_type=data_num;
+			temp_para_type=data_num;
 			diag_cmd_para_array[para_num].para_type = diag_cmd_para_number;
 		}
 		else
 		{
 			
-temp_para_type=data_str;
+			temp_para_type=data_str;
 			diag_cmd_para_array[para_num].para_type = diag_cmd_para_string;
 		}
 
@@ -752,12 +781,12 @@ void shell_init()
 
 void diag_cmd_complete(int8_t status)
 {
-	rt_kprintf("RV:%d\r\n",status);
+	shell_printf("RV:%d\r\n",status);
 }
 
 void diag_cmd_start()
 {
-	rt_kprintf("%s","shell> ");
+	shell_printf("%s","shell> ");
 }
 
 

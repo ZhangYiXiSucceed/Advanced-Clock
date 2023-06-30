@@ -5,7 +5,7 @@
 #include <QTimer>
 #include <QThread>
 #define  OTA_BIN_SIZE   0x20000
-#define  OTA_ONE_PACKAGE_SIZE   64
+#define  OTA_ONE_PACKAGE_SIZE   1024
 
 typedef void (*ThreadCallback)(void*);
 class QThreadRun : public QThread
@@ -66,11 +66,11 @@ public:
     void InitConnect();
 
     void TransmitBinInfo();
-    void TransmitBinData(uint8_t cnt);
+    void TransmitBinData(uint16_t cnt);
     void TransmitBinEnd();
 
     void set_ota_transmit_state(ota_transmit_state_t state);
-
+    ota_transmit_state_t get_ota_transmit_state();
 signals:
     void SendReq2Device(QByteArray Data);
     void OpenDeviceReq();

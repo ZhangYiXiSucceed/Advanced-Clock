@@ -4,6 +4,7 @@
 #include "core_cm4.h"
 #include "stm32f4xx_rtc.h"
 #include "stm32f4xx.h"
+#include "stm32f4xx_flash.h"
 #include "stm32f4xx_it.h"
 #include "timer.h"
 #include "uart.h"
@@ -22,7 +23,7 @@
 #include "crc32.h"
 #include "region_header.h"
 #include "cmd.h"
-
+#include "flash.h"
 
 
 #endif

@@ -35,7 +35,7 @@ typedef struct diag_cmd_descriptor_struct{
 
 typedef struct diag_cmd_para_struct{
 	diag_cmd_para_type_e para_type;
-	uint64_t value;
+	uint32_t value;
 	char* str;
 }diag_cmd_para_t;
 

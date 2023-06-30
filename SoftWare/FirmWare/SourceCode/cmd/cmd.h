@@ -4,7 +4,7 @@
 #include "stm32f4xx.h"
 
 #define MSG_FRAME_HEADER 0x676A737A
-
+#define OTA_ONE_PACKAGE_SIZE   1024
 typedef enum cmd_process_errcode_enum
 {
 	MSG_OK,
