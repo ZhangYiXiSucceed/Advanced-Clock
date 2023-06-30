@@ -17,7 +17,7 @@ OTA::OTA(QWidget *parent) :
     MyStartConnectTimer->start(5000);
     MyStartConnectTimer->setSingleShot(true);
 
-    ota_info_manager.BinBuf = new quint8[1024];
+    ota_info_manager.BinBuf = new quint8[1024*1024];
     ota_info_manager.state = START_OTA_TRNASMIT_INFO;
 
     MyThread = new QThreadRun;
@@ -155,7 +155,8 @@ void OTA::SelectOTABin()
                 ui->UpgradBinFileSize->setText(tr("%1K %2B\n").arg(ota_info_manager.BinSize/1024).arg(ota_info_manager.BinSize%1024));
             else
                 ui->UpgradBinFileSize->setText(tr("%1M %2K %3B\n").arg(ota_info_manager.BinSize/1024/1024).arg(ota_info_manager.BinSize/1024%1024).arg(ota_info_manager.BinSize%1024));
-            BinFile->read((char*)ota_info_manager.BinBuf,0);
+            QByteArray  array = BinFile->readAll();
+            memcpy(ota_info_manager.BinBuf, array.data(), ota_info_manager.BinSize);
             BinFile->close();
         }
         delete BinFile;

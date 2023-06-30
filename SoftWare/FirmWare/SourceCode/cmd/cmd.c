@@ -14,6 +14,19 @@ u32 CalCheckSum(uint8_t* Data, uint16_t len)
     return CheckSum;
 }
 
+void printf_buf(u8* data, u16 len)
+{
+	int i;
+	for(i=0;i<len;i++)
+	{
+		if((1!=0) && (i%16 == 0))
+		{
+			shell_printf("\r\n");
+		}
+		shell_printf("0x%2x ",data[i]);
+	}
+}
+
 void msg_rsp_packet_and_send(u16 cmd, u8 err_code)
 {
 	u8 cmd_data[sizeof(cmd_msg_frame_t) + 1 + 4];
@@ -207,7 +220,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			ota_package_info_t *info = (ota_package_info_t *)msg_data;
 
 			rt_kprintf("ota info, package num=%d, bin size=%d, check_sum=%d\r\n", info->package_num, info->bin_size, info->check_sum);
-			FLASH_EraseSector(ADDR_FLASH_SECTOR_4,VoltageRange_3);
+			FLASH_EraseSector(FLASH_Sector_3,VoltageRange_3);
 		}break;
 		case UPDATE_DATA:
 		{
@@ -229,6 +242,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 
 			rt_kprintf("ota seq=%d\r\n", cmd_msg_frame->seq);
 			STMFLASH_Write(ADDR_FLASH_SECTOR_4 + OTA_ONE_PACKAGE_SIZE*cmd_msg_frame->seq,(u32*)&packet[sizeof(cmd_msg_frame_t)],256);
+			//printf_buf(&packet[sizeof(cmd_msg_frame_t)],1024);
 
 		}break;
 		case UPDATE_END:

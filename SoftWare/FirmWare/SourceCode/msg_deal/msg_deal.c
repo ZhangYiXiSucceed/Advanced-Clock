@@ -19,7 +19,7 @@ void flash_test(u32 addr, u32 len);
 void shell_reset_cmd_handler();
 int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_array[],int32_t max_para_num);
 
-typedef int32_t cmd_func_t(uint64_t arg1,uint64_t arg2,uint64_t arg3,uint64_t arg4);
+typedef int32_t cmd_func_t(uint32_t arg1,uint32_t arg2,uint32_t arg3,uint32_t arg4);
 diag_cmd_descriptor_t* find_cmd(char* user_cmd_name);
 static __INLINE int  to_lower_character(int c);
 uint8_t diag_cmd_compare(char* user_cmd,char* diag_cmd);
