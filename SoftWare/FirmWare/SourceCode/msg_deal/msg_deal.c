@@ -302,13 +302,13 @@ void periodic_task_process()
 			para.para = NULL;
 			timer_set_func(&para);
 
-			para.interval = 15 ;
+			para.interval = 5 ;
 			para.target_time = para.interval + GetSystemTime();
 			para.cb = (timer_callback)send_heart_data;
 			para.para = NULL;
 			timer_set_func(&para);
 
-			para.interval = 20 ;
+			para.interval = 25 ;
 			para.target_time = para.interval + GetSystemTime();
 			para.cb = (timer_callback)leave_host;
 			para.para = NULL;

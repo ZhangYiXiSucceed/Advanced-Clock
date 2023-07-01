@@ -89,7 +89,7 @@ private slots:
     void SelectOTABin();
     void StartUpgrade();
     void UpgradeBinThread();
-
+    void GetVersionCmd();
 private:
     Ui::OTA *ui;
     ota_info_manager_t  ota_info_manager;

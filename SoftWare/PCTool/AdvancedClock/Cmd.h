@@ -15,9 +15,11 @@ enum
     JUMP_CMD,
     CONNECT_CMD,
     Reset_Cmd,
+    VERSION_CMD,
 };
 
-
+#define OTA_BOOT_ATTR  1
+#define OTA_APP_ATTR   2
 typedef struct cmd_msg_frame_struct{
     uint32_t header;
     uint16_t device_addr;
@@ -59,6 +61,14 @@ typedef struct ota_package_info_struct
     uint32_t check_sum;
     uint32_t rsv;
 }ota_package_info_t;
+
+typedef struct version_info_struct
+{
+    uint32_t software_version;
+    uint32_t hardware_version;
+    uint32_t ota_attr;
+    uint32_t rsv2;
+}version_info_t;
 
 int CalCheckSum(uint8_t* Data, uint16_t len);
 #endif // CMD_H

@@ -46,6 +46,7 @@ $(wildcard $(SOURCECODE)/ht_sensor/*.c)  \
 $(wildcard $(SOURCECODE)/key/*.c)  		\
 $(wildcard $(SOURCECODE)/led/*.c)  		\
 $(wildcard $(SOURCECODE)/msg_deal/*.c)  \
+$(wildcard $(SOURCECODE)/flash/*.c)  \
 $(wildcard $(SOURCECODE)/nrf24l01/*.c)  \
 $(wildcard $(SOURCECODE)/oled/*.c)  	\
 $(wildcard $(SOURCECODE)/queue/*.c)  	\
@@ -86,6 +87,7 @@ C_INCLUDE  =							\
 -I$(SOURCECODE)/show/    				\
 -I$(SOURCECODE)/region_header/    		\
 -I$(SOURCECODE)/cmd/    				\
+-I$(SOURCECODE)/flash/    				\
 
 # compiler exe 
 CC_EXEC := armcc.exe 

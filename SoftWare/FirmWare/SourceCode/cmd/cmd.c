@@ -266,15 +266,57 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			rt_kprintf("ota end\r\n");
 		}break;
 #endif
+		case VERSION_CMD:
+		{
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + 4;
+			if(cmd_len != len)
+			{
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
+				res = MSG_LEN_ERR;
+				goto err;
+			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				res = MSG_CRC_ERR;
+				goto err;
+			}
+
+			rt_kprintf("get version=0x%x\r\n", region_header.version);
+
+			u8 cmd_data[sizeof(cmd_msg_frame_t) + sizeof(version_info_t) + 4];
+			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)cmd_data;
+
+			msg->header = MSG_FRAME_HEADER;
+			msg->cmd = VERSION_CMD;
+			msg->device_addr = 0x00;
+			msg->seq = 0x00;
+			msg->data_len = sizeof(version_info_t);
+
+			u8* msg_data = (u8*)(msg + 1);
+			version_info_t *version_rsp = (version_info_t *)msg_data;
+			version_rsp->hardware_version = 0x20200808;
+			version_rsp->software_version = region_header.version;
+			version_rsp->ota_attr = OTA_BOOT_ATTR;
+			version_rsp->rsv2 = 0x0;
+
+			u32* check_sum = (u32*)&cmd_data[sizeof(cmd_msg_frame_t) + sizeof(version_info_t)];
+			*check_sum = CalCheckSum(cmd_data,sizeof(cmd_msg_frame_t) + sizeof(version_info_t));
+
+			PrintfIOTPort4(cmd_data,sizeof(cmd_msg_frame_t) + sizeof(version_info_t) + 4);
+		}break;
 		default:
 			rt_kprintf("cmd  err,0x%x\r\n", cmd_msg_frame->cmd);
 			return MSG_CMD_ERR;
 			break;
 	}
-	if(HEART_CMD != cmd_msg_frame->cmd)
+	if((HEART_CMD != cmd_msg_frame->cmd) && (VERSION_CMD != cmd_msg_frame->cmd))
 	{
 		msg_rsp_packet_and_send(cmd_msg_frame->cmd,res);
 	}
+	
 	return MSG_OK;
 err:
 	msg_rsp_packet_and_send(cmd_msg_frame->cmd,res);

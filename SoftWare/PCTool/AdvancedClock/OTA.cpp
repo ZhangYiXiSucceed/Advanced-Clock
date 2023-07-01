@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <QFileDialog>
 #include <QFile>
+#include <QDateTime>
 using namespace std;
 
 OTA::OTA(QWidget *parent) :
@@ -27,6 +28,8 @@ OTA::OTA(QWidget *parent) :
     InitUI();
     InitConnect();
     PrintMsg();
+
+    ui->UpgradProgressBar->setRange(0,100);
 }
 
 void OTA::InitUI()
@@ -39,6 +42,7 @@ void OTA::InitConnect()
     connect(ui->ResetDevice,SIGNAL(clicked(bool)),this,SLOT(ResetDeviceCmd()));
     connect(ui->ConnectDevice,SIGNAL(clicked(bool)),this,SLOT(ConnectDeviceCmd()));
     connect(ui->JumpDevice,SIGNAL(clicked(bool)),this,SLOT(JumpDeviceCmd()));
+    connect(ui->GetVersion,SIGNAL(clicked(bool)),this,SLOT(GetVersionCmd()));
 
     connect(ui->OpenDevice,SIGNAL(clicked(bool)),this,SLOT(OpenDevice()));
     connect(ui->CloseDevice,SIGNAL(clicked(bool)),this,SLOT(CloseDevice()));
@@ -91,6 +95,7 @@ void OTA::UpgradeBinThread()
                 TransmitBinData(ota_info_manager.curr_package_num);
                 ota_info_manager.curr_package_num++;
                 set_ota_transmit_state(OTA_TRANSMIT_DATA_RSP);
+                ui->UpgradProgressBar->setValue((ota_info_manager.curr_package_num*100)/ota_info_manager.package_num);
             }
             else
             {
@@ -144,17 +149,13 @@ void OTA::SelectOTABin()
     {
         QFileInfo *Temp = new QFileInfo(ota_info_manager.FileAddress);
         ota_info_manager.BinSize = Temp->size();
+        ui->UpgradBinFileTimeDate->setText(Temp->lastModified().toString("yyyy-MM-dd hh:mm:ss"));
         //添加日期等
         QFile *BinFile = new QFile(ota_info_manager.FileAddress);
         if(BinFile->open(QIODevice::ReadOnly))
         {
             emit ShowSystemMessage(tr("打开文件成功，并获取相关信息！"),1500);
-            if(ota_info_manager.BinSize<2014)
-                ui->UpgradBinFileSize->setText(tr("%1B\n").arg(ota_info_manager.BinSize));
-            else if(ota_info_manager.BinSize<1024*1024)
-                ui->UpgradBinFileSize->setText(tr("%1K %2B\n").arg(ota_info_manager.BinSize/1024).arg(ota_info_manager.BinSize%1024));
-            else
-                ui->UpgradBinFileSize->setText(tr("%1M %2K %3B\n").arg(ota_info_manager.BinSize/1024/1024).arg(ota_info_manager.BinSize/1024%1024).arg(ota_info_manager.BinSize%1024));
+            ui->UpgradBinFileSize->setText(tr("%1 B\n").arg(ota_info_manager.BinSize));
             QByteArray  array = BinFile->readAll();
             memcpy(ota_info_manager.BinBuf, array.data(), ota_info_manager.BinSize);
             BinFile->close();
@@ -323,6 +324,28 @@ void OTA::ConnectDeviceCmd()
     emit SendReq2Device(Sendata);
 }
 
+void OTA::GetVersionCmd()
+{
+    uint8_t buf[sizeof(cmd_msg_frame_t) +  sizeof(uint32_t)];
+    uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(uint32_t);
+    QByteArray Sendata;
+    Sendata.resize(len);
+
+    cmd_msg_frame_t *msg = (cmd_msg_frame_t *)buf;
+    msg->header = MSG_FRAME_HEADER;
+    msg->device_addr = 0x00;
+    msg->cmd = VERSION_CMD;
+    msg->seq = 0x00;
+    msg->data_len = 0x00;
+
+    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t));
+    uint32_t *check_sum = (uint32_t *)(msg+1);
+    *check_sum = CheckSum;
+
+    memcpy((void*)Sendata.data(),buf,len);
+    emit SendReq2Device(Sendata);
+}
+
 void OTA::RspDataProcess(QByteArray Data)
 {
     uint8_t *data = (uint8_t *)Data.data();
@@ -341,7 +364,7 @@ void OTA::RspDataProcess(QByteArray Data)
             uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + 1));
             if(cal_sum != read_sum)
             {
-                cout <<"frame check err,cal=" << cal_sum <<"read= "<< cal_sum << endl;
+                cout <<"frame check err,cal=" << cal_sum <<"read= "<< read_sum << endl;
                 return;
             }
             QMessageBox::information(NULL, "info", "reset ok", QMessageBox::Yes, QMessageBox::NoButton);
@@ -353,7 +376,7 @@ void OTA::RspDataProcess(QByteArray Data)
             uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + 1));
             if(cal_sum != read_sum)
             {
-                cout <<"frame check err,cal=" << cal_sum <<"read= "<< cal_sum << endl;
+                cout <<"frame check err,cal=" << cal_sum <<"read= "<< read_sum << endl;
                 return;
             }
             QMessageBox::information(NULL, "info", "connect ok", QMessageBox::Yes, QMessageBox::NoButton);
@@ -365,7 +388,7 @@ void OTA::RspDataProcess(QByteArray Data)
             uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + 1));
             if(cal_sum != read_sum)
             {
-                cout <<"frame check err,cal=" << cal_sum <<"read= "<< cal_sum << endl;
+                cout <<"frame check err,cal=" << cal_sum <<"read= "<< read_sum << endl;
                 return;
             }
             QMessageBox::information(NULL, "info", "jump ok", QMessageBox::Yes, QMessageBox::NoButton);
@@ -392,6 +415,32 @@ void OTA::RspDataProcess(QByteArray Data)
         case UPDATE_END:
         {
             emit ShowSystemMessage("rsp end update",1500);
+            QMessageBox::information(NULL, "info", "update ok", QMessageBox::Yes, QMessageBox::NoButton);
+        }
+        break;
+        case VERSION_CMD:
+        {
+            uint32_t cal_sum = CalCheckSum(data,sizeof(cmd_msg_frame_t) + sizeof(version_info_t));
+            uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + sizeof(version_info_t)));
+            if(cal_sum != read_sum)
+            {
+                cout <<"frame check err,cal=" << cal_sum <<",read= "<< read_sum << endl;
+                QMessageBox::information(NULL, "info", "version err,sum err", QMessageBox::Yes, QMessageBox::NoButton);
+                return;
+            }
+
+            version_info_t* version_info = (version_info_t*)(data+sizeof(cmd_msg_frame_t));
+            ui->HardwareVersion->setText(QString::number(version_info->hardware_version,16));
+            ui->SoftwareVersion->setText(QString::number(version_info->software_version,16));
+
+            if(OTA_BOOT_ATTR == version_info->ota_attr)
+            {
+                QMessageBox::information(NULL, "info", "version ok,in boot", QMessageBox::Yes, QMessageBox::NoButton);
+            }
+            else
+            {
+                QMessageBox::information(NULL, "info", "jump ok,in app", QMessageBox::Yes, QMessageBox::NoButton);
+            }
         }
         break;
         default:

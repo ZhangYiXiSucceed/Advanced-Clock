@@ -306,7 +306,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>120</y>
+      <y>130</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -324,7 +324,43 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>120</y>
+      <y>140</y>
+      <width>371</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="UpgradBinFileDateTimeLable">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>180</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>升级文件时间：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="UpgradBinFileTimeDate">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>180</y>
       <width>371</width>
       <height>31</height>
      </rect>

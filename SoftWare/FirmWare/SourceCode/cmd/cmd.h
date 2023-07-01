@@ -28,6 +28,7 @@ enum
 	JUMP_CMD,
 	CONNECT_CMD,
 	RESET_CMD,
+	VERSION_CMD,
 };
 	
 typedef struct cmd_msg_frame_struct
@@ -72,6 +73,15 @@ typedef struct ota_package_info_struct
     uint32_t check_sum;
     uint32_t rsv;
 }ota_package_info_t;
+
+typedef struct version_info_struct
+{
+    uint32_t software_version;
+    uint32_t hardware_version;
+    uint32_t ota_attr;
+    uint32_t rsv2;
+}version_info_t;
+
 
 cmd_process_errcode_e server_msg_process(u8* packet,u16 len);
 u32 CalCheckSum(uint8_t* Data, uint16_t len);
