@@ -24,7 +24,7 @@ uint16_t STMFLASH_GetFlashSector(u32 addr)
 }
 
 
-void STMFLASH_Write(u32 WriteAddr,u32 *pBuffer,u32 NumToWrite)	
+void  STMFLASH_Write(u32 WriteAddr,u32 *pBuffer,u32 NumToWrite)	
 { 
 	FLASH_Status status = FLASH_COMPLETE;
 	u32 addrx=0;

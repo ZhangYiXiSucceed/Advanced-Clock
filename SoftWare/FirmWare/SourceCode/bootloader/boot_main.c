@@ -19,7 +19,7 @@ int main()
 
 
   rt_kprintf("*******************************************\r\n");
-  rt_kprintf((char*)Data);
+  rt_kprintf("%s, time=%s date=%s\r\n",(char*)Data, __TIME__,__DATE__);
   rt_kprintf("*******************************************\r\n");
 
   region_header_init(&region_header);
@@ -27,8 +27,9 @@ int main()
   {
     IWDG_Feed();
     shell_process();
-	periodic_task_process();
+	  periodic_task_process();
     wifi_msg_process();
+    timer_interval_func_task();
   }
 }
 

@@ -6,7 +6,7 @@
 #define APP_SAVE_ADDR   0x08010000
 #define APP_LOAD_ADDR   0x08010000
 #define APP_ADDR_OFFSET 0x10000
-#define APP_VERSION     0x12345678                
+#define APP_VERSION     0x20230701                
 #define REGION_OFFSET   0x25c
 
 #define SRAM_MIN_ADDR   0x20000000
@@ -22,8 +22,14 @@ typedef struct boot_region_header_struct
 	u32 attr;
 	u32 version;
 }boot_region_header_t;
-
+#ifndef BOOT
+#define OTA_BOOT_ATTR  2
+extern __attribute__((section("region_header")))   boot_region_header_t region_header;
+#else
+#define OTA_BOOT_ATTR  1
 extern boot_region_header_t region_header;
+#endif
+
 void region_header_init(boot_region_header_t* temp_region_header);
 
 #endif

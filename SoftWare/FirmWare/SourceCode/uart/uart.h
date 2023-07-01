@@ -31,6 +31,7 @@ void UART1_SentChar(char* data);
 void UART1Poll(void);
 unsigned short Uart1Read(unsigned char *data);
 void rt_kprintf(const char *fmt, ...);
+void shell_printf(const char *fmt, ...);
 void rt_hw_console_output(char *str,uint16_t output_len);
 
 

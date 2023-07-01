@@ -1,8 +1,16 @@
 #include "main.h"
+#define TIMER_FUNC_MAX_NUM  8
+typedef struct timer_func_list_struct
+{
+  timer_interval_func_t timer_func[TIMER_FUNC_MAX_NUM];
+  uint8_t timer_func_header_index;
+  uint8_t timer_func_tail_index;
+  uint8_t timer_func_num;
+}timer_func_list_t;
 
+timer_func_list_t timer_func_list_g;
 
 unsigned int Systemtime;
-
 void TIM5_Init(void)
 {
     TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -74,7 +82,7 @@ void TIM5_IRQHandler(void)
 		{
 			system_data.SystemGMTTime++;
 		}
-        if(Systemtime % 120000 == 0)
+        if(Systemtime % 30000 == 0)
         {
           system_var.TwoMinuteFlag = 1;
         }
@@ -99,7 +107,7 @@ void TIM5_IRQHandler(void)
 		}
 		
         UART1Poll();
-		UART4Poll();
+		    UART4Poll();
 #ifndef BOOT
         UART2Poll();
         UART3Poll();
@@ -114,4 +122,40 @@ unsigned long GetSystemTime(void)
    return system_data.SystemGMTTime;
 	
 }
+
+
+s8 timer_set_func(timer_interval_func_t* para)
+{
+  if(TIMER_FUNC_MAX_NUM > timer_func_list_g.timer_func_num)
+  {
+    timer_func_list_g.timer_func[timer_func_list_g.timer_func_header_index] = *para;
+    timer_func_list_g.timer_func_num++;
+    timer_func_list_g.timer_func_header_index++;
+    timer_func_list_g.timer_func_header_index = (timer_func_list_g.timer_func_header_index) % TIMER_FUNC_MAX_NUM;
+    rt_kprintf(" target = %d num=%d index=%d\r\n",para->target_time,timer_func_list_g.timer_func_num,timer_func_list_g.timer_func_header_index);
+    return timer_func_list_g.timer_func_num;
+  }
+  return -1;
+}
+
+
+void timer_interval_func_task()
+{
+    if(0 == timer_func_list_g.timer_func_num)
+     return;
+
+    if(GetSystemTime() < timer_func_list_g.timer_func[timer_func_list_g.timer_func_tail_index].target_time)
+      return;
+
+    rt_kprintf("exec fun\r\n");
+    if(NULL != timer_func_list_g.timer_func[timer_func_list_g.timer_func_tail_index].cb)
+    {
+       
+        (*timer_func_list_g.timer_func[timer_func_list_g.timer_func_tail_index].cb)(timer_func_list_g.timer_func[timer_func_list_g.timer_func_tail_index].para);
+        timer_func_list_g.timer_func_num --;
+        timer_func_list_g.timer_func_tail_index++;
+        timer_func_list_g.timer_func_tail_index = (timer_func_list_g.timer_func_tail_index) % TIMER_FUNC_MAX_NUM;
+    }
+}
+
 
