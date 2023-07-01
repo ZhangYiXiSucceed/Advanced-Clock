@@ -5,6 +5,7 @@
 #include "stm32f4xx_rtc.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_it.h"
+#include "stm32f4xx_flash.h"
 #include "timer.h"
 #include "led.h"
 #include "key.h"
@@ -26,6 +27,7 @@
 #include "show.h"
 #include "region_header.h"
 #include "cmd.h"
+#include "flash.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -34,5 +36,6 @@
 #include "struct.h"
 #include "math.h"
 #endif
+
 
 

@@ -15,9 +15,11 @@ void print_weather_and_time_info(void);
 void jump_app();
 void quit_send_mode();
 void timer_test(u8 test_action);
+void flash_test(u32 addr, u32 len);
+void shell_reset_cmd_handler();
 int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_array[],int32_t max_para_num);
 
-typedef int32_t cmd_func_t(uint64_t arg1,uint64_t arg2,uint64_t arg3,uint64_t arg4);
+typedef int32_t cmd_func_t(uint32_t arg1,uint32_t arg2,uint32_t arg3,uint32_t arg4);
 diag_cmd_descriptor_t* find_cmd(char* user_cmd_name);
 static __INLINE int  to_lower_character(int c);
 uint8_t diag_cmd_compare(char* user_cmd,char* diag_cmd);
@@ -34,7 +36,7 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 	},
 	{
 		"ls",
-		"list  cmd\r\n",
+		"list cmd\r\n",
 		"list  cmd can print all cmd\r\n",
 		diag_help,
 		0,
@@ -51,6 +53,20 @@ diag_cmd_descriptor_t diag_base_cmd[]=
 		"timer test \r\n",
 		"timer test cmd\r\n",
 		timer_test,
+		1,
+	},
+	{
+		"flash",
+		"flash test \r\n",
+		"flash test cmd\r\n",
+		flash_test,
+		2,
+	},
+	{
+		"reset",
+		"reset test \r\n",
+		"reset test cmd\r\n",
+		shell_reset_cmd_handler,
 		1,
 	},
 #ifndef BOOT
@@ -160,6 +176,29 @@ void timer_test(u8 test_action)
 }
 
 
+void flash_test(u32 addr, u32 len)
+{
+	u32 i;
+	u8 buf[1024];
+	STMFLASH_Read(addr,(u32*)buf, len/4);
+	rt_kprintf("addr=0x%x len=%d\r\n", addr, len);
+	for(i=0;i<len;i++)
+	{
+		if((1!=0) && (i%16 == 0))
+		{
+			shell_printf("\r\n");
+		}
+		shell_printf("0x%x ",buf[i]);
+	}
+}
+
+
+void shell_reset_cmd_handler()
+{
+	__disable_fiq();
+	NVIC_SystemReset();
+}
+
 
 void shell_process()
 {
@@ -202,19 +241,79 @@ void shell_process()
 	}
 }
 
+#ifndef  BOOT
+void send_heart_data()
+{
+	u8 buff[sizeof(cmd_msg_frame_t) + sizeof(heart_data_t) + sizeof(u32)];
+
+	cmd_msg_frame_t* msg=(cmd_msg_frame_t*)buff;
+	msg->header = MSG_FRAME_HEADER;
+	msg->cmd = 	HEART_CMD;
+	msg->device_addr = 0x00;
+	msg->seq = 0x00;
+	msg->data_len = sizeof(heart_data_t);
+
+	heart_data_t* heart_data = (heart_data_t*)(msg + 1);
+	heart_data->year = time_and_weather_g.year;
+	heart_data->month = time_and_weather_g.month;
+	heart_data->day = time_and_weather_g.day;
+	heart_data->week = time_and_weather_g.week;
+
+	heart_data->hour = time_and_weather_g.hour;
+	heart_data->minute = time_and_weather_g.minute;
+	heart_data->second = time_and_weather_g.second;
+
+	heart_data->tempture = time_and_weather_g.tempeture;
+	heart_data->humidty = time_and_weather_g.humidty;
+
+	heart_data->city_id = time_and_weather_g.city_id;
+	heart_data->weather_id = 0;
+
+	u32* check_sum = (u32*)(heart_data+1);
+	*check_sum = CalCheckSum(buff,sizeof(cmd_msg_frame_t) + sizeof(heart_data_t));
+
+	PrintfIOTPort4(buff,sizeof(cmd_msg_frame_t) + sizeof(heart_data_t) + sizeof(u32));
+}
+#endif
 
 void periodic_task_process()
 {
 	static int last_systime = 0;
+	static u8 connect_state_change = 0;
 #ifndef  BOOT
 	if(system_var.TwoMinuteFlag ==1)
     {
-        system_var.TwoMinuteFlag = 0;
+		connect_state_change = (connect_state_change + 1) % 2;
+		system_var.TwoMinuteFlag = 0;
 		rt_kprintf("*: two minute\r\n"); 
-		get_network_time_cmds();
-		PrintHTInfo();
-		print_wifi_weather_time_info();
-		OLED_Clear();
+		if(0 == connect_state_change)
+		{
+			get_network_time_cmds();
+			PrintHTInfo();
+			print_wifi_weather_time_info();
+			OLED_Clear();
+		}
+		else 
+		{
+			timer_interval_func_t para;
+			para.interval = 0 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)connect_host;
+			para.para = NULL;
+			timer_set_func(&para);
+
+			para.interval = 5 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)send_heart_data;
+			para.para = NULL;
+			timer_set_func(&para);
+
+			para.interval = 25 ;
+			para.target_time = para.interval + GetSystemTime();
+			para.cb = (timer_callback)leave_host;
+			para.para = NULL;
+			timer_set_func(&para);
+		}
     }
 	
 	if(last_systime != Systemtime)
@@ -224,16 +323,16 @@ void periodic_task_process()
 	}
 #else
 	static int cnt_count = 0;
-	if(last_systime == Systemtime)
+	if(last_systime == system_data.SystemGMTTime)
 		return;
-	last_systime = Systemtime;
-	
+	//rt_kprintf("last_systime=%d,Systemtime=%d\r\n", last_systime, system_data.SystemGMTTime);
+	last_systime = system_data.SystemGMTTime;
 	cnt_count++;
-	if(cnt_count<=10)
+	if(cnt_count<= 30)
 		return;
 	cnt_count = 0;
 	
-	if(!system_var.WIFIConnectFlag)
+	if(system_var.host_cmd_flag)
 		return;
 	if(0 == check_header(&region_header))
 	{
@@ -241,7 +340,24 @@ void periodic_task_process()
 		return ;
 	}
 	rt_kprintf("timeout,jump app\r\n");
-	jump_exec(&region_header);
+	timer_interval_func_t para;
+	para.interval = 10 ;
+	para.target_time = para.interval + GetSystemTime();
+	para.cb = (timer_callback)quit_send_data_mode_cmd;
+	para.para = NULL;
+	timer_set_func(&para);
+
+	para.interval = 15 ;
+	para.target_time = para.interval + GetSystemTime();
+	para.cb = (timer_callback)set_send_mode;
+	para.para = NULL;
+	timer_set_func(&para);
+
+	para.interval = 20 ;
+	para.target_time = para.interval + GetSystemTime();
+	para.cb = (timer_callback)jump_exec;
+	para.para = &region_header;
+	timer_set_func(&para);
 #endif
 	
 
@@ -264,7 +380,7 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		if((TERMINAL_NEWLINE == cmd_buff[cmd_buff_len-1]) || \
 			(RETURN == cmd_buff[cmd_buff_len-1]))
 		{
-			rt_kprintf("\r\n");
+			shell_printf("\r\n");
 			
 			cmd_process_buff[cmd_process_buff_index]=0;
 			cmd_process_buff_index++;
@@ -275,7 +391,7 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		else 
 		{
 			cmd_buff[1]=0;
-			rt_kprintf(cmd_buff);
+			shell_printf(cmd_buff);
 			cmd_process_buff[cmd_process_buff_index]=cmd_buff[0];
 			cmd_process_buff_index++;
 			if(cmd_process_buff_index >= (CMD_BUFF_MAX_SIZE-1))
@@ -290,8 +406,8 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		if((RETURN == cmd_buff[cmd_buff_len-1]) && (TERMINAL_NEWLINE != cmd_buff[cmd_buff_len-2]))
 		{
 			cmd_buff[cmd_buff_len-1] = 0;
-			rt_kprintf(cmd_buff);
-			rt_kprintf("\r\n");
+			shell_printf(cmd_buff);
+			shell_printf("\r\n");
 
 			if((cmd_process_buff_index +cmd_buff_len)  <= (CMD_BUFF_MAX_SIZE-1))
 			{
@@ -306,8 +422,8 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		{
 			cmd_buff[cmd_buff_len-2] = 0;
 			cmd_buff[cmd_buff_len-1] = 0;
-			rt_kprintf(cmd_buff);
-			rt_kprintf("\r\n");
+			shell_printf(cmd_buff);
+			shell_printf("\r\n");
 
 			if((cmd_process_buff_index +cmd_buff_len-1)  <= (CMD_BUFF_MAX_SIZE-1))
 			{
@@ -322,8 +438,8 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 		else if((TERMINAL_NEWLINE == cmd_buff[cmd_buff_len-1]))
 		{
 			cmd_buff[cmd_buff_len-1] = 0;
-			rt_kprintf(cmd_buff);
-			rt_kprintf("\r\n");
+			shell_printf(cmd_buff);
+			shell_printf("\r\n");
 
 			if((cmd_process_buff_index +cmd_buff_len)  <= (CMD_BUFF_MAX_SIZE-1))
 			{
@@ -336,7 +452,7 @@ int8_t diag_cmd_input(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 			return status;
 		}
 		cmd_buff[cmd_buff_len]=0;
-		rt_kprintf(cmd_buff);
+		shell_printf(cmd_buff);
 		if((cmd_process_buff_index +cmd_buff_len)  <= (CMD_BUFF_MAX_SIZE-1))
 		{
 			memcpy(&cmd_process_buff[cmd_process_buff_index],cmd_buff,cmd_buff_len);
@@ -414,6 +530,7 @@ int8_t diag_cmd_process(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 	
 	diag_cmd_para_num = diag_cmd_para_parse(cmd_para,diag_cmd_para_array,MAX_CMD_PARA);
 
+	shell_printf("%d %d %d %d\r\n", diag_cmd_para_array[0].value,diag_cmd_para_array[1].value,diag_cmd_para_array[2].value,diag_cmd_para_array[3].value);
 	if(diag_cmd_para_num < 0)
 	{
 		rt_kprintf("Error: too many parameters\r\n");
@@ -453,6 +570,8 @@ int8_t diag_cmd_process(uint8_t *cmd_buff,uint16_t cmd_buff_len)
 				  diag_cmd_para_array[1].value,
 				  diag_cmd_para_array[2].value,
 				  diag_cmd_para_array[3].value);
+
+	
 	
 	return 0;
 }
@@ -576,13 +695,13 @@ int32_t diag_cmd_para_parse(char* user_para_str,diag_cmd_para_t diag_cmd_para_ar
 		else if(('0' < user_para_str[curr_index]) && ('9' > user_para_str[curr_index]))
 		{
 			
-temp_para_type=data_num;
+			temp_para_type=data_num;
 			diag_cmd_para_array[para_num].para_type = diag_cmd_para_number;
 		}
 		else
 		{
 			
-temp_para_type=data_str;
+			temp_para_type=data_str;
 			diag_cmd_para_array[para_num].para_type = diag_cmd_para_string;
 		}
 
@@ -662,12 +781,12 @@ void shell_init()
 
 void diag_cmd_complete(int8_t status)
 {
-	rt_kprintf("RV:%d\r\n",status);
+	shell_printf("RV:%d\r\n",status);
 }
 
 void diag_cmd_start()
 {
-	rt_kprintf("%s","DiagMgr> ");
+	shell_printf("%s","shell> ");
 }
 
 

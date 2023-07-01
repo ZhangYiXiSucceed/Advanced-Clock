@@ -96,7 +96,7 @@ RM   := rm -rf
 ECHO := echo
 
 
-CMN_CFLAGS = --C99 -c --cpu Cortex-M4.fp.sp -g --apcs=interwork --split_sections \
+CMN_CFLAGS = --C99  -c --cpu Cortex-M4.fp.sp -g --apcs=interwork --split_sections \
 $(DEBUG) $(C_INCLUDE)  \
 --diag_suppress=1295,111,1293,167,513,177 \
 -ID:/Software/Keil/pack/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include \
@@ -125,33 +125,37 @@ OBJECTS  += $(addprefix $(BUILD_OBJ_DIR)/,$(notdir $(ASM_SOURCE:.s=.o)))
 DEPS = $(addprefix $(BUILD_DEP_DIR)/,$(notdir $(C_SOURCE:.c=.d)))
  vpath %.c $(sort $(dir $(C_SOURCE)))
 
+ifeq ($(silent), )
+MAKEFLAGS += --silent
+endif
+
 .PHONY : build
 build  : $(DEPS) $(OUT_DIR)/$(TARGET).axf
 
 $(OUT_DIR)/$(TARGET).axf: $(OBJECTS) 
-	@$(ECHO) Link $@ ...
-	@$(LINK_EXEC) $(OBJECTS) $(CMN_LFLAGS) -o $@ --map --info totals --list_mapping_symbols --list=$(OUT_DIR)/$(TARGET).map 
-	@$(FROMELF_EXEC) --bin --output $(OUT_DIR)/$(TARGET).bin $@
+	$(ECHO) Link $@ ...
+	$(LINK_EXEC) $(OBJECTS) $(CMN_LFLAGS) -o $@ --map --info totals --list_mapping_symbols --list=$(OUT_DIR)/$(TARGET).map 
+	$(FROMELF_EXEC) --bin --output $(OUT_DIR)/$(TARGET).bin $@
 
 
 -include $(DEPS)
-#compiler process
-$(BUILD_OBJ_DIR)/%.o : %.d
-$(BUILD_OBJ_DIR)/%.o : %.c
-	@$(ECHO)  'Compiling' $<
-	@$(CC_EXEC) -c  $(CMN_CFLAGS) $< -o $@ 
 
 
 $(BUILD_OBJ_DIR)/%.o : %.s Makefile | $(BUILD_OBJ_DIR)
-	@$(ECHO) 'Compiling' $<
-	@$(ASM_EXEC)  $(CMN_AFLAGS) $< -o $@ 
+	$(ECHO) 'Compiling' $<
+	$(ASM_EXEC)  $(CMN_AFLAGS) $< -o $@ 
 
+#compiler process
+$(BUILD_OBJ_DIR)/%.o : %.d
+$(BUILD_OBJ_DIR)/%.o : %.c
+	$(ECHO)  'Compiling' $<
+	$(CC_EXEC) -c  $(CMN_CFLAGS) $< -o $@ 
 
 $(BUILD_DEP_DIR)/%.d : OBJ_BNAME=$(basename $(notdir $@))
-$(BUILD_DEP_DIR)/%.d : %.c
-	@$(ECHO) 'Update dependency Compiling' $<
-	@$(CC_EXEC) -M   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o > $@
-	@$(CC_EXEC) -c   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o
+$(BUILD_DEP_DIR)/%.d : %.c 
+	$(ECHO) 'Update dependency Compiling' $<
+	$(CC_EXEC) -M   $(CMN_CFLAGS) $< -o "$(BUILD_OBJ_DIR)/$(OBJ_BNAME).o  $(BUILD_DEP_DIR)/$(OBJ_BNAME).d"  > $@
+	$(CC_EXEC) -c   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o
 
 
 $(OUT_DIR):
@@ -174,5 +178,7 @@ flash:
 .PHONY : clean
 clean:
 	$(RM) obj_boot/*
+	$(RM) *.o
 	$(RM) dep_boot/*
 	$(RM) out/*
+	

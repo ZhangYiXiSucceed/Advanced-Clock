@@ -1,7 +1,7 @@
 #ifndef __WIFI_H__
 #define __WIFI_H__
 
-
+#include "struct.h"
 
 #define  AT_CMD             0
 #define  AT_RST             1
@@ -19,6 +19,7 @@
 #define AT_QUIT_TCP_CONNECT        12
 #define AT_QUIRY_IP                13
 #define AT_QUIRY_MAC               14
+#define AT_HOST_IP_CONNECT         15
 
 #define  AT_SEND_DATA       	 20
 #define  AT_QUIRY_WEATHER_DATA   21
@@ -26,7 +27,7 @@
 #define  AT_IDLE_CMD             0xFF
 #define  AT_RECIVE_CMD           AT_IDLE_CMD
 
-
+extern time_and_weather_t  time_and_weather_g;
 enum 
 {
 	RESP_WIFI_OK          = 0x00,
@@ -43,6 +44,7 @@ void init_wifi_network(void);
 void connect_wifi_network(void);
 void wifi_msg_process(void);
 void connect_server(void);
+void connect_host_ip();
 void set_send_mode(unsigned char mode);
 void entry_send_state(void);
 void send_data(char* demo_data,unsigned char data_len);
@@ -51,6 +53,8 @@ void send_weather_data(char* demo_data,unsigned char data_len);
 void quiry_wifi(void);
 int parsing_wifi_signal_info(unsigned char* frame_buffer,unsigned char frame_buffer_length);
 void get_network_time_cmds(void);
+void connect_host();
+void leave_host();
 void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buffer_length);
 void paraing_time_string(char* temp_str,char* temp_week);
 void quit_network_connect_cmd(void);

@@ -22,6 +22,8 @@ extern void* Image$$RW_IRAM1$$ZI$$Length;
 extern void* Image$$RW_IRAM1$$ZI$$Limit;
 
 extern void Reset_Handler();
+
+
 __attribute__((section("region_header")))   boot_region_header_t region_header =
 {
 	.marker = STM32_MARKER,
@@ -30,7 +32,7 @@ __attribute__((section("region_header")))   boot_region_header_t region_header =
 	.load_address  = APP_LOAD_ADDR,
 	.save_address  = APP_SAVE_ADDR,
 	.entry = (u32)Reset_Handler,
-	.attr = 0,
+	.attr = OTA_BOOT_ATTR,
 	.version = APP_VERSION 
 };
 void region_header_init(boot_region_header_t* temp_region_header)
@@ -43,8 +45,8 @@ void region_header_init(boot_region_header_t* temp_region_header)
 	temp_region_header->len = ((u32)&Image$$ER_IROM1$$Length + (u32)&Image$$ER_IROM2$$Length \
 							   + (u32)&Image$$RW_IRAM1$$Length + (u32)&Image$$RW_IRAM1$$ZI$$Length);
 
-	rt_kprintf("app size=%dB %dkb\r\n", temp_region_header->len,\
-		temp_region_header->len>>10);
+	rt_kprintf("app size=%dB %dkb version=0x%x\r\n", temp_region_header->len,\
+		temp_region_header->len>>10, temp_region_header->version);
 							   
 	rt_kprintf("IROM1_len=%d IROM2_len=%d IRAM1_RW_len=%d IRAM1_ZI_len=%d\r\n", IROM1_len,\
 		IROM2_len,IRAM1_RW_len,IRAM1_ZI_len);
@@ -68,8 +70,8 @@ boot_region_header_t region_header;
 void region_header_init(boot_region_header_t* temp_region_header)
 {
 	memcpy(temp_region_header,(u8*)(APP_LOAD_ADDR + REGION_OFFSET),sizeof(boot_region_header_t));
-	rt_kprintf("marker=%x load_address=%x \r\n", temp_region_header->marker,\
-	temp_region_header->load_address);
+	rt_kprintf("marker=%x load_address=%x version=0x%x\r\n", temp_region_header->marker,\
+	temp_region_header->load_address, temp_region_header->version);
 
 	u32 IROM1_len = (u32)((u32)&Image$$ER_IROM1$$Limit - (u32)&Image$$ER_IROM1$$Base);
 	u32 IRAM1_RW_len = (u32)((u32)&Image$$RW_IRAM1$$Limit - (u32)&Image$$RW_IRAM1$$Base);
