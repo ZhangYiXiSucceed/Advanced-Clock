@@ -40,6 +40,7 @@ struct SystemVar
 	unsigned char   Time_20_ms_flag;
 	unsigned char   uart1_mode;
 	unsigned char   host_cmd_flag;
+	unsigned char   connect_mode;
 };
 
 typedef struct STR_FrameHead  

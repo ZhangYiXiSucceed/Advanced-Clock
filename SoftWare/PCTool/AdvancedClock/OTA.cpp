@@ -1,6 +1,5 @@
 #include "OTA.h"
 #include "ui_OTA.h"
-#include "Cmd.h"
 #include <QMessageBox>
 #include <iostream>
 #include <iomanip>
@@ -43,6 +42,7 @@ void OTA::InitConnect()
     connect(ui->ConnectDevice,SIGNAL(clicked(bool)),this,SLOT(ConnectDeviceCmd()));
     connect(ui->JumpDevice,SIGNAL(clicked(bool)),this,SLOT(JumpDeviceCmd()));
     connect(ui->GetVersion,SIGNAL(clicked(bool)),this,SLOT(GetVersionCmd()));
+    connect(ui->SetConnectMode,SIGNAL(clicked(bool)),this, SLOT(SetConnectMode()));
 
     connect(ui->OpenDevice,SIGNAL(clicked(bool)),this,SLOT(OpenDevice()));
     connect(ui->CloseDevice,SIGNAL(clicked(bool)),this,SLOT(CloseDevice()));
@@ -346,6 +346,35 @@ void OTA::GetVersionCmd()
     emit SendReq2Device(Sendata);
 }
 
+void OTA::SetConnectMode()
+{
+    static uint8_t mode = 0;
+    uint8_t buf[sizeof(cmd_msg_frame_t) +  sizeof(connect_mode_set_t) + sizeof(uint32_t)];
+    uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(connect_mode_set_t) + sizeof(uint32_t);
+    QByteArray Sendata;
+    Sendata.resize(len);
+
+    cmd_msg_frame_t *msg = (cmd_msg_frame_t *)buf;
+    msg->header = MSG_FRAME_HEADER;
+    msg->device_addr = 0x00;
+    msg->cmd = CONNECT_MODE_CMD;
+    msg->seq = 0x00;
+    msg->data_len = sizeof(connect_mode_set_t);
+
+    connect_mode_set_t *rsp = (connect_mode_set_t *)(msg + 1);
+    rsp->mode = mode;
+
+    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + sizeof(connect_mode_set_t));
+    uint32_t *check_sum = (uint32_t *)(rsp+1);
+    *check_sum = CheckSum;
+
+    memcpy((void*)Sendata.data(),buf,len);
+    emit SendReq2Device(Sendata);
+
+    mode++;
+    mode = mode%2;
+}
+
 void OTA::RspDataProcess(QByteArray Data)
 {
     uint8_t *data = (uint8_t *)Data.data();
@@ -443,6 +472,17 @@ void OTA::RspDataProcess(QByteArray Data)
             }
         }
         break;
+        case CONNECT_MODE_CMD:
+        {
+            uint32_t cal_sum = CalCheckSum(data,sizeof(cmd_msg_frame_t) + 1);
+            uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + 1));
+            if(cal_sum != read_sum)
+            {
+                cout <<"frame check err,cal=" << cal_sum <<"read= "<< read_sum << endl;
+                return;
+            }
+            QMessageBox::information(NULL, "info", "set connect mode ok", QMessageBox::Yes, QMessageBox::NoButton);
+        }break;
         default:
         {
 

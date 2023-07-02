@@ -13,6 +13,14 @@
 #define FUNC_TYPE_PARA_CHANGE -1
 #define FUNC_TYPE_PARA_STRING -2
 
+typedef enum 
+{
+	WEATHER_MODE = 0x0,
+	HOST_MODE,
+	OTHER_MODE,
+	MAX,
+}connect_mode_t;
+
 typedef enum diag_cmd_para_type_enum{
 	diag_cmd_para_string=0,
 	diag_cmd_para_number=1

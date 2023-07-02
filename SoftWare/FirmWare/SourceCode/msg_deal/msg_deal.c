@@ -283,36 +283,59 @@ void periodic_task_process()
 #ifndef  BOOT
 	if(system_var.TwoMinuteFlag ==1)
     {
-		connect_state_change = (connect_state_change + 1) % 2;
-		system_var.TwoMinuteFlag = 0;
-		rt_kprintf("*: two minute\r\n"); 
-		if(0 == connect_state_change)
+		switch(system_var.connect_mode)
 		{
-			get_network_time_cmds();
-			PrintHTInfo();
-			print_wifi_weather_time_info();
-			OLED_Clear();
-		}
-		else 
-		{
-			timer_interval_func_t para;
-			para.interval = 0 ;
-			para.target_time = para.interval + GetSystemTime();
-			para.cb = (timer_callback)connect_host;
-			para.para = NULL;
-			timer_set_func(&para);
+			case WEATHER_MODE:
+			{
+				connect_state_change = (connect_state_change + 1) % 2;
+				system_var.TwoMinuteFlag = 0;
+				rt_kprintf("*: two minute\r\n"); 
+				if(0 == connect_state_change)
+				{
+					get_network_time_cmds();
+					PrintHTInfo();
+					print_wifi_weather_time_info();
+					OLED_Clear();
+				}
+				else 
+				{
+					timer_interval_func_t para;
+					para.interval = 0 ;
+					para.target_time = para.interval + GetSystemTime();
+					para.cb = (timer_callback)connect_host;
+					para.para = NULL;
+					timer_set_func(&para);
 
-			para.interval = 5 ;
-			para.target_time = para.interval + GetSystemTime();
-			para.cb = (timer_callback)send_heart_data;
-			para.para = NULL;
-			timer_set_func(&para);
+					para.interval = 5 ;
+					para.target_time = para.interval + GetSystemTime();
+					para.cb = (timer_callback)send_heart_data;
+					para.para = NULL;
+					timer_set_func(&para);
 
-			para.interval = 25 ;
-			para.target_time = para.interval + GetSystemTime();
-			para.cb = (timer_callback)leave_host;
-			para.para = NULL;
-			timer_set_func(&para);
+					para.interval = 25 ;
+					para.target_time = para.interval + GetSystemTime();
+					para.cb = (timer_callback)leave_host;
+					para.para = NULL;
+					timer_set_func(&para);
+				}
+			}break;
+			case HOST_MODE:
+			{
+				system_var.connect_mode = OTHER_MODE;
+				timer_interval_func_t para;
+				para.interval = 0 ;
+				para.target_time = para.interval + GetSystemTime();
+				para.cb = (timer_callback)connect_host;
+				para.para = NULL;
+				timer_set_func(&para);
+
+			}break;
+			case OTHER_MODE:
+			{
+
+			}break;
+			default:
+			break;
 		}
     }
 	

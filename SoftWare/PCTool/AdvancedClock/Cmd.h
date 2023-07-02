@@ -16,7 +16,16 @@ enum
     CONNECT_CMD,
     Reset_Cmd,
     VERSION_CMD,
+    CONNECT_MODE_CMD,
 };
+
+typedef enum
+{
+    WEATHER_MODE = 0x0,
+    HOST_MODE,
+    OTHER_MODE,
+    MAX,
+}connect_mode_t;
 
 #define OTA_BOOT_ATTR  1
 #define OTA_APP_ATTR   2
@@ -69,6 +78,12 @@ typedef struct version_info_struct
     uint32_t ota_attr;
     uint32_t rsv2;
 }version_info_t;
+
+
+typedef struct connect_mode_set_struct
+{
+    uint8_t mode;
+}connect_mode_set_t;
 
 int CalCheckSum(uint8_t* Data, uint16_t len);
 #endif // CMD_H

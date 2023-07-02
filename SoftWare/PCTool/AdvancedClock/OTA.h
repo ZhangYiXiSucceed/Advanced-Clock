@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTimer>
 #include <QThread>
+#include "Cmd.h"
 #define  OTA_BIN_SIZE   0x20000
 #define  OTA_ONE_PACKAGE_SIZE   1024
 
@@ -90,6 +91,7 @@ private slots:
     void StartUpgrade();
     void UpgradeBinThread();
     void GetVersionCmd();
+    void SetConnectMode();
 private:
     Ui::OTA *ui;
     ota_info_manager_t  ota_info_manager;

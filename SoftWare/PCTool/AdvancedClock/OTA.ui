@@ -165,6 +165,19 @@
      <string>设备跳转</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="SetConnectMode">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>310</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>设置模式</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">

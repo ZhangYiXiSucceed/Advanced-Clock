@@ -30,28 +30,27 @@ TimeShow::TimeShow(QWidget *parent) :
     InitUI();
     InitConnect();
     ReadNiceWordsTxt(NiceWords);
-
-
-
 }
 
 void TimeShow::InitUI()
 {
     QFont Ft("Microsoft YaHei");
-    Ft.setPointSize(25);
+    Ft.setPointSize(40);
     ui->DateShow->setFont(Ft);
     ui->DateShow->setStyleSheet("QLineEdit{background-color:transparent}"
                                  "QLineEdit{border-width:0;border-style:outset}"
                                  "QLineEdit{color:blue}");
 
+    ui->NowShow->setFont(Ft);
     ui->NowShow->setStyleSheet("QLineEdit{background-color:transparent}"
                                  "QLineEdit{border-width:0;border-style:outset}"
                                  "QLineEdit{color:red}");
-    Ft.setPointSize(20);
+    Ft.setPointSize(35);
     ui->NiceWords->setFont(Ft);
-    ui->NiceWords->setStyleSheet("QLineEdit{background-color:transparent}"
-                                 "QLineEdit{border-width:0;border-style:outset}"
-                                 "QLineEdit{color:orange}");
+    ui->NiceWords->setStyleSheet("QTextEdit{background-color:transparent}"
+                                 "QTextEdit{border-width:0;border-style:outset}"
+                                 "QTextEdit{color:orange}");
+    ui->NiceWords->setAlignment(Qt::AlignCenter);
 
     ui->WeatherIcon1->setIcon(WeatherRainy);
     ui->WeatherIcon1->setIconSize(WeatherRainy.size());
@@ -336,28 +335,17 @@ void TimeShow::SendData2Device(QByteArray Data)
 
 void TimeShow::SetDate(int year,int month,int day,int week)
 {
-    QString date_str = tr("20");
-    date_str += QString::number(year);
-    date_str += tr("--");
-
-    date_str += QString::number(month);
-    date_str += tr("--");
-
-    date_str += QString::number(day);
-
+    char buf[32];
+    sprintf(buf,"20%02d-%02d-%02d %02d",year,month,day,week);
+    QString date_str(buf);
     ui->DateShow->setText(date_str);
 }
 
 void TimeShow::SetTime(int hour,int minute,int second)
 {
-    QString time_str ;
-    time_str += QString::number(hour);
-    time_str += tr(":");
-
-    time_str += QString::number(minute);
-    time_str += tr(":");
-
-    time_str += QString::number(second);
+    char buf[32];
+    sprintf(buf,"%02d:%02d:%02d",hour,minute,second);
+    QString time_str(buf);
     ui->NowShow->setText(time_str);
 }
 
@@ -397,6 +385,7 @@ void TimeShow::ReadNiceWordsTxt(QList<QString> &NiceWordsList)
         NiceWordsList.push_back(WordsInfo);
     }
     ui->NiceWords->setText(WordsInfo);
+    ui->NiceWords->setAlignment(Qt::AlignCenter);
     InFile.close();
 }
 
@@ -406,6 +395,7 @@ void TimeShow::NiceWordsShowUpdate()
     static int Index = 0;
     QString OneWords = NiceWords.at(Index);
     ui->NiceWords->setText(OneWords);
+    ui->NiceWords->setAlignment(Qt::AlignCenter);
     Index++;
     if(Index >= WrodsSize)
         Index = 0;
