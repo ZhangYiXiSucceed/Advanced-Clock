@@ -92,12 +92,16 @@ private slots:
     void UpgradeBinThread();
     void GetVersionCmd();
     void SetConnectMode();
+    void PictureUpdate();
 private:
     Ui::OTA *ui;
     ota_info_manager_t  ota_info_manager;
 
     QTimer  *MyStartConnectTimer;
+    QTimer  *MyPictureShowTimer;
     QThreadRun *MyThread;
+
+
 
 };
 
