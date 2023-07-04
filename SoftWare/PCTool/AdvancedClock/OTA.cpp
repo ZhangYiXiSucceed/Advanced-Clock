@@ -13,21 +13,21 @@ OTA::OTA(QWidget *parent) :
     ui(new Ui::OTA)
 {
     ui->setupUi(this);
+
     MyStartConnectTimer = new QTimer;
     MyStartConnectTimer->start(5000);
     MyStartConnectTimer->setSingleShot(true);
 
     MyPictureShowTimer = new QTimer;
 
-    ota_info_manager.BinBuf = new quint8[32*1024*1024];
+    ota_info_manager.BinBuf = new quint8[64*1024*1024];
     ota_info_manager.state = START_OTA_TRNASMIT_INFO;
 
     MyThread = new QThreadRun;
     MyThread->SetSwitch(true);
     MyThread->start();
+
     set_ota_transmit_state(OTA_TRANSMIT_END_RSP);
-
-
 
     InitUI();
     InitConnect();
@@ -265,9 +265,20 @@ QImage Binaryzation(uint8_t* buf,uint32_t cnt)
             for(int z = 0; z < 8; z++) {
                 temp_data = temp_data<<z;
                 if (buf[1024*cnt + x*128+y] &  temp_data)
-                    newGray = 255;
+                {
+                    if(0x80 == temp_data)
+                        newGray = 255;
+                    else
+                        newGray = 0;
+                }
                 else
-                    newGray = 0;
+                {
+                    if(0x80 == temp_data)
+                        newGray = 0;
+                    else
+                        newGray = 255;
+                }
+
                 newImg.setPixel(y, x*8+z, qRgb(newGray, newGray, newGray));
             }
         }
