@@ -21,6 +21,14 @@ typedef enum
 	MAX,
 }connect_mode_t;
 
+typedef enum 
+{
+	SHOW_TIME_MODE = 0x0,
+	SHOW_PICTURE_MODE,
+	SHOW_OTHER_MODE,
+	SHOW_MAX,
+}oled_show_mode_t;
+
 typedef enum diag_cmd_para_type_enum{
 	diag_cmd_para_string=0,
 	diag_cmd_para_number=1

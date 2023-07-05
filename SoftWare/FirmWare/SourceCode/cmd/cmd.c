@@ -336,15 +336,66 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 		}break;
 		case PICTURE_CMD:
 		{
-			u16 data_len = cmd_msg_frame->data_len;
-			if(data_len > 0x40)
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE + 4;
+			if(cmd_len != len)
 			{
-				rt_kprintf("data len err,%d\r\n", data_len);
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
 				res = MSG_LEN_ERR;
 				goto err;
 			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE);
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE + 1));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
+				res = MSG_CRC_ERR;
+				goto err;
+			}
+
+			if(0 == (buf_control_flag_g & BUF_USE_0_MARK))
+			{
+				buf_control_flag_g |= BUF_FULL_0_MARK;
+				memcpy(picture_frame_buf_g[0],&packet[sizeof(cmd_msg_frame_t)],PICTURE_FRMAE_SIZE);
+			}
+			else if(0 == (buf_control_flag_g & BUF_USE_1_MARK))
+			{
+				buf_control_flag_g |= BUF_FULL_1_MARK;
+				memcpy(picture_frame_buf_g[1],&packet[sizeof(cmd_msg_frame_t)],PICTURE_FRMAE_SIZE);
+			}
+			rt_kprintf("ota seq=%d\r\n", cmd_msg_frame->seq);
 		}break;
 #endif
+		case OLED_SHOW_MODE_CMD:
+		{
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + sizeof(oled_show_mode_set_t) + 4;
+			if(cmd_len != len)
+			{
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
+				res = MSG_LEN_ERR;
+				goto err;
+			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t) + sizeof(oled_show_mode_set_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t) +  sizeof(oled_show_mode_set_t)));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
+				res = MSG_CRC_ERR;
+				goto err;
+			}
+			u8* msg_data = (u8*)(cmd_msg_frame + 1);
+			oled_show_mode_set_t *oled_show_mode_set = (oled_show_mode_set_t *)msg_data;
+
+			if(SHOW_TIME_MODE == oled_show_mode_set->mode)
+			{
+				rt_kprintf("set  time mode\r\n");
+				set_show_state_change(city);
+			}
+			else if(SHOW_PICTURE_MODE == oled_show_mode_set->mode)
+			{
+				rt_kprintf("set picture mode\r\n");
+				set_show_state_change(picture);
+			}
+		}break;
 		default:
 			rt_kprintf("cmd  err,0x%x\r\n", cmd_msg_frame->cmd);
 			return MSG_CMD_ERR;
