@@ -362,7 +362,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 				buf_control_flag_g |= BUF_FULL_1_MARK;
 				memcpy(picture_frame_buf_g[1],&packet[sizeof(cmd_msg_frame_t)],PICTURE_FRMAE_SIZE);
 			}
-			rt_kprintf("ota seq=%d\r\n", cmd_msg_frame->seq);
+			rt_kprintf("show seq=%d\r\n", cmd_msg_frame->seq);
 		}break;
 #endif
 		case OLED_SHOW_MODE_CMD:
@@ -401,7 +401,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			return MSG_CMD_ERR;
 			break;
 	}
-	if((HEART_CMD != cmd_msg_frame->cmd) && (VERSION_CMD != cmd_msg_frame->cmd))
+	if((HEART_CMD != cmd_msg_frame->cmd) && (VERSION_CMD != cmd_msg_frame->cmd) && (PICTURE_CMD != cmd_msg_frame->cmd))
 	{
 		msg_rsp_packet_and_send(cmd_msg_frame->cmd,res);
 	}

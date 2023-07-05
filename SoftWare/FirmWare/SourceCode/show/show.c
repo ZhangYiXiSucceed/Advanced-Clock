@@ -227,11 +227,13 @@ void show_interface_oled()
 			{
 				buf_control_flag_g |= BUF_USE_0_MARK;
 				OLED_DrawBMP(0,0,128,64,picture_frame_buf_g[0]);
+				buf_control_flag_g &= !BUF_USE_0_MARK;
 			}
 			else if(buf_control_flag_g & BUF_FULL_1_MARK)
 			{
 				buf_control_flag_g |= BUF_USE_1_MARK;
 				OLED_DrawBMP(0,0,128,64,picture_frame_buf_g[1]);
+				buf_control_flag_g &= !BUF_USE_1_MARK;
 			}
 		}
 		break;

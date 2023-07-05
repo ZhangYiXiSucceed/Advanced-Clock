@@ -387,16 +387,6 @@
      <string/>
     </property>
    </widget>
-   <widget class="QGraphicsView" name="graphicsView">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>280</y>
-      <width>181</width>
-      <height>101</height>
-     </rect>
-    </property>
-   </widget>
   </widget>
  </widget>
  <resources/>

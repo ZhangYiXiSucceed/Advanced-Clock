@@ -18,8 +18,6 @@ OTA::OTA(QWidget *parent) :
     MyStartConnectTimer->start(5000);
     MyStartConnectTimer->setSingleShot(true);
 
-    MyPictureShowTimer = new QTimer;
-
     ota_info_manager.BinBuf = new quint8[64*1024*1024];
     ota_info_manager.state = START_OTA_TRNASMIT_INFO;
 
@@ -56,7 +54,6 @@ void OTA::InitConnect()
     connect(ui->StartUpgrade,SIGNAL(clicked(bool)),this,SLOT(StartUpgrade()));
 
     connect(MyStartConnectTimer,SIGNAL(timeout()),this,SLOT(OpenDevice()));
-    connect(MyPictureShowTimer,SIGNAL(timeout()),this,SLOT(PictureUpdate()));
 
     connect(MyThread,SIGNAL(RunFunc()),this,SLOT(UpgradeBinThread()));
 }
@@ -253,54 +250,9 @@ void OTA::TransmitBinEnd()
     emit SendReq2Device(Sendata);
 }
 
-QImage Binaryzation(uint8_t* buf,uint32_t cnt)
-{
-    int width = 128;
-    int height = 64;
-    QImage newImg = QImage(width, height, QImage::Format_RGB888);
-    int newGray;
-    for (int x = 0; x <height/8 ; x++) {
-        for (int y = 0; y <width; y++) {
-            uint8_t temp_data=0x01;
-            for(int z = 0; z < 8; z++) {
-                temp_data = temp_data<<z;
-                if (buf[1024*cnt + x*128+y] &  temp_data)
-                {
-                    if(0x80 == temp_data)
-                        newGray = 255;
-                    else
-                        newGray = 0;
-                }
-                else
-                {
-                    if(0x80 == temp_data)
-                        newGray = 0;
-                    else
-                        newGray = 255;
-                }
-
-                newImg.setPixel(y, x*8+z, qRgb(newGray, newGray, newGray));
-            }
-        }
-    }
-    return newImg;
-}
-
 void OTA::StartUpgrade()
 {
-    //set_ota_transmit_state(START_OTA_TRNASMIT_INFO);
-    MyPictureShowTimer->start(30);
-}
-
-void OTA::PictureUpdate()
-{
-    static int i=0;
-    QImage disImage = Binaryzation(ota_info_manager.BinBuf,i);
-    QGraphicsScene *scene = new QGraphicsScene;
-    ui->graphicsView->setScene(scene);
-    ui->graphicsView->show();
-    scene->addPixmap(QPixmap::fromImage(disImage));
-    i++;
+    set_ota_transmit_state(START_OTA_TRNASMIT_INFO);
 }
 
 void OTA::ResetDeviceCmd()
