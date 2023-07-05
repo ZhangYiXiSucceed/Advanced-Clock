@@ -68,7 +68,16 @@ void PictureShow::SelectPictureShowBin()
 
 void PictureShow::StartTransferOLEDShow()
 {
-    MyPictureShowTimer->start(100);
+    if(MyPictureShowTimer->isActive())
+    {
+        MyPictureShowTimer->stop();
+        ui->StartTransfer->setText("开始显示");
+    }
+    else
+    {
+        MyPictureShowTimer->start(100);
+        ui->StartTransfer->setText("停止显示");
+    }
 }
 
 QImage Binaryzation(uint8_t* buf,uint32_t cnt)
