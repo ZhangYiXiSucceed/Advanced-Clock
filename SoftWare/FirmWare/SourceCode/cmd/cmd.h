@@ -29,6 +29,8 @@ enum
 	CONNECT_CMD,
 	RESET_CMD,
 	VERSION_CMD,
+	CONNECT_MODE_CMD,
+	OLED_SHOW_MODE_CMD,
 };
 	
 typedef struct cmd_msg_frame_struct
@@ -82,7 +84,15 @@ typedef struct version_info_struct
     uint32_t rsv2;
 }version_info_t;
 
+typedef struct connect_mode_set_struct
+{
+	u8 mode;
+}connect_mode_set_t;
 
+typedef struct oled_show_mode_set_struct
+{
+	u8 mode;
+}oled_show_mode_set_t;
 cmd_process_errcode_e server_msg_process(u8* packet,u16 len);
 u32 CalCheckSum(uint8_t* Data, uint16_t len);
 #endif

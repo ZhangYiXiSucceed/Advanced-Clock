@@ -73,7 +73,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t) + sizeof(server_heart_rsp_t)));
 			if(cal_sum != read_sum)
 			{
-				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
 				res = MSG_CRC_ERR;
 				goto err;
 			}
@@ -95,7 +95,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
 			if(cal_sum != read_sum)
 			{
-				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
 				res = MSG_CRC_ERR;
 				goto err;
 			}
@@ -114,7 +114,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
 			if(cal_sum != read_sum)
 			{
-				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
 				res = MSG_CRC_ERR;
 				goto err;
 			}
@@ -138,6 +138,47 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			para.para = NULL;
 			timer_set_func(&para);
 		}break;
+		case VERSION_CMD:
+		{
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + 4;
+			if(cmd_len != len)
+			{
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
+				res = MSG_LEN_ERR;
+				goto err;
+			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
+				res = MSG_CRC_ERR;
+				goto err;
+			}
+
+			rt_kprintf("get version=0x%x\r\n", region_header.version);
+
+			u8 cmd_data[sizeof(cmd_msg_frame_t) + sizeof(version_info_t) + 4];
+			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)cmd_data;
+
+			msg->header = MSG_FRAME_HEADER;
+			msg->cmd = VERSION_CMD;
+			msg->device_addr = 0x00;
+			msg->seq = 0x00;
+			msg->data_len = sizeof(version_info_t);
+
+			u8* msg_data = (u8*)(msg + 1);
+			version_info_t *version_rsp = (version_info_t *)msg_data;
+			version_rsp->hardware_version = 0x20200808;
+			version_rsp->software_version = region_header.version;
+			version_rsp->ota_attr = OTA_BOOT_ATTR;
+			version_rsp->rsv2 = 0x0;
+
+			u32* check_sum = (u32*)&cmd_data[sizeof(cmd_msg_frame_t) + sizeof(version_info_t)];
+			*check_sum = CalCheckSum(cmd_data,sizeof(cmd_msg_frame_t) + sizeof(version_info_t));
+
+			PrintfIOTPort4(cmd_data,sizeof(cmd_msg_frame_t) + sizeof(version_info_t) + 4);
+		}break;
 #ifdef BOOT
 		case JUMP_CMD:
 		{
@@ -152,7 +193,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
 			if(cal_sum != read_sum)
 			{
-				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
 				res = MSG_CRC_ERR;
 				goto err;
 			}
@@ -186,18 +227,6 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			para.para = &region_header;
 			timer_set_func(&para);
 		}break;
-#endif
-		case PICTURE_CMD:
-		{
-			u16 data_len = cmd_msg_frame->data_len;
-			if(data_len > 0x40)
-			{
-				rt_kprintf("data len err,%d\r\n", data_len);
-				res = MSG_LEN_ERR;
-				goto err;
-			}
-		}break;
-#ifdef BOOT
 		case START_UPDATE:
 		{
 			u16 cmd_len = sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t) + 4;
@@ -258,7 +287,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
 			if(cal_sum != read_sum)
 			{
-				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
 				res = MSG_CRC_ERR;
 				goto err;
 			}
@@ -266,53 +295,112 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			rt_kprintf("ota end\r\n");
 		}break;
 #endif
-		case VERSION_CMD:
+#ifndef BOOT
+		case CONNECT_MODE_CMD:
 		{
-			u16 cmd_len = sizeof(cmd_msg_frame_t) + 4;
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + sizeof(connect_mode_set_t) + 4;
 			if(cmd_len != len)
 			{
 				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
 				res = MSG_LEN_ERR;
 				goto err;
 			}
-			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t));
-			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t)));
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t) + sizeof(connect_mode_set_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t) +  sizeof(connect_mode_set_t)));
 			if(cal_sum != read_sum)
 			{
-				rt_kprintf("frame check err,%x %x\r\n", cal_sum,cal_sum);
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
+				res = MSG_CRC_ERR;
+				goto err;
+			}
+			u8* msg_data = (u8*)(cmd_msg_frame + 1);
+			connect_mode_set_t *connect_mode_set = (connect_mode_set_t *)msg_data;
+			system_var.connect_mode = connect_mode_set->mode;
+
+			if(WEATHER_MODE == connect_mode_set->mode)
+			{
+				rt_kprintf("set wearher mode\r\n");
+				timer_interval_func_t para;
+				para.interval = 0 ;
+				para.target_time = para.interval + GetSystemTime();
+				para.cb = (timer_callback)leave_host;
+				para.para = NULL;
+				timer_set_func(&para);
+
+				system_var.TwoMinuteFlag = 0;
+			}
+			else if(HOST_MODE == connect_mode_set->mode)
+			{
+				rt_kprintf("set connect host mode\r\n");
+			}
+		}break;
+		case PICTURE_CMD:
+		{
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE + 4;
+			if(cmd_len != len)
+			{
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
+				res = MSG_LEN_ERR;
+				goto err;
+			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE);
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE + 1));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
 				res = MSG_CRC_ERR;
 				goto err;
 			}
 
-			rt_kprintf("get version=0x%x\r\n", region_header.version);
+			if(0 == (buf_control_flag_g & BUF_USE_0_MARK))
+			{
+				buf_control_flag_g |= BUF_FULL_0_MARK;
+				memcpy(picture_frame_buf_g[0],&packet[sizeof(cmd_msg_frame_t)],PICTURE_FRMAE_SIZE);
+			}
+			else if(0 == (buf_control_flag_g & BUF_USE_1_MARK))
+			{
+				buf_control_flag_g |= BUF_FULL_1_MARK;
+				memcpy(picture_frame_buf_g[1],&packet[sizeof(cmd_msg_frame_t)],PICTURE_FRMAE_SIZE);
+			}
+		}break;
+#endif
+		case OLED_SHOW_MODE_CMD:
+		{
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + sizeof(oled_show_mode_set_t) + 4;
+			if(cmd_len != len)
+			{
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
+				res = MSG_LEN_ERR;
+				goto err;
+			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t) + sizeof(oled_show_mode_set_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t) +  sizeof(oled_show_mode_set_t)));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
+				res = MSG_CRC_ERR;
+				goto err;
+			}
+			u8* msg_data = (u8*)(cmd_msg_frame + 1);
+			oled_show_mode_set_t *oled_show_mode_set = (oled_show_mode_set_t *)msg_data;
 
-			u8 cmd_data[sizeof(cmd_msg_frame_t) + sizeof(version_info_t) + 4];
-			cmd_msg_frame_t* msg = (cmd_msg_frame_t*)cmd_data;
-
-			msg->header = MSG_FRAME_HEADER;
-			msg->cmd = VERSION_CMD;
-			msg->device_addr = 0x00;
-			msg->seq = 0x00;
-			msg->data_len = sizeof(version_info_t);
-
-			u8* msg_data = (u8*)(msg + 1);
-			version_info_t *version_rsp = (version_info_t *)msg_data;
-			version_rsp->hardware_version = 0x20200808;
-			version_rsp->software_version = region_header.version;
-			version_rsp->ota_attr = OTA_BOOT_ATTR;
-			version_rsp->rsv2 = 0x0;
-
-			u32* check_sum = (u32*)&cmd_data[sizeof(cmd_msg_frame_t) + sizeof(version_info_t)];
-			*check_sum = CalCheckSum(cmd_data,sizeof(cmd_msg_frame_t) + sizeof(version_info_t));
-
-			PrintfIOTPort4(cmd_data,sizeof(cmd_msg_frame_t) + sizeof(version_info_t) + 4);
+			if(SHOW_TIME_MODE == oled_show_mode_set->mode)
+			{
+				rt_kprintf("set  time mode\r\n");
+				set_show_state_change(city);
+			}
+			else if(SHOW_PICTURE_MODE == oled_show_mode_set->mode)
+			{
+				rt_kprintf("set picture mode\r\n");
+				set_show_state_change(picture);
+			}
 		}break;
 		default:
 			rt_kprintf("cmd  err,0x%x\r\n", cmd_msg_frame->cmd);
 			return MSG_CMD_ERR;
 			break;
 	}
-	if((HEART_CMD != cmd_msg_frame->cmd) && (VERSION_CMD != cmd_msg_frame->cmd))
+	if((HEART_CMD != cmd_msg_frame->cmd) && (VERSION_CMD != cmd_msg_frame->cmd) && (PICTURE_CMD != cmd_msg_frame->cmd))
 	{
 		msg_rsp_packet_and_send(cmd_msg_frame->cmd,res);
 	}
