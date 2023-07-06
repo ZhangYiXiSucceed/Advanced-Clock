@@ -135,11 +135,14 @@ void PictureShow::TransmitBinData(uint16_t cnt)
 void PictureShow::PictureUpdate()
 {
     static int i=0;
-    QImage disImage = Binaryzation(picture_info_manager.BinBuf,i);
+    //QImage disImage = Binaryzation(picture_info_manager.BinBuf,i);
+    char buf[64];
+    sprintf(buf,":/BadApple/%04d.bmp",i);
+    QPixmap BadApp=tr(buf);
     QGraphicsScene *scene = new QGraphicsScene;
     ui->OLEDShow->setScene(scene);
     ui->OLEDShow->show();
-    scene->addPixmap(QPixmap::fromImage(disImage));
+    scene->addPixmap(BadApp);
     i++;
 
     TransmitBinData(i);
@@ -176,7 +179,7 @@ void PictureShow::SetOLEDShowMode()
     }
     else
     {
-        QMessageBox::information(NULL, "info", "set connect mode ok", QMessageBox::Yes, QMessageBox::NoButton);
+        QMessageBox::information(NULL, "info", "set picture mode ok", QMessageBox::Yes, QMessageBox::NoButton);
     }
 
     mode++;
