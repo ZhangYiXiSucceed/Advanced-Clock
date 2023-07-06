@@ -1,6 +1,7 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QDateTime>
+#include <QMessageBox>
 #include "PictureShow.h"
 #include "ui_PictureShow.h"
 
@@ -93,19 +94,12 @@ QImage Binaryzation(uint8_t* buf,uint32_t cnt)
                 temp_data = temp_data<<z;
                 if (buf[1024*cnt + x*128+y] &  temp_data)
                 {
-                    if(0x80 == temp_data)
-                        newGray = 255;
-                    else
-                        newGray = 0;
+                    newGray = 0;
                 }
                 else
                 {
-                    if(0x80 == temp_data)
-                        newGray = 0;
-                    else
-                        newGray = 255;
+                    newGray = 255;
                 }
-
                 newImg.setPixel(y, x*8+z, qRgb(newGray, newGray, newGray));
             }
         }
@@ -175,6 +169,15 @@ void PictureShow::SetOLEDShowMode()
 
     memcpy((void*)Sendata.data(),buf,len);
     emit SendReq2Device(Sendata);
+
+    if(0 == mode)
+    {
+        QMessageBox::information(NULL, "info", "set time mode ok", QMessageBox::Yes, QMessageBox::NoButton);
+    }
+    else
+    {
+        QMessageBox::information(NULL, "info", "set connect mode ok", QMessageBox::Yes, QMessageBox::NoButton);
+    }
 
     mode++;
     mode = mode%2;

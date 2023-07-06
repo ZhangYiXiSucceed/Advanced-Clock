@@ -368,6 +368,15 @@ void OTA::SetConnectMode()
     memcpy((void*)Sendata.data(),buf,len);
     emit SendReq2Device(Sendata);
 
+    if(0 == mode)
+    {
+        QMessageBox::information(NULL, "info", "set weather mode ok", QMessageBox::Yes, QMessageBox::NoButton);
+    }
+    else
+    {
+        QMessageBox::information(NULL, "info", "set host mode ok", QMessageBox::Yes, QMessageBox::NoButton);
+    }
+
     mode++;
     mode = mode%2;
 }
@@ -478,7 +487,6 @@ void OTA::RspDataProcess(QByteArray Data)
                 cout <<"frame check err,cal=" << cal_sum <<"read= "<< read_sum << endl;
                 return;
             }
-            QMessageBox::information(NULL, "info", "set connect mode ok", QMessageBox::Yes, QMessageBox::NoButton);
         }break;
         default:
         {
