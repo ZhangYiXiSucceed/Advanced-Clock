@@ -1,5 +1,6 @@
 #include <QFileDialog>
 #include <QFile>
+#include <QFileInfo>
 #include <QDateTime>
 #include <QMessageBox>
 #include "PictureShow.h"
@@ -136,15 +137,34 @@ void PictureShow::PictureUpdate()
 {
     static int i=0;
     //QImage disImage = Binaryzation(picture_info_manager.BinBuf,i);
-    char buf[64];
-    sprintf(buf,":/BadApple/%04d.bmp",i);
-    QPixmap BadApp=tr(buf);
+    QString path = "D:/Workspace/DesignProject/AdvancedClock/Advanced-Clock/SoftWare/PCTool/AdvancedClock/BadApple";
+    static QDir dir(path);
+    if(i == 0)
+    {
+        if(!dir.exists())
+        {
+            QMessageBox::information(NULL, "info", "dir err", QMessageBox::Yes, QMessageBox::NoButton);
+            MyPictureShowTimer->stop();
+            return;
+        }
+        QStringList ImageList;
+        ImageList << "*.bmp" << "*.jpg" << "*.png";
+        dir.setNameFilters(ImageList);
+        int ImageCount = dir.count();
+        emit ShowSystemMessage("Image Num is :" + QString::number(ImageCount),1500);
+        ui->UpgradProgressBar->setRange(0,ImageCount);
+    }
+
+    QString ImageName  = path + "/" + dir[i];
+    QImage image(ImageName);
+
     QGraphicsScene *scene = new QGraphicsScene;
     ui->OLEDShow->setScene(scene);
     ui->OLEDShow->show();
-    scene->addPixmap(BadApp);
+    scene->addPixmap(QPixmap::fromImage(image));
     i++;
 
+    ui->UpgradProgressBar->setValue(i);
     TransmitBinData(i);
 }
 
