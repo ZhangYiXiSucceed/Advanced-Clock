@@ -36,8 +36,59 @@ OTA::OTA(QWidget *parent) :
 
 void OTA::InitUI()
 {
+    QFont Ft("Microsoft YaHei");
+    Ft.setPointSize(12);
+
     ui->OpenDevice->setEnabled(true);
     ui->CloseDevice->setEnabled(false);
+
+    ui->SoftwareVersion->setFont(Ft);
+    ui->HardwareVersion->setFont(Ft);
+
+    ui->SoftwareLabel->setFont(Ft);
+    ui->HardwareLabel->setFont(Ft);
+    ui->BarLable->setFont(Ft);
+    ui->UpgradBinFileNameLable->setFont(Ft);
+    ui->UpgradBinFileSizeLable->setFont(Ft);
+    ui->FileLable->setFont(Ft);
+    ui->UpgradBinFileDateTimeLable->setFont(Ft);
+
+    ui->JumpDevice->setFont(Ft);
+    ui->JumpDevice->setIcon(DeviceJumpPic);
+    ui->JumpDevice->setIconSize(DeviceJumpPic.size()/4);
+
+    ui->GetVersion->setFont(Ft);
+    ui->GetVersion->setIcon(DeviceVerSionPic);
+    ui->GetVersion->setIconSize(DeviceVerSionPic.size()/4);
+
+    ui->ResetDevice->setFont(Ft);
+    ui->ResetDevice->setIcon(DeviceVerSionPic);
+    ui->ResetDevice->setIconSize(DeviceVerSionPic.size()/4);
+
+    ui->ConnectDevice->setFont(Ft);
+    ui->ConnectDevice->setIcon(DeviceConnectPic);
+    ui->ConnectDevice->setIconSize(DeviceConnectPic.size()/4);
+
+    ui->OpenDevice->setFont(Ft);
+    ui->OpenDevice->setIcon(DeviceOpenPic);
+    ui->OpenDevice->setIconSize(DeviceOpenPic.size()/4);
+
+    ui->CloseDevice->setFont(Ft);
+    ui->CloseDevice->setIcon(DeviceClosePic);
+    ui->CloseDevice->setIconSize(DeviceClosePic.size()/4);
+
+    ui->SetConnectMode->setFont(Ft);
+    ui->SetConnectMode->setIcon(DeviceSetPic);
+    ui->SetConnectMode->setIconSize(DeviceSetPic.size()/4);
+
+    ui->SelectUpgradBinFile->setFont(Ft);
+    ui->SelectUpgradBinFile->setIcon(SelectUpgradeFilePic);
+    ui->SelectUpgradBinFile->setIconSize(SelectUpgradeFilePic.size()/4);
+    ui->SelectUpgradBinFile->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+    ui->StartUpgrade->setFont(Ft);
+    ui->StartUpgrade->setIcon(StartUpgradePic);
+    ui->StartUpgrade->setIconSize(StartUpgradePic.size()/4);
 }
 void OTA::InitConnect()
 {

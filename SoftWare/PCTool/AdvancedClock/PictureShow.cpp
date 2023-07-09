@@ -30,6 +30,32 @@ void PictureShow::InitUI()
     ui->PictureShowStatic->setScene(scene);
     ui->PictureShowStatic->show();
     scene->addPixmap(BadApplePicture);
+
+    QFont Ft("Microsoft YaHei");
+    Ft.setPointSize(12);
+    Ft.setBold(true);
+    ui->SelectShowBinFile->setFont(Ft);
+    ui->SelectShowBinFile->setIcon(SelectShowFile);
+    ui->SelectShowBinFile->setIconSize(SelectShowFile.size()/4);
+    ui->SelectShowBinFile->setStyleSheet("QPushButton{background-color:rgb(170,0,0)}"
+                                         "QPushButton{border-width:0;border-style:outset}"
+                                         "QPushButton{color:White}");
+
+    ui->StartTransfer->setFont(Ft);
+    ui->StartTransfer->setIcon(StartShow);
+    ui->StartTransfer->setIconSize(StartShow.size()/4);
+    ui->StartTransfer->setStyleSheet("QPushButton{background-color:rgb(170,0,0)}"
+                                         "QPushButton{border-width:0;border-style:outset}"
+                                         "QPushButton{color:White}");
+
+    ui->OLEDModeShowSet->setFont(Ft);
+    ui->OLEDModeShowSet->setIcon(ModeSet);
+    ui->OLEDModeShowSet->setIconSize(ModeSet.size()/4);
+    ui->OLEDModeShowSet->setStyleSheet("QPushButton{background-color:rgb(170,0,0)}"
+                                         "QPushButton{border-width:0;border-style:outset}"
+                                         "QPushButton{color:White}");
+
+    ui->BarLabel->setFont(Ft);
 }
 
 void PictureShow::InitConnect()
@@ -74,11 +100,15 @@ void PictureShow::StartTransferOLEDShow()
     {
         MyPictureShowTimer->stop();
         ui->StartTransfer->setText("开始显示");
+        ui->StartTransfer->setIcon(StartShow);
+        ui->StartTransfer->setIconSize(StartShow.size()/4);
     }
     else
     {
         MyPictureShowTimer->start(100);
         ui->StartTransfer->setText("停止显示");
+        ui->StartTransfer->setIcon(StopShow);
+        ui->StartTransfer->setIconSize(StopShow.size()/4);
     }
 }
 

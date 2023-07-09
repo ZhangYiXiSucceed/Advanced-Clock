@@ -51,7 +51,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="SoftwareLabel">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -69,7 +69,7 @@
      <string>软件版本：</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QLabel" name="HardwareLabel">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -204,7 +204,7 @@
      <number>24</number>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="BarLable">
     <property name="geometry">
      <rect>
       <x>12</x>
@@ -253,7 +253,7 @@
    <property name="title">
     <string>GroupBox</string>
    </property>
-   <widget class="QLabel" name="label_4">
+   <widget class="QLabel" name="FileLable">
     <property name="geometry">
      <rect>
       <x>20</x>

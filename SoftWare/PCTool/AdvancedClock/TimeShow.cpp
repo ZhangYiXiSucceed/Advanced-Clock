@@ -384,6 +384,7 @@ void TimeShow::ReadNiceWordsTxt(QList<QString> &NiceWordsList)
         cout << WordsInfo.toLocal8Bit().data() << endl;
         NiceWordsList.push_back(WordsInfo);
     }
+    WordsInfo.remove('\r');
     ui->NiceWords->setText(WordsInfo);
     ui->NiceWords->setAlignment(Qt::AlignCenter);
     InFile.close();
@@ -394,6 +395,7 @@ void TimeShow::NiceWordsShowUpdate()
     int WrodsSize = NiceWords.size();
     static int Index = 0;
     QString OneWords = NiceWords.at(Index);
+    OneWords.remove('\r');
     ui->NiceWords->setText(OneWords);
     ui->NiceWords->setAlignment(Qt::AlignCenter);
     Index++;

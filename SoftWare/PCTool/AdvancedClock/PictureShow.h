@@ -43,6 +43,11 @@ private:
     picture_info_manager_t picture_info_manager;
 
     QPixmap BadApplePicture=tr(":/Image/badapple.png");
+
+    QPixmap StartShow=tr(":/Image/Start.png");
+    QPixmap StopShow=tr(":/Image/Stop.png");
+    QPixmap SelectShowFile=tr(":/Image/SelectFile.png");
+    QPixmap ModeSet=tr(":/Image/ModeSet.png");
 };
 
 #endif // PICTURESHOW_H

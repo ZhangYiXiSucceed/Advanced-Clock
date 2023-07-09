@@ -98,6 +98,19 @@ private:
 
     QTimer  *MyStartConnectTimer;
     QThreadRun *MyThread;
+
+    QPixmap DeviceClosePic=tr(":/Image/Close.png");
+    QPixmap DeviceOpenPic=tr(":/Image/Open.png");
+
+    QPixmap DeviceConnectPic=tr(":/Image/Connect.png");
+    QPixmap DeviceJumpPic=tr(":/Image/Jump.png");
+
+    QPixmap DeviceResetPic=tr(":/Image/Reset.png");
+    QPixmap DeviceVerSionPic=tr(":/Image/GetVersion.png");
+
+    QPixmap DeviceSetPic=tr(":/Image/Set.png");
+    QPixmap SelectUpgradeFilePic=tr(":/Image/SelectFile.png");
+    QPixmap StartUpgradePic=tr(":/Image/Start.png");
 };
 
 #endif // OTA_H

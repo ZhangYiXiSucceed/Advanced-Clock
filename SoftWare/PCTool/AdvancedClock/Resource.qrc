@@ -6,5 +6,16 @@
         <file>Image/snowy.png</file>
         <file>Image/sunny.png</file>
         <file>Image/windy.png</file>
+        <file>Image/ModeSet.png</file>
+        <file>Image/Close.png</file>
+        <file>Image/Connect.png</file>
+        <file>Image/GetVersion.png</file>
+        <file>Image/Jump.png</file>
+        <file>Image/Open.png</file>
+        <file>Image/Reset.png</file>
+        <file>Image/Set.png</file>
+        <file>Image/SelectFile.png</file>
+        <file>Image/Start.png</file>
+        <file>Image/Stop.png</file>
     </qresource>
 </RCC>
