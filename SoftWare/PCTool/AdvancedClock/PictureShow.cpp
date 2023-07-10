@@ -3,6 +3,7 @@
 #include <QFileInfo>
 #include <QDateTime>
 #include <QMessageBox>
+#include <iostream>
 #include "PictureShow.h"
 #include "ui_PictureShow.h"
 
@@ -105,7 +106,7 @@ void PictureShow::StartTransferOLEDShow()
     }
     else
     {
-        MyPictureShowTimer->start(100);
+        MyPictureShowTimer->start(50);
         ui->StartTransfer->setText("停止显示");
         ui->StartTransfer->setIcon(StopShow);
         ui->StartTransfer->setIconSize(StopShow.size()/4);
@@ -167,7 +168,7 @@ void PictureShow::PictureUpdate()
 {
     static int i=0;
     //QImage disImage = Binaryzation(picture_info_manager.BinBuf,i);
-    QString path = "D:/Workspace/DesignProject/AdvancedClock/Advanced-Clock/SoftWare/PCTool/AdvancedClock/BadApple";
+    QString path = "D:/Workspace/DesignProject/AdvancedClock/Advanced-Clock/SoftWare/PCTool/AdvancedClock/BadApple540_400_30HZ";
     static QDir dir(path);
     if(i == 0)
     {
@@ -188,14 +189,14 @@ void PictureShow::PictureUpdate()
     QString ImageName  = path + "/" + dir[i];
     QImage image(ImageName);
 
-    QGraphicsScene *scene = new QGraphicsScene;
-    ui->OLEDShow->setScene(scene);
-    ui->OLEDShow->show();
+    static QGraphicsScene *scene = new QGraphicsScene;
     scene->addPixmap(QPixmap::fromImage(image));
+    ui->PictureShowStatic->setScene(scene);
+    ui->PictureShowStatic->show();
     i++;
-
+    std::cout << "i="<<i<<","<<dir[i].toStdString().c_str()<<std::endl;
     ui->UpgradProgressBar->setValue(i);
-    TransmitBinData(i);
+    //TransmitBinData(i);
 }
 
 void PictureShow::SetOLEDShowMode()
