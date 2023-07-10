@@ -251,6 +251,21 @@ void quit_network_connect_cmd()
 	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
+void clear_wifi_op_req()
+{
+	u8 req_num = GetTsakFiFoCount(&sOperCmdUnionFifo_wifi);
+	if(req_num >= WIFI_OP_REQ_NUM_MAX)
+	{
+		int i;
+		struct OperCmdUnion sdat;
+		for(i=0;i<req_num;i++)
+		{
+			FifoOut(&sOperCmdUnionFifo_wifi,&sdat);
+		}
+		rt_kprintf("wifi op err too many,num=%d\r\n",req_num);
+	}
+}
+
 void quiry_wifi()
 {
 	
@@ -425,8 +440,12 @@ void wifi_msg_process()
 			      if(mrtn == RESP_WIFI_OK)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
-
 			      }
+				  else
+				  {
+					  clear_wifi_op_req();
+					  sOperCmdBuff.tid = 0xff;
+				  }
 				}
 				break;
 				case AT_CIPSEND:
@@ -508,6 +527,11 @@ void wifi_msg_process()
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 			      }
+				  else
+				  {
+					clear_wifi_op_req();
+					sOperCmdBuff.tid = 0xff;
+				  }
 				}
 				break;
 				case AT_HOST_IP_CONNECT:
@@ -516,8 +540,12 @@ void wifi_msg_process()
 			      if(mrtn == RESP_IP_CONNECT)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
-						
 			      }
+				  else
+				  {
+					clear_wifi_op_req();
+					sOperCmdBuff.tid = 0xff;
+				  }
 				}
 				break;
 				case AT_RECIVE_CMD:

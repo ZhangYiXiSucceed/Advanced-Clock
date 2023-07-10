@@ -27,6 +27,7 @@
 #define  AT_IDLE_CMD             0xFF
 #define  AT_RECIVE_CMD           AT_IDLE_CMD
 
+#define WIFI_OP_REQ_NUM_MAX      12
 extern time_and_weather_t  time_and_weather_g;
 enum 
 {
@@ -62,7 +63,7 @@ void quit_send_data_mode_cmd(void);
 void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_buffer_length);
 int parsing_the_str(char* str);
 void print_wifi_weather_time_info(void);
-
+void clear_wifi_op_req();
 int8_t WifiStateCheck(char *data);
 
 #endif
