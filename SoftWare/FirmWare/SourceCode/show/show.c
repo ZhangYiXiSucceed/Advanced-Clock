@@ -67,16 +67,13 @@ void show_interface_oled()
 			{
 				set_show_state_change(eight_diagrams);
 				OLED_Clear();
+				temp_sys_time = system_data.SystemGMTTime;
 			}
 		}break;
 		case eight_diagrams:
 		{
-			OLED_DrawBMP(0,0,64,128,eight_diagrams_bmp);
-			if(0 == temp_sys_time)
-			{
-				temp_sys_time = system_data.SystemGMTTime;
-			}
-			else if(system_data.SystemGMTTime > (temp_sys_time+3))
+			OLED_DrawBMP(0,0,128,64,eight_diagrams_bmp);
+			if(system_data.SystemGMTTime > (temp_sys_time+5))
 			{
 				set_show_state_change(wifi_connect);
 				OLED_Clear();

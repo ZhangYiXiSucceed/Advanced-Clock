@@ -12,10 +12,7 @@ PictureShow::PictureShow(QWidget *parent) :
     MyPictureShowTimer = new QTimer;
     picture_info_manager.BinBuf = new quint8[64*1024*1024];
 
-    item = new QGraphicsPixmapItem;
     scene = new QGraphicsScene;
-    ui->PictureShowStatic->setScene(scene);
-    scene->addItem(item);
 
     InitUI();
     InitConnect();
@@ -190,10 +187,11 @@ void PictureShow::PictureUpdate()
     QString ImageName  = path + "/" + dir[i];
     QImage image(ImageName);
 
-    item->setPixmap(QPixmap::fromImage(image));
+    scene->addPixmap(QPixmap::fromImage(image));
+    ui->PictureShowStatic->setScene(scene);
     ui->PictureShowStatic->show();
+
     i++;
-    std::cout << "i="<<i<<","<<dir[i].toStdString().c_str()<<std::endl;
     ui->UpgradProgressBar->setValue(i);
     //TransmitBinData(i);
 }
