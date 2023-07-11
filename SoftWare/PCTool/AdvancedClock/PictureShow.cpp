@@ -1,7 +1,3 @@
-#include <QFileDialog>
-#include <QFile>
-#include <QFileInfo>
-#include <QDateTime>
 #include <QMessageBox>
 #include <iostream>
 #include "PictureShow.h"
@@ -15,6 +11,11 @@ PictureShow::PictureShow(QWidget *parent) :
 
     MyPictureShowTimer = new QTimer;
     picture_info_manager.BinBuf = new quint8[64*1024*1024];
+
+    item = new QGraphicsPixmapItem;
+    scene = new QGraphicsScene;
+    ui->PictureShowStatic->setScene(scene);
+    scene->addItem(item);
 
     InitUI();
     InitConnect();
@@ -189,9 +190,7 @@ void PictureShow::PictureUpdate()
     QString ImageName  = path + "/" + dir[i];
     QImage image(ImageName);
 
-    static QGraphicsScene *scene = new QGraphicsScene;
-    scene->addPixmap(QPixmap::fromImage(image));
-    ui->PictureShowStatic->setScene(scene);
+    item->setPixmap(QPixmap::fromImage(image));
     ui->PictureShowStatic->show();
     i++;
     std::cout << "i="<<i<<","<<dir[i].toStdString().c_str()<<std::endl;

@@ -21,6 +21,7 @@ extern unsigned char signal_bmp3[];
 extern unsigned char signal_idle[];
 
 extern unsigned char advanced_clock[];
+extern unsigned char eight_diagrams_bmp[];
 extern unsigned char weather_icon[][84];
 
 void wifi_bmp_clear()
@@ -58,6 +59,19 @@ void show_interface_oled()
 			show_common_string(72,0,"clock",font_size8X16);
 			show_common_string(64,2,"zyixi.com ",font_size6X8);
 			show_common_string(72,4,"V1.0.0",font_size6X8);
+			if(0 == temp_sys_time)
+			{
+				temp_sys_time = system_data.SystemGMTTime;
+			}
+			else if(system_data.SystemGMTTime > (temp_sys_time+3))
+			{
+				set_show_state_change(eight_diagrams);
+				OLED_Clear();
+			}
+		}break;
+		case eight_diagrams:
+		{
+			OLED_DrawBMP(0,0,64,128,eight_diagrams_bmp);
 			if(0 == temp_sys_time)
 			{
 				temp_sys_time = system_data.SystemGMTTime;

@@ -4,6 +4,12 @@
 #include "OTA.h"
 #include <QWidget>
 #include <QTimer>
+#include <QFileDialog>
+#include <QFile>
+#include <QFileInfo>
+#include <QDateTime>
+#include <QGraphicsItem>
+#include <QGraphicsScene>
 
 typedef struct picture_info_manager_struct
 {
@@ -42,8 +48,10 @@ private:
     QTimer  *MyPictureShowTimer;
     picture_info_manager_t picture_info_manager;
 
-    QPixmap BadApplePicture=tr(":/Image/badapple.png");
+    QGraphicsScene *scene;
+    QGraphicsPixmapItem  *item;
 
+    QPixmap BadApplePicture=tr(":/Image/badapple.png");
     QPixmap StartShow=tr(":/Image/Start.png");
     QPixmap StopShow=tr(":/Image/Stop.png");
     QPixmap SelectShowFile=tr(":/Image/SelectFile.png");
