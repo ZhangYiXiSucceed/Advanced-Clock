@@ -10,6 +10,8 @@
 #include <QDateTime>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
+#include <QMediaPlayer>
+#include <QApplication>
 
 typedef struct picture_info_manager_struct
 {
@@ -50,6 +52,7 @@ private:
 
     QGraphicsScene *scene;
     QGraphicsPixmapItem  *item;
+    QMediaPlayer *player;
 
     QPixmap BadApplePicture=tr(":/Image/badapple.png");
     QPixmap StartShow=tr(":/Image/Start.png");

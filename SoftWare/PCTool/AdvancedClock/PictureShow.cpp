@@ -13,7 +13,10 @@ PictureShow::PictureShow(QWidget *parent) :
     picture_info_manager.BinBuf = new quint8[64*1024*1024];
 
     scene = new QGraphicsScene;
+    player = new QMediaPlayer;
 
+    player->setMedia(QUrl::fromLocalFile("../AdvancedClock/badapple.mp3"));
+    player->setVolume(100);
     InitUI();
     InitConnect();
 }
@@ -101,6 +104,7 @@ void PictureShow::StartTransferOLEDShow()
         ui->StartTransfer->setText("开始显示");
         ui->StartTransfer->setIcon(StartShow);
         ui->StartTransfer->setIconSize(StartShow.size()/4);
+        player->pause();
     }
     else
     {
@@ -108,6 +112,7 @@ void PictureShow::StartTransferOLEDShow()
         ui->StartTransfer->setText("停止显示");
         ui->StartTransfer->setIcon(StopShow);
         ui->StartTransfer->setIconSize(StopShow.size()/4);
+        player->play();
     }
 }
 
@@ -166,7 +171,7 @@ void PictureShow::PictureUpdate()
 {
     static int i=0;
     //QImage disImage = Binaryzation(picture_info_manager.BinBuf,i);
-    QString path = "D:/Workspace/DesignProject/AdvancedClock/Advanced-Clock/SoftWare/PCTool/AdvancedClock/BadApple540_400_30HZ";
+    QString path = "../AdvancedClock/BadApple540_400_30HZ";
     static QDir dir(path);
     if(i == 0)
     {
