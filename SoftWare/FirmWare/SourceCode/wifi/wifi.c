@@ -341,18 +341,19 @@ void wifi_msg_process()
   int mrtn;
   if(sOperCmdBuff.tid == AT_IDLE_CMD)
   {
-    if(FifoOut(&sOperCmdUnionFifo_wifi, &sOperCmdBuff) == ValFifoOperateOk)          //������������Ƿ�������
-    {
-                                                          //������ݽ���
+	
+    if(FifoOut(&sOperCmdUnionFifo_wifi, &sOperCmdBuff) == ValFifoOperateOk)          
+    {              
         sOperCmdBuff.time   = GetSystemTime();
         //PrintCmd(sOperCmdBuff.cmd);
+		memset(&sOperCmdBuff.buffer[sOperCmdBuff.len],0x00,sizeof(sOperCmdBuff.buffer)-sOperCmdBuff.len);
         rt_kprintf("CMD:%d===>%s\r\n",sOperCmdBuff.cmd,sOperCmdBuff.buffer);
         PrintfIOTPort4(sOperCmdBuff.buffer,sOperCmdBuff.len);
     } 	
   }
   else
   {
-      if(GetSystemTime()> sOperCmdBuff.time + 10)                            //���������ش�
+      if(GetSystemTime()> sOperCmdBuff.time + 10)                            
       {
           sOperCmdBuff.trycnt = sOperCmdBuff.trycnt -1;
           if(sOperCmdBuff.trycnt)
@@ -402,7 +403,7 @@ void wifi_msg_process()
 					mrtn = WifiStateCheck((char*)FrameInBuff);
 					if(mrtn == RESP_WIFI_OK)
 					{                                                                     // recv ok
-					sOperCmdBuff.tid = 0xff;
+					  sOperCmdBuff.tid = 0xff;
 
 					}
 				}
@@ -473,6 +474,7 @@ void wifi_msg_process()
 				{
 				 	//rt_kprintf("%s\r\n",FrameInBuff);
 					parsing_time_json_info(FrameInBuff,FrameInlen);
+					delay_ms(1000);
 					if(0 == system_var.TimeGetFlag)
 					{
 						system_var.TimeGetFlag = 1;

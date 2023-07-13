@@ -198,7 +198,8 @@ void OTA::CloseDevice()
 void OTA::SelectOTABin()
 {
     ota_info_manager.FileAddress = QFileDialog::getOpenFileName(this,tr("Open File"),ota_info_manager.FileAddress,tr("(*.bin);;(*.hex);;(*.axf);;(*.txt);;All Files(*.*)"));
-    ui->UpgradBinFileAddress->setText(ota_info_manager.FileAddress);
+    int position = ota_info_manager.FileAddress.toStdString().find_last_of('/');
+    ui->UpgradBinFileAddress->setText(ota_info_manager.FileAddress.mid(position+1));
     if(ota_info_manager.FileAddress != NULL)
     {
         QFileInfo *Temp = new QFileInfo(ota_info_manager.FileAddress);

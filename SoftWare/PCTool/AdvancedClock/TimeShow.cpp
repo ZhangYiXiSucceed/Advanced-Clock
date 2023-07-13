@@ -175,7 +175,7 @@ void TimeShow::NewConnect()
     new_connect_info += ",port:";
     new_connect_info += QString::number(currentClient->peerPort());
 
-    emit ShowSystemMessage(new_connect_info, 5000);
+    emit ShowSystemMessage(new_connect_info, 10000);
     cout << new_connect_info.toStdString() << endl;
 }
 

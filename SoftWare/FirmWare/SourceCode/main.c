@@ -26,7 +26,7 @@ int main()
   IWDG_Init();
 
   rt_kprintf("*******************************************\r\n");
-  rt_kprintf((char*)Data);
+  rt_kprintf("%s, time=%s date=%s\r\n",(char*)Data, __TIME__,__DATE__);
   rt_kprintf("*******************************************\r\n");
 
   rt_kprintf2((char*)Data);
