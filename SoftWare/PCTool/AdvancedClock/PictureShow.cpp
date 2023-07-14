@@ -58,6 +58,12 @@ void PictureShow::InitUI()
                                          "QPushButton{color:White}");
 
     ui->BarLabel->setFont(Ft);
+
+    ui->ShowFre->addItem("10");
+    ui->ShowFre->addItem("20");
+    ui->ShowFre->addItem("50");
+    ui->ShowFre->addItem("100");
+    ui->ShowFre->addItem("200");
 }
 
 void PictureShow::InitConnect()
@@ -108,7 +114,8 @@ void PictureShow::StartTransferOLEDShow()
     }
     else
     {
-        MyPictureShowTimer->start(50);
+        int ShowFre = 1000/(ui->ShowFre->currentText().toInt());
+        MyPictureShowTimer->start(ShowFre);
         ui->StartTransfer->setText("停止显示");
         ui->StartTransfer->setIcon(StopShow);
         ui->StartTransfer->setIconSize(StopShow.size()/4);
