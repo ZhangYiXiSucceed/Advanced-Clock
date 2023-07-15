@@ -59,11 +59,18 @@ void PictureShow::InitUI()
 
     ui->BarLabel->setFont(Ft);
 
+    ui->ShowFreLable->setFont(Ft);
+    ui->ShowFre->setFont(Ft);
+    ui->ShowFre->addItem("5");
     ui->ShowFre->addItem("10");
     ui->ShowFre->addItem("20");
     ui->ShowFre->addItem("50");
     ui->ShowFre->addItem("100");
     ui->ShowFre->addItem("200");
+    ui->ShowFre->addItem("500");
+
+    ui->IsSendcheckBox->setFont(Ft);
+    ui->IsSendcheckBox->setCheckState(Qt::Unchecked);
 }
 
 void PictureShow::InitConnect()
@@ -205,7 +212,10 @@ void PictureShow::PictureUpdate()
 
     i++;
     ui->UpgradProgressBar->setValue(i);
-    //TransmitBinData(i);
+    if(ui->IsSendcheckBox->isChecked())
+    {
+        TransmitBinData(i);
+    }
 }
 
 void PictureShow::SetOLEDShowMode()
