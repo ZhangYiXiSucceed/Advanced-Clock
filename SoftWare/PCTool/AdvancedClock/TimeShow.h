@@ -46,6 +46,7 @@ private slots:
     void SendData2Device(QByteArray Data);
     void SetDate(int year,int month,int day,int week);
     void SetTime(int hour,int minute,int second);
+    void SetTemptureHumidty(int tempture,int humidty);
     void TimerUpdate();
     void NiceWordsShowUpdate();
 private:

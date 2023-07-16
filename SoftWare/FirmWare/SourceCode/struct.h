@@ -18,7 +18,20 @@ struct SystemData
   int humidty;
 };
 
-
+typedef enum weather_id_struct
+{
+	WEATHER_SUNNY = 0x00,
+	WEATHER_CLOUDY,
+	WEATHER_WINDY,
+	WEATHER_SUNNY_TO_RAINY,
+	WEATHER_SMALL_THUNDER_RAINY,
+	WEATHER_LARGE_THUNDER_RAINY,
+	WEATHER_RAINY_AND_SNOWY,
+	WEATHER_SMALL_RAINY,
+	WEATHER_MIDDLE_RAINY,
+	WEATHER_LARGE_RAINY,
+	WEATHER_MORE_LARGE_RAINy,
+} weather_id_t;
 
 struct SystemVar
 {
@@ -70,6 +83,8 @@ typedef struct time_and_weather_struct{
 	char humidty;
 	char api;
 	char city_id;
+
+	char weather_id;
 
 	char weather[16];
 	char city[16];

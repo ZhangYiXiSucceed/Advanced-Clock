@@ -35,16 +35,22 @@ TimeShow::TimeShow(QWidget *parent) :
 void TimeShow::InitUI()
 {
     QFont Ft("Microsoft YaHei");
-    Ft.setPointSize(40);
+    Ft.setPointSize(15);
     ui->DateShow->setFont(Ft);
     ui->DateShow->setStyleSheet("QLineEdit{background-color:transparent}"
                                  "QLineEdit{border-width:0;border-style:outset}"
                                  "QLineEdit{color:blue}");
-
+    Ft.setPointSize(45);
     ui->NowShow->setFont(Ft);
     ui->NowShow->setStyleSheet("QLineEdit{background-color:transparent}"
                                  "QLineEdit{border-width:0;border-style:outset}"
                                  "QLineEdit{color:red}");
+    Ft.setPointSize(15);
+    ui->Tempture_Humidty->setFont(Ft);
+    ui->Tempture_Humidty->setStyleSheet("QLineEdit{background-color:transparent}"
+                                 "QLineEdit{border-width:0;border-style:outset}"
+                                 "QLineEdit{color:blue}");
+
     Ft.setPointSize(35);
     ui->NiceWords->setFont(Ft);
     ui->NiceWords->setStyleSheet("QTextEdit{background-color:transparent}"
@@ -243,6 +249,7 @@ void TimeShow::RspDataProcess(QByteArray buf)
             HeartCmdRsp();
             SetDate(weather_and_time_data_g.year,weather_and_time_data_g.month,\
                     weather_and_time_data_g.day,weather_and_time_data_g.week);
+            SetTemptureHumidty(weather_and_time_data_g.tempture,weather_and_time_data_g.humidty);
             if(MyTimeShowTimer->isActive() == false)
             {
                 MyTimeShowTimer->start(1000);
@@ -332,7 +339,13 @@ void TimeShow::SendData2Device(QByteArray Data)
         QMessageBox::warning(NULL, "warning", "send failed", QMessageBox::Yes, QMessageBox::NoButton);
     }
 }
-
+void TimeShow::SetTemptureHumidty(int tempture,int humidty)
+{
+    char buf[32];
+    sprintf(buf,"T:%02d℃ -H:%02d %",tempture,humidty);
+    QString date_str(buf);
+    ui->Tempture_Humidty->setText(date_str);
+}
 void TimeShow::SetDate(int year,int month,int day,int week)
 {
     char buf[32];
@@ -344,7 +357,7 @@ void TimeShow::SetDate(int year,int month,int day,int week)
 void TimeShow::SetTime(int hour,int minute,int second)
 {
     char buf[32];
-    sprintf(buf,"%02d:%02d:%02d",hour,minute,second);
+    sprintf(buf,"%02d : %02d : %02d",hour,minute,second);
     QString time_str(buf);
     ui->NowShow->setText(time_str);
 }
