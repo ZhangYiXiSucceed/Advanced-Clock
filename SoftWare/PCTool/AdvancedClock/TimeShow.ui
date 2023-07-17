@@ -165,7 +165,7 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>141</width>
+      <width>161</width>
       <height>81</height>
      </rect>
     </property>
@@ -247,9 +247,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <widget class="QLineEdit" name="Tempture_Humidty">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>540</x>
       <y>20</y>
-      <width>191</width>
+      <width>211</width>
       <height>81</height>
      </rect>
     </property>
