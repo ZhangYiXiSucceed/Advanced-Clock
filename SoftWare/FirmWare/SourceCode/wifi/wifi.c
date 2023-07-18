@@ -757,8 +757,8 @@ void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_
 	cJSON *weather_icon = cJSON_GetObjectItem(result, "weather_icon");
 	rt_kprintf("weather_icon value:%s\r\n", weather_icon->valuestring);
 
-	cJSON *weather = cJSON_GetObjectItem(result, "weather");
-	rt_kprintf("weather value:%s\r\n", weather->valuestring);
+	cJSON *weather_curr = cJSON_GetObjectItem(result, "weather_curr");
+	rt_kprintf("weather_curr value:%s\r\n", weather_curr->valuestring);
 
 	time_and_weather_g.tempeture =  parsing_the_str(temperature_curr->valuestring);
 	time_and_weather_g.api       =  parsing_the_str(aqi->valuestring);
@@ -769,7 +769,7 @@ void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_
 
 
 	memcpy(time_and_weather_g.city,cityno->valuestring,strlen(cityno->valuestring));
-	memcpy(time_and_weather_g.weather,weather->valuestring,strlen(weather->valuestring));
+	memcpy(time_and_weather_g.weather,weather_curr->valuestring,strlen(weather_curr->valuestring));
 	cJSON_Delete(root);
 }
 
@@ -877,11 +877,18 @@ void paraing_time_string(char* temp_time_date_str,char* temp_week)
 int parsing_the_weather_id(char* str)
 {
 	int weather_id = 0;
-	int start_pos = 38;
+	int start_pos = 37;
 
 	char* start_str=&str[start_pos];
 	do
 	{
+		if((*start_str >= '0' ) && (*start_str <= '9'))
+		{
+			weather_id=*start_str - '0';
+			break;
+		}
+		start_pos++;
+		
 		if((*start_str >= '0' ) && (*start_str <= '9'))
 		{
 			weather_id=*start_str - '0';

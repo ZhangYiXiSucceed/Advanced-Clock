@@ -250,6 +250,7 @@ void TimeShow::RspDataProcess(QByteArray buf)
             SetDate(weather_and_time_data_g.year,weather_and_time_data_g.month,\
                     weather_and_time_data_g.day,weather_and_time_data_g.week);
             SetTemptureHumidty(weather_and_time_data_g.tempture,weather_and_time_data_g.humidty);
+            SetWeather(weather_and_time_data_g.weather_id);
             if(MyTimeShowTimer->isActive() == false)
             {
                 MyTimeShowTimer->start(1000);
@@ -361,7 +362,46 @@ void TimeShow::SetTime(int hour,int minute,int second)
     QString time_str(buf);
     ui->NowShow->setText(time_str);
 }
-
+void TimeShow::SetWeather(int weather_id)
+{
+    switch(weather_id)
+    {
+        case WEATHER_SUNNY:
+        {
+            ui->WeatherIcon1->setIcon(WeatherSunny);
+            ui->WeatherIcon1->setIconSize(WeatherSunny.size());
+        }break;
+        case WEATHER_CLOUDY:
+        {
+            ui->WeatherIcon1->setIcon(WeatherCloudy);
+            ui->WeatherIcon1->setIconSize(WeatherCloudy.size());
+        }break;
+        case WEATHER_WINDY:
+        {
+            ui->WeatherIcon1->setIcon(WeatherWindy);
+            ui->WeatherIcon1->setIconSize(WeatherWindy.size());
+        }break;
+        case WEATHER_RAINY_AND_SNOWY:
+        {
+            ui->WeatherIcon1->setIcon(WeatherSnowy);
+            ui->WeatherIcon1->setIconSize(WeatherSnowy.size());
+        }break;
+        case WEATHER_SUNNY_TO_RAINY: //go through
+        case WEATHER_SMALL_THUNDER_RAINY:
+        case WEATHER_LARGE_THUNDER_RAINY:
+        case WEATHER_SMALL_RAINY:
+        case WEATHER_MIDDLE_RAINY:
+        case WEATHER_LARGE_RAINY:
+        case WEATHER_MORE_LARGE_RAINY:
+        {
+            ui->WeatherIcon1->setIcon(WeatherRainy);
+            ui->WeatherIcon1->setIconSize(WeatherRainy.size());
+        }break;
+        default:
+            emit ShowSystemMessage(tr("weather id err!"),5000);
+        break;
+    }
+}
 void TimeShow::TimerUpdate()
 {
     weather_and_time_data_g.second++;

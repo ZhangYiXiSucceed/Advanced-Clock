@@ -30,7 +30,7 @@ typedef enum weather_id_struct
 	WEATHER_SMALL_RAINY,
 	WEATHER_MIDDLE_RAINY,
 	WEATHER_LARGE_RAINY,
-	WEATHER_MORE_LARGE_RAINy,
+	WEATHER_MORE_LARGE_RAINY,
 } weather_id_t;
 
 struct SystemVar

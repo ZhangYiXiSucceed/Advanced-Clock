@@ -49,6 +49,7 @@ private slots:
     void SetTemptureHumidty(int tempture,int humidty);
     void TimerUpdate();
     void NiceWordsShowUpdate();
+    void SetWeather(int Weather_id);
 private:
     Ui::TimeShow *ui;
     QTcpServer *MyTcpServer;
