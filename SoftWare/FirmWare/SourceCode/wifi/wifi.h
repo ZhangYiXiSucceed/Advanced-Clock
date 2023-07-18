@@ -58,6 +58,7 @@ void connect_host();
 void leave_host();
 void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buffer_length);
 void paraing_time_string(char* temp_str,char* temp_week);
+int parsing_the_weather_id(char* str);
 void quit_network_connect_cmd(void);
 void quit_send_data_mode_cmd(void);
 void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_buffer_length);

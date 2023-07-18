@@ -754,13 +754,20 @@ void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_
 	cJSON *aqi = cJSON_GetObjectItem(result, "aqi");
 	rt_kprintf("aqi value:%s\r\n", aqi->valuestring);
 
+	cJSON *weather_icon = cJSON_GetObjectItem(result, "weather_icon");
+	rt_kprintf("weather_icon value:%s\r\n", weather_icon->valuestring);
+
 	cJSON *weather = cJSON_GetObjectItem(result, "weather");
+	rt_kprintf("weather value:%s\r\n", weather->valuestring);
 
 	time_and_weather_g.tempeture =  parsing_the_str(temperature_curr->valuestring);
 	time_and_weather_g.api       =  parsing_the_str(aqi->valuestring);
 	time_and_weather_g.humidty   =  parsing_the_str(humidity->valuestring);
 	time_and_weather_g.city_id   =  parsing_the_str(weaid->valuestring);
-	
+	time_and_weather_g.weather_id = parsing_the_weather_id(weather_icon->valuestring);
+	rt_kprintf("weather_id:%d\r\n", time_and_weather_g.weather_id);
+
+
 	memcpy(time_and_weather_g.city,cityno->valuestring,strlen(cityno->valuestring));
 	memcpy(time_and_weather_g.weather,weather->valuestring,strlen(weather->valuestring));
 	cJSON_Delete(root);
@@ -864,6 +871,33 @@ void paraing_time_string(char* temp_time_date_str,char* temp_week)
 	time_and_weather_g.second = sec;
 
 	time_and_weather_g.week   = week;
+}
+
+/*http://api.k780.com/upload/weather/d/1.gif*/
+int parsing_the_weather_id(char* str)
+{
+	int weather_id = 0;
+	int start_pos = 38;
+
+	char* start_str=&str[start_pos];
+	do
+	{
+		if((*start_str >= '0' ) && (*start_str <= '9'))
+		{
+			weather_id=*start_str - '0';
+			break;
+		}
+		start_pos++;
+		
+		if((*start_str >= '0' ) && (*start_str <= '9'))
+		{
+			weather_id=*start_str - '0';
+			break;
+		}
+
+	} while (0);
+	
+	return weather_id;
 }
 
 int parsing_the_str(char* str)
