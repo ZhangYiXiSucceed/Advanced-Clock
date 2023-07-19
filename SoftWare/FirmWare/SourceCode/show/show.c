@@ -214,15 +214,47 @@ void show_interface_oled()
 			if((system_var.TimeGetFlag == 2))
 			{
 				sprintf((char*)TempBuff,"%02d",time_and_weather_g.day);
-				OLED_DrawBMP(1,1,28,20,weather_icon[0]);
+				switch(time_and_weather_g.weather_id)
+				{
+					case WEATHER_SUNNY:
+					{
+						OLED_DrawBMP(1,1,28,20,weather_icon[0]);
+					}break;
+					case WEATHER_CLOUDY:
+					{
+						OLED_DrawBMP(1,1,28,20,weather_icon[1]);
+					}break;
+					case WEATHER_WINDY:
+					{
+						OLED_DrawBMP(1,1,28,20,weather_icon[2]);
+					}break;
+					case WEATHER_SUNNY_TO_RAINY:
+					case WEATHER_SMALL_THUNDER_RAINY:
+					case WEATHER_LARGE_THUNDER_RAINY:
+					case WEATHER_SMALL_RAINY:
+					case WEATHER_MIDDLE_RAINY:
+					case WEATHER_LARGE_RAINY:
+					case WEATHER_MORE_LARGE_RAINY:
+					{
+						OLED_DrawBMP(1,1,28,20,weather_icon[3]);
+					}break;
+					case WEATHER_RAINY_AND_SNOWY:
+					{
+						OLED_DrawBMP(1,1,28,20,weather_icon[4]);
+					}break;
+					default:
+					break;
+					
+				}
+				
 				show_common_string(7,4,TempBuff,font_size8X16);
 
 				sprintf((char*)TempBuff,"%02d",time_and_weather_g.day + 1);
-				OLED_DrawBMP(40,1,28,20,weather_icon[1]);
+				OLED_DrawBMP(40,1,28,20,weather_icon[3]);
 				show_common_string(50,4,TempBuff,font_size8X16);
 
 				sprintf((char*)TempBuff,"%02d",time_and_weather_g.day + 2);
-				OLED_DrawBMP(80,1,28,20,weather_icon[2]);
+				OLED_DrawBMP(80,1,28,20,weather_icon[4]);
 				show_common_string(90,4,TempBuff,font_size8X16);				
 			}
 			if(system_data.SystemGMTTime > (temp_sys_time + 5))
