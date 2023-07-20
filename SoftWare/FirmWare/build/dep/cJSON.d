@@ -1,9 +1,0 @@
-obj/cJSON.o dep/cJSON.d: ../SourceCode/cJson/cJSON.c
-obj/cJSON.o dep/cJSON.d: d:\Software\Keil\system\ARM\ARMCC\bin\..\include\string.h
-obj/cJSON.o dep/cJSON.d: d:\Software\Keil\system\ARM\ARMCC\bin\..\include\stdio.h
-obj/cJSON.o dep/cJSON.d: d:\Software\Keil\system\ARM\ARMCC\bin\..\include\math.h
-obj/cJSON.o dep/cJSON.d: d:\Software\Keil\system\ARM\ARMCC\bin\..\include\stdlib.h
-obj/cJSON.o dep/cJSON.d: d:\Software\Keil\system\ARM\ARMCC\bin\..\include\float.h
-obj/cJSON.o dep/cJSON.d: d:\Software\Keil\system\ARM\ARMCC\bin\..\include\limits.h
-obj/cJSON.o dep/cJSON.d: d:\Software\Keil\system\ARM\ARMCC\bin\..\include\ctype.h
-obj/cJSON.o dep/cJSON.d: ../SourceCode/cJson/cJSON.h
