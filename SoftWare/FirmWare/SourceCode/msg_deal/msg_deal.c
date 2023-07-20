@@ -267,7 +267,7 @@ void send_heart_data()
 	heart_data->humidty = time_and_weather_g.humidty;
 
 	heart_data->city_id = time_and_weather_g.city_id;
-	heart_data->weather_id = 0;
+	heart_data->weather_id = time_and_weather_g.weather_id;
 
 	u32* check_sum = (u32*)(heart_data+1);
 	*check_sum = CalCheckSum(buff,sizeof(cmd_msg_frame_t) + sizeof(heart_data_t));

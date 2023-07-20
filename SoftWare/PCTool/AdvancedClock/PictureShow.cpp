@@ -1,8 +1,5 @@
-#include <QFileDialog>
-#include <QFile>
-#include <QFileInfo>
-#include <QDateTime>
 #include <QMessageBox>
+#include <iostream>
 #include "PictureShow.h"
 #include "ui_PictureShow.h"
 
@@ -15,6 +12,11 @@ PictureShow::PictureShow(QWidget *parent) :
     MyPictureShowTimer = new QTimer;
     picture_info_manager.BinBuf = new quint8[64*1024*1024];
 
+    scene = new QGraphicsScene;
+    player = new QMediaPlayer;
+
+    player->setMedia(QUrl::fromLocalFile("../AdvancedClock/badapple.mp3"));
+    player->setVolume(100);
     InitUI();
     InitConnect();
 }
@@ -30,6 +32,45 @@ void PictureShow::InitUI()
     ui->PictureShowStatic->setScene(scene);
     ui->PictureShowStatic->show();
     scene->addPixmap(BadApplePicture);
+
+    QFont Ft("Microsoft YaHei");
+    Ft.setPointSize(12);
+    Ft.setBold(true);
+    ui->SelectShowBinFile->setFont(Ft);
+    ui->SelectShowBinFile->setIcon(SelectShowFile);
+    ui->SelectShowBinFile->setIconSize(SelectShowFile.size()/4);
+    ui->SelectShowBinFile->setStyleSheet("QPushButton{background-color:rgb(170,0,0)}"
+                                         "QPushButton{border-width:0;border-style:outset}"
+                                         "QPushButton{color:White}");
+
+    ui->StartTransfer->setFont(Ft);
+    ui->StartTransfer->setIcon(StartShow);
+    ui->StartTransfer->setIconSize(StartShow.size()/4);
+    ui->StartTransfer->setStyleSheet("QPushButton{background-color:rgb(170,0,0)}"
+                                         "QPushButton{border-width:0;border-style:outset}"
+                                         "QPushButton{color:White}");
+
+    ui->OLEDModeShowSet->setFont(Ft);
+    ui->OLEDModeShowSet->setIcon(ModeSet);
+    ui->OLEDModeShowSet->setIconSize(ModeSet.size()/4);
+    ui->OLEDModeShowSet->setStyleSheet("QPushButton{background-color:rgb(170,0,0)}"
+                                         "QPushButton{border-width:0;border-style:outset}"
+                                         "QPushButton{color:White}");
+
+    ui->BarLabel->setFont(Ft);
+
+    ui->ShowFreLable->setFont(Ft);
+    ui->ShowFre->setFont(Ft);
+    ui->ShowFre->addItem("5");
+    ui->ShowFre->addItem("10");
+    ui->ShowFre->addItem("20");
+    ui->ShowFre->addItem("50");
+    ui->ShowFre->addItem("100");
+    ui->ShowFre->addItem("200");
+    ui->ShowFre->addItem("500");
+
+    ui->IsSendcheckBox->setFont(Ft);
+    ui->IsSendcheckBox->setCheckState(Qt::Unchecked);
 }
 
 void PictureShow::InitConnect()
@@ -74,11 +115,18 @@ void PictureShow::StartTransferOLEDShow()
     {
         MyPictureShowTimer->stop();
         ui->StartTransfer->setText("开始显示");
+        ui->StartTransfer->setIcon(StartShow);
+        ui->StartTransfer->setIconSize(StartShow.size()/4);
+        player->pause();
     }
     else
     {
-        MyPictureShowTimer->start(100);
+        int ShowFre = 1000/(ui->ShowFre->currentText().toInt());
+        MyPictureShowTimer->start(ShowFre);
         ui->StartTransfer->setText("停止显示");
+        ui->StartTransfer->setIcon(StopShow);
+        ui->StartTransfer->setIconSize(StopShow.size()/4);
+        player->play();
     }
 }
 
@@ -137,7 +185,7 @@ void PictureShow::PictureUpdate()
 {
     static int i=0;
     //QImage disImage = Binaryzation(picture_info_manager.BinBuf,i);
-    QString path = "D:/Workspace/DesignProject/AdvancedClock/Advanced-Clock/SoftWare/PCTool/AdvancedClock/BadApple";
+    QString path = "../AdvancedClock/BadApple540_400_30HZ";
     static QDir dir(path);
     if(i == 0)
     {
@@ -158,14 +206,16 @@ void PictureShow::PictureUpdate()
     QString ImageName  = path + "/" + dir[i];
     QImage image(ImageName);
 
-    QGraphicsScene *scene = new QGraphicsScene;
-    ui->OLEDShow->setScene(scene);
-    ui->OLEDShow->show();
     scene->addPixmap(QPixmap::fromImage(image));
-    i++;
+    ui->PictureShowStatic->setScene(scene);
+    ui->PictureShowStatic->show();
 
+    i++;
     ui->UpgradProgressBar->setValue(i);
-    TransmitBinData(i);
+    if(ui->IsSendcheckBox->isChecked())
+    {
+        TransmitBinData(i);
+    }
 }
 
 void PictureShow::SetOLEDShowMode()

@@ -33,19 +33,6 @@
     </rect>
    </property>
   </widget>
-  <widget class="QToolButton" name="SelectShowBinFile">
-   <property name="geometry">
-    <rect>
-     <x>570</x>
-     <y>140</y>
-     <width>191</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>选择显示文件</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="StartTransfer">
    <property name="geometry">
     <rect>
@@ -76,7 +63,7 @@
    <property name="geometry">
     <rect>
      <x>570</x>
-     <y>260</y>
+     <y>360</y>
      <width>191</width>
      <height>41</height>
     </rect>
@@ -85,17 +72,66 @@
     <string>模式设置</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="BarLabel">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>480</y>
+     <y>470</y>
      <width>53</width>
-     <height>41</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="text">
     <string>显示：</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="SelectShowBinFile">
+   <property name="geometry">
+    <rect>
+     <x>570</x>
+     <y>143</y>
+     <width>191</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>选择文件</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="ShowFre">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>260</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="ShowFreLable">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>250</y>
+     <width>71</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>显示频率：</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="IsSendcheckBox">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>310</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>同步设备</string>
    </property>
   </widget>
  </widget>

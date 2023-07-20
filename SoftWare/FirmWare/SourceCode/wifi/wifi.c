@@ -251,6 +251,21 @@ void quit_network_connect_cmd()
 	FifoIn(&sOperCmdUnionFifo_wifi,&sOperCmdUnion_wifi);
 }
 
+void clear_wifi_op_req()
+{
+	u8 req_num = GetTsakFiFoCount(&sOperCmdUnionFifo_wifi);
+	if(req_num >= WIFI_OP_REQ_NUM_MAX)
+	{
+		int i;
+		struct OperCmdUnion sdat;
+		for(i=0;i<req_num;i++)
+		{
+			FifoOut(&sOperCmdUnionFifo_wifi,&sdat);
+		}
+		rt_kprintf("wifi op err too many,num=%d\r\n",req_num);
+	}
+}
+
 void quiry_wifi()
 {
 	
@@ -326,18 +341,19 @@ void wifi_msg_process()
   int mrtn;
   if(sOperCmdBuff.tid == AT_IDLE_CMD)
   {
-    if(FifoOut(&sOperCmdUnionFifo_wifi, &sOperCmdBuff) == ValFifoOperateOk)          //������������Ƿ�������
-    {
-                                                          //������ݽ���
+	
+    if(FifoOut(&sOperCmdUnionFifo_wifi, &sOperCmdBuff) == ValFifoOperateOk)          
+    {              
         sOperCmdBuff.time   = GetSystemTime();
         //PrintCmd(sOperCmdBuff.cmd);
+		memset(&sOperCmdBuff.buffer[sOperCmdBuff.len],0x00,sizeof(sOperCmdBuff.buffer)-sOperCmdBuff.len);
         rt_kprintf("CMD:%d===>%s\r\n",sOperCmdBuff.cmd,sOperCmdBuff.buffer);
         PrintfIOTPort4(sOperCmdBuff.buffer,sOperCmdBuff.len);
     } 	
   }
   else
   {
-      if(GetSystemTime()> sOperCmdBuff.time + 10)                            //���������ش�
+      if(GetSystemTime()> sOperCmdBuff.time + 10)                            
       {
           sOperCmdBuff.trycnt = sOperCmdBuff.trycnt -1;
           if(sOperCmdBuff.trycnt)
@@ -387,7 +403,7 @@ void wifi_msg_process()
 					mrtn = WifiStateCheck((char*)FrameInBuff);
 					if(mrtn == RESP_WIFI_OK)
 					{                                                                     // recv ok
-					sOperCmdBuff.tid = 0xff;
+					  sOperCmdBuff.tid = 0xff;
 
 					}
 				}
@@ -425,8 +441,12 @@ void wifi_msg_process()
 			      if(mrtn == RESP_WIFI_OK)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
-
 			      }
+				  else
+				  {
+					  clear_wifi_op_req();
+					  sOperCmdBuff.tid = 0xff;
+				  }
 				}
 				break;
 				case AT_CIPSEND:
@@ -454,6 +474,7 @@ void wifi_msg_process()
 				{
 				 	//rt_kprintf("%s\r\n",FrameInBuff);
 					parsing_time_json_info(FrameInBuff,FrameInlen);
+					delay_ms(1000);
 					if(0 == system_var.TimeGetFlag)
 					{
 						system_var.TimeGetFlag = 1;
@@ -508,6 +529,11 @@ void wifi_msg_process()
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
 			      }
+				  else
+				  {
+					clear_wifi_op_req();
+					sOperCmdBuff.tid = 0xff;
+				  }
 				}
 				break;
 				case AT_HOST_IP_CONNECT:
@@ -516,8 +542,12 @@ void wifi_msg_process()
 			      if(mrtn == RESP_IP_CONNECT)
 			      {                                                                     // recv ok
 			          sOperCmdBuff.tid = 0xff;
-						
 			      }
+				  else
+				  {
+					clear_wifi_op_req();
+					sOperCmdBuff.tid = 0xff;
+				  }
 				}
 				break;
 				case AT_RECIVE_CMD:
@@ -724,15 +754,22 @@ void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_
 	cJSON *aqi = cJSON_GetObjectItem(result, "aqi");
 	rt_kprintf("aqi value:%s\r\n", aqi->valuestring);
 
-	cJSON *weather = cJSON_GetObjectItem(result, "weather");
+	cJSON *weather_icon = cJSON_GetObjectItem(result, "weather_icon");
+	rt_kprintf("weather_icon value:%s\r\n", weather_icon->valuestring);
+
+	cJSON *weather_curr = cJSON_GetObjectItem(result, "weather_curr");
+	rt_kprintf("weather_curr value:%s\r\n", weather_curr->valuestring);
 
 	time_and_weather_g.tempeture =  parsing_the_str(temperature_curr->valuestring);
 	time_and_weather_g.api       =  parsing_the_str(aqi->valuestring);
 	time_and_weather_g.humidty   =  parsing_the_str(humidity->valuestring);
 	time_and_weather_g.city_id   =  parsing_the_str(weaid->valuestring);
-	
+	time_and_weather_g.weather_id = parsing_the_weather_id(weather_icon->valuestring);
+	rt_kprintf("weather_id:%d\r\n", time_and_weather_g.weather_id);
+
+
 	memcpy(time_and_weather_g.city,cityno->valuestring,strlen(cityno->valuestring));
-	memcpy(time_and_weather_g.weather,weather->valuestring,strlen(weather->valuestring));
+	memcpy(time_and_weather_g.weather,weather_curr->valuestring,strlen(weather_curr->valuestring));
 	cJSON_Delete(root);
 }
 
@@ -834,6 +871,40 @@ void paraing_time_string(char* temp_time_date_str,char* temp_week)
 	time_and_weather_g.second = sec;
 
 	time_and_weather_g.week   = week;
+}
+
+/*http://api.k780.com/upload/weather/d/1.gif*/
+int parsing_the_weather_id(char* str)
+{
+	int weather_id = 0;
+	int start_pos = 37;
+
+	char* start_str=&str[start_pos];
+	do
+	{
+		if((*start_str >= '0' ) && (*start_str <= '9'))
+		{
+			weather_id=*start_str - '0';
+			break;
+		}
+		start_pos++;
+		
+		if((*start_str >= '0' ) && (*start_str <= '9'))
+		{
+			weather_id=*start_str - '0';
+			break;
+		}
+		start_pos++;
+		
+		if((*start_str >= '0' ) && (*start_str <= '9'))
+		{
+			weather_id=*start_str - '0';
+			break;
+		}
+
+	} while (0);
+	
+	return weather_id;
 }
 
 int parsing_the_str(char* str)

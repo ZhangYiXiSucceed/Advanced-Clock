@@ -35,16 +35,22 @@ TimeShow::TimeShow(QWidget *parent) :
 void TimeShow::InitUI()
 {
     QFont Ft("Microsoft YaHei");
-    Ft.setPointSize(40);
+    Ft.setPointSize(15);
     ui->DateShow->setFont(Ft);
     ui->DateShow->setStyleSheet("QLineEdit{background-color:transparent}"
                                  "QLineEdit{border-width:0;border-style:outset}"
                                  "QLineEdit{color:blue}");
-
+    Ft.setPointSize(45);
     ui->NowShow->setFont(Ft);
     ui->NowShow->setStyleSheet("QLineEdit{background-color:transparent}"
                                  "QLineEdit{border-width:0;border-style:outset}"
                                  "QLineEdit{color:red}");
+    Ft.setPointSize(15);
+    ui->Tempture_Humidty->setFont(Ft);
+    ui->Tempture_Humidty->setStyleSheet("QLineEdit{background-color:transparent}"
+                                 "QLineEdit{border-width:0;border-style:outset}"
+                                 "QLineEdit{color:blue}");
+
     Ft.setPointSize(35);
     ui->NiceWords->setFont(Ft);
     ui->NiceWords->setStyleSheet("QTextEdit{background-color:transparent}"
@@ -175,7 +181,7 @@ void TimeShow::NewConnect()
     new_connect_info += ",port:";
     new_connect_info += QString::number(currentClient->peerPort());
 
-    emit ShowSystemMessage(new_connect_info, 5000);
+    emit ShowSystemMessage(new_connect_info, 10000);
     cout << new_connect_info.toStdString() << endl;
 }
 
@@ -243,6 +249,8 @@ void TimeShow::RspDataProcess(QByteArray buf)
             HeartCmdRsp();
             SetDate(weather_and_time_data_g.year,weather_and_time_data_g.month,\
                     weather_and_time_data_g.day,weather_and_time_data_g.week);
+            SetTemptureHumidty(weather_and_time_data_g.tempture,weather_and_time_data_g.humidty);
+            SetWeather(weather_and_time_data_g.weather_id);
             if(MyTimeShowTimer->isActive() == false)
             {
                 MyTimeShowTimer->start(1000);
@@ -332,7 +340,13 @@ void TimeShow::SendData2Device(QByteArray Data)
         QMessageBox::warning(NULL, "warning", "send failed", QMessageBox::Yes, QMessageBox::NoButton);
     }
 }
-
+void TimeShow::SetTemptureHumidty(int tempture,int humidty)
+{
+    char buf[32];
+    sprintf(buf,"T:%02d℃ -H:%02d %",tempture,humidty);
+    QString date_str(buf);
+    ui->Tempture_Humidty->setText(date_str);
+}
 void TimeShow::SetDate(int year,int month,int day,int week)
 {
     char buf[32];
@@ -344,11 +358,50 @@ void TimeShow::SetDate(int year,int month,int day,int week)
 void TimeShow::SetTime(int hour,int minute,int second)
 {
     char buf[32];
-    sprintf(buf,"%02d:%02d:%02d",hour,minute,second);
+    sprintf(buf,"%02d : %02d : %02d",hour,minute,second);
     QString time_str(buf);
     ui->NowShow->setText(time_str);
 }
-
+void TimeShow::SetWeather(int weather_id)
+{
+    switch(weather_id)
+    {
+        case WEATHER_SUNNY:
+        {
+            ui->WeatherIcon1->setIcon(WeatherSunny);
+            ui->WeatherIcon1->setIconSize(WeatherSunny.size());
+        }break;
+        case WEATHER_CLOUDY:
+        {
+            ui->WeatherIcon1->setIcon(WeatherCloudy);
+            ui->WeatherIcon1->setIconSize(WeatherCloudy.size());
+        }break;
+        case WEATHER_WINDY:
+        {
+            ui->WeatherIcon1->setIcon(WeatherWindy);
+            ui->WeatherIcon1->setIconSize(WeatherWindy.size());
+        }break;
+        case WEATHER_RAINY_AND_SNOWY:
+        {
+            ui->WeatherIcon1->setIcon(WeatherSnowy);
+            ui->WeatherIcon1->setIconSize(WeatherSnowy.size());
+        }break;
+        case WEATHER_SUNNY_TO_RAINY: //go through
+        case WEATHER_SMALL_THUNDER_RAINY:
+        case WEATHER_LARGE_THUNDER_RAINY:
+        case WEATHER_SMALL_RAINY:
+        case WEATHER_MIDDLE_RAINY:
+        case WEATHER_LARGE_RAINY:
+        case WEATHER_MORE_LARGE_RAINY:
+        {
+            ui->WeatherIcon1->setIcon(WeatherRainy);
+            ui->WeatherIcon1->setIconSize(WeatherRainy.size());
+        }break;
+        default:
+            emit ShowSystemMessage(tr("weather id err!"),5000);
+        break;
+    }
+}
 void TimeShow::TimerUpdate()
 {
     weather_and_time_data_g.second++;
@@ -384,6 +437,7 @@ void TimeShow::ReadNiceWordsTxt(QList<QString> &NiceWordsList)
         cout << WordsInfo.toLocal8Bit().data() << endl;
         NiceWordsList.push_back(WordsInfo);
     }
+    WordsInfo.remove('\r');
     ui->NiceWords->setText(WordsInfo);
     ui->NiceWords->setAlignment(Qt::AlignCenter);
     InFile.close();
@@ -394,6 +448,7 @@ void TimeShow::NiceWordsShowUpdate()
     int WrodsSize = NiceWords.size();
     static int Index = 0;
     QString OneWords = NiceWords.at(Index);
+    OneWords.remove('\r');
     ui->NiceWords->setText(OneWords);
     ui->NiceWords->setAlignment(Qt::AlignCenter);
     Index++;

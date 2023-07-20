@@ -13,6 +13,7 @@ enum
 typedef enum show_state_struct
 {
 	init_show      = 0x00,
+	eight_diagrams,
 
 	wifi_connect   ,
 	wifi_ok        ,
