@@ -432,14 +432,20 @@ void OTA::SetConnectMode()
     mode++;
     mode = mode%2;
 }
-
+static void MessageBoxShow(QString str)
+{
+    QMessageBox::warning(NULL, "warning", str, QMessageBox::Yes, QMessageBox::NoButton);
+}
 void OTA::RspDataProcess(QByteArray Data)
 {
     uint8_t *data = (uint8_t *)Data.data();
     cmd_msg_frame_t *msg = (cmd_msg_frame_t *)data;
-
+    char format_data[64];
     if(MSG_FRAME_HEADER != msg->header)
     {
+        sprintf(format_data,"header err=%d",msg->header);
+        QString date_str(format_data);
+        MessageBoxShow(date_str);
         return;
     }
 
@@ -451,7 +457,9 @@ void OTA::RspDataProcess(QByteArray Data)
             uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + 1));
             if(cal_sum != read_sum)
             {
-                cout <<"frame check err,cal=" << cal_sum <<"read= "<< read_sum << endl;
+                sprintf(format_data,"frame check err,cal=%d read=%d",cal_sum,read_sum);
+                QString date_str(format_data);
+                MessageBoxShow(date_str);
                 return;
             }
             QMessageBox::information(NULL, "info", "reset ok", QMessageBox::Yes, QMessageBox::NoButton);
@@ -463,7 +471,9 @@ void OTA::RspDataProcess(QByteArray Data)
             uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + 1));
             if(cal_sum != read_sum)
             {
-                cout <<"frame check err,cal=" << cal_sum <<"read= "<< read_sum << endl;
+                sprintf(format_data,"frame check err,cal=%d read=%d",cal_sum,read_sum);
+                QString date_str(format_data);
+                MessageBoxShow(date_str);
                 return;
             }
             QMessageBox::information(NULL, "info", "connect ok", QMessageBox::Yes, QMessageBox::NoButton);
@@ -475,7 +485,9 @@ void OTA::RspDataProcess(QByteArray Data)
             uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + 1));
             if(cal_sum != read_sum)
             {
-                cout <<"frame check err,cal=" << cal_sum <<"read= "<< read_sum << endl;
+                sprintf(format_data,"frame check err,cal=%d read=%d",cal_sum,read_sum);
+                QString date_str(format_data);
+                MessageBoxShow(date_str);
                 return;
             }
             QMessageBox::information(NULL, "info", "jump ok", QMessageBox::Yes, QMessageBox::NoButton);
@@ -511,8 +523,9 @@ void OTA::RspDataProcess(QByteArray Data)
             uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + sizeof(version_info_t)));
             if(cal_sum != read_sum)
             {
-                cout <<"frame check err,cal=" << cal_sum <<",read= "<< read_sum << endl;
-                QMessageBox::information(NULL, "info", "version err,sum err", QMessageBox::Yes, QMessageBox::NoButton);
+                sprintf(format_data,"frame check err,cal=%d read=%d",cal_sum,read_sum);
+                QString date_str(format_data);
+                MessageBoxShow(date_str);
                 return;
             }
 
@@ -542,7 +555,9 @@ void OTA::RspDataProcess(QByteArray Data)
         }break;
         default:
         {
-
+            sprintf(format_data,"invalid cmd");
+            QString date_str(format_data);
+            MessageBoxShow(date_str);
         }
     }
 }

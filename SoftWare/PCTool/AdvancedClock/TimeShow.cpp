@@ -221,10 +221,11 @@ int CalCheckSum(uint8_t* Data, uint16_t len)
     return CheckSum;
 }
 
-void MessageBoxShow(QString str)
+static void MessageBoxShow(QString str)
 {
     QMessageBox::warning(NULL, "warning", str, QMessageBox::Yes, QMessageBox::NoButton);
 }
+
 void TimeShow::RspDataProcess(QByteArray buf)
 {
     uint8_t *data = (uint8_t *)buf.data();
