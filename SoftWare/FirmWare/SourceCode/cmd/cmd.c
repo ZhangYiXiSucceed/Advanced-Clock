@@ -397,8 +397,8 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 		}break;
 		default:
 			rt_kprintf("cmd  err,0x%x\r\n", cmd_msg_frame->cmd);
-			return MSG_CMD_ERR;
-			break;
+			res =  MSG_CMD_ERR;
+			goto err;
 	}
 	if((HEART_CMD != cmd_msg_frame->cmd) && (VERSION_CMD != cmd_msg_frame->cmd) && (PICTURE_CMD != cmd_msg_frame->cmd))
 	{

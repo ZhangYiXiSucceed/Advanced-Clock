@@ -148,7 +148,6 @@ void TimeShow::ScanInternet()
     bool is_ok = MyTcpServer->listen(QHostAddress(ConnectIP),InternetPort);
     if(is_ok)
     {
-        //QMessageBox::information(NULL, "info", "Listening Client", QMessageBox::Yes, QMessageBox::NoButton);
         emit ShowSystemMessage("start Listening Client",2000);
     }
 }
@@ -222,14 +221,20 @@ int CalCheckSum(uint8_t* Data, uint16_t len)
     return CheckSum;
 }
 
+void MessageBoxShow(QString str)
+{
+    QMessageBox::warning(NULL, "warning", str, QMessageBox::Yes, QMessageBox::NoButton);
+}
 void TimeShow::RspDataProcess(QByteArray buf)
 {
     uint8_t *data = (uint8_t *)buf.data();
     cmd_msg_frame_t *msg = (cmd_msg_frame_t *)data;
-
+    char format_data[64];
     if(MSG_FRAME_HEADER != msg->header)
     {
-        cout <<"header err" << msg->header << endl;
+        sprintf(format_data,"header err=%d",msg->header);
+        QString date_str(format_data);
+        MessageBoxShow(date_str);
         return;
     }
 
@@ -241,7 +246,9 @@ void TimeShow::RspDataProcess(QByteArray buf)
             uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + sizeof(heart_data_t)));
             if(cal_sum != read_sum)
             {
-                cout <<"frame check err,cal=" << cal_sum <<"read= "<< cal_sum << endl;
+                sprintf(format_data,"frame check err,cal=%d read=%d",cal_sum,read_sum);
+                QString date_str(format_data);
+                MessageBoxShow(date_str);
                 return;
             }
             heart_data_t* heart_data = (heart_data_t*)((cmd_msg_frame_t*)data + 1);
