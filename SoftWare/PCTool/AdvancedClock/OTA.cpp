@@ -89,6 +89,11 @@ void OTA::InitUI()
     ui->StartUpgrade->setFont(Ft);
     ui->StartUpgrade->setIcon(StartUpgradePic);
     ui->StartUpgrade->setIconSize(StartUpgradePic.size()/4);
+
+    Ft.setPointSize(15);
+    ui->ProgressGroupBox->setFont(Ft);
+    ui->DeviceOpGroupBox->setFont(Ft);
+    ui->UpgradeGroupBox->setFont(Ft);
 }
 void OTA::InitConnect()
 {
