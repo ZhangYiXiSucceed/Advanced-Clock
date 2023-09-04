@@ -11,7 +11,8 @@ unsigned char  WiFiNetCmd[][64]=
 #ifdef BOOT
   {"AT+CIPSTART=\"TCP\",\"192.168.0.141\",51230\x0d\x0a"},
 #else
-  {"AT+CIPSTART=\"TCP\",\"api.k780.com\",80\x0d\x0a"},	   
+  //{"AT+CIPSTART=\"TCP\",\"api.k780.com\",80\x0d\x0a"},
+  {"AT+CIPSTART=\"TCP\",\"api.seniverse.com\",80\x0d\x0a"},	   
 #endif 
   {"AT+CIPMODE=1\x0d\x0a"},            
   {"AT+CIPSEND\x0d\x0a"},                                                   
@@ -27,7 +28,8 @@ unsigned char  WiFiNetCmd[][64]=
 
 
 char get_network_time_str[]="GET http://api.k780.com:88/?app=life.time&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json\r\n";
-char get_network_weather_str[]="GET http://api.k780.com/?app=weather.today&weaId=40&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json\r\n";
+//char get_network_weather_str[]="GET http://api.k780.com/?app=weather.today&weaId=40&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json\r\n";
+char get_network_weather_str[]="GET http://api.seniverse.com/v3/weather/now.json?key=SX0Kb-bmBma29UBZ3&location=shanghai&language=zh-Hans&unit=c\r\n";
 /*{"success":"1","result":{"timestamp":"1627798664","datetime_1":"2021-08-01 14:17:44","datetime_2":"2021年08月01日 14时17分44秒","week_1":"0","week_2":"星期日","week_3":"周日","week_4":"Sunday"}}*/
 /*{"success":"1","result":{"weaid":"40","days":"2021-08-04","week":"星期三","cityno":"pudongxinqu","citynm":"浦东新区","cityid":"101020600","temperature":"30℃/26℃","temperature_curr":"28℃","humidity":"93%","aqi":"20","weather":"多云","weather_curr":"多云","weather_icon":"http://api.k780.com/upload/weather/d/1.gif","weather_icon1":"","wind":"东风","winp":"2级","temp_high":"30","temp_low":"26","temp_curr":"28","humi_high":"0","humi_low":"0","weatid":"2","weatid1":"","windid":"2","winpid":"2","weather_iconid":"1"}}*/
 wifi_info_t wifi_info_g;
@@ -485,7 +487,7 @@ void wifi_msg_process()
 				case AT_QUIRY_WEATHER_DATA:
 				{
 				 	//rt_kprintf("%s\r\n",FrameInBuff);
-					parsing_weather_json_info(FrameInBuff,FrameInlen);
+					parsing_weather_json_info1(FrameInBuff,FrameInlen);
 				 	sOperCmdBuff.tid = 0xff;
 				}
 				break;
@@ -713,6 +715,34 @@ int parsing_wifi_signal_info(unsigned char* frame_buffer,unsigned char frame_buf
 
 #ifndef BOOT
 time_and_weather_t  time_and_weather_g;
+
+void parsing_weather_json_info1(unsigned char* frame_buffer,unsigned short frame_buffer_length)
+{
+	cJSON *root = cJSON_Parse(frame_buffer);
+	if (0 == root)
+	{
+		rt_kprintf("error\n");
+		return;
+	}
+	//rt_kprintf("%s\n\n", cJSON_Print(root));
+
+	cJSON *results = cJSON_GetObjectItem(root, "results");
+	if (0 == results)
+		return;
+	rt_kprintf("results name:%s results value:%s\r\n", results->string, results->valuestring);
+	
+	cJSON *location = cJSON_GetObjectItem(results, "location");
+	if (0 == location)
+		return;
+
+	cJSON *id = cJSON_GetObjectItem(location, "id");
+	rt_kprintf("id value:%s\r\n", id->valuestring);
+
+	cJSON *country = cJSON_GetObjectItem(location, "country");
+	rt_kprintf("country value:%s\r\n", country->valuestring);
+
+	cJSON_Delete(root);
+}
 
 void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_buffer_length)
 {
