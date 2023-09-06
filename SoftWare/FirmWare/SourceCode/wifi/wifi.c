@@ -733,12 +733,15 @@ void parsing_weather_json_info1(unsigned char* frame_buffer,unsigned short frame
 	{
 		goto err_handle;
 	}
-	rt_kprintf("results name:%s results value:%s\r\n", results->string, results->valuestring);
-	int array_size = cJSON_GetArraySize(results);
+	rt_kprintf("results name:%s\r\n", results->string);
+
+	cJSON *array = cJSON_GetObjectItem(results, NULL);
+	int array_size = cJSON_GetArraySize(array);
 	rt_kprintf("item size=%d\r\n", array_size);
 
 	
-	cJSON *location = cJSON_GetArrayItem(results, 0);
+	cJSON *location = cJSON_GetArrayItem(array, 0);
+	rt_kprintf("location value:%s\r\n", location->string);
 	if (0 == location)
 	{
 		goto err_handle;
@@ -753,7 +756,7 @@ void parsing_weather_json_info1(unsigned char* frame_buffer,unsigned short frame
 	rt_kprintf("timezone_offset value:%s\r\n", timezone_offset->valuestring);
 
 
-	cJSON *now = cJSON_GetArrayItem(results, 1);
+	cJSON *now = cJSON_GetArrayItem(array, 1);
 	if (0 == now)
 	{
 		goto err_handle;
@@ -762,7 +765,12 @@ void parsing_weather_json_info1(unsigned char* frame_buffer,unsigned short frame
 	rt_kprintf("code value:%s\r\n", code->valuestring);
 	cJSON *temperature = cJSON_GetObjectItem(now, "temperature");
 	rt_kprintf("temperature value:%s\r\n", temperature->valuestring);
-	cJSON *last_update = cJSON_GetObjectItem(now, "last_update");
+
+	cJSON *last_update = cJSON_GetArrayItem(array, 2);
+	if (0 == last_update)
+	{
+		goto err_handle;
+	}
 	rt_kprintf("last_update value:%s\r\n", last_update->valuestring);
 
 err_handle:
@@ -857,7 +865,7 @@ void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buff
 	cJSON *root = cJSON_Parse(frame_buffer);
 	if (0 == root)
 	{
-		rt_kprintf("error\n");
+		rt_kprintf("cjson parsing error\n");
 		return;
 	}
 	//
@@ -865,12 +873,16 @@ void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buff
 
 	cJSON *success = cJSON_GetObjectItem(root, "success");
 	if (0 == success)
-		return;
+	{
+		goto errhandle;
+	}
 	rt_kprintf("success name:%s success value:%s\r\n", success->string, success->valuestring);
 	
 	cJSON *result = cJSON_GetObjectItem(root, "result");
 	if (0 == result)
-		return;
+	{
+		goto errhandle;
+	}
 	
 	cJSON *timestamp = cJSON_GetObjectItem(result, "timestamp");
 	rt_kprintf("timestamp value:%s\r\n", timestamp->valuestring);
@@ -891,7 +903,7 @@ void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buff
 	rt_kprintf("timestamp value:%s\r\n", week_4->valuestring);
 	
 	paraing_time_string(datetime_1->valuestring,week_1->valuestring);
-	
+errhandle:	
 	cJSON_Delete(root);
 }
 
