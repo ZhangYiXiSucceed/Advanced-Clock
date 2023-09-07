@@ -19,12 +19,14 @@ TimeShow::TimeShow(QWidget *parent) :
 {
     MyTcpServer = new QTcpServer;
     MyTimeShowTimer = new QTimer;
+    MyTimeShowTimer->start(1000);
     MyNiceWordsShowTimer = new QTimer;
 
     InternetPort = 51230;
     ConnectIP = nullptr;
     currentClient = nullptr;
     MyNiceWordsShowTimer->start(5000);
+    CurrentDateTime = QDateTime::currentDateTime();
 
     ui->setupUi(this);
     InitUI();
@@ -94,6 +96,8 @@ void TimeShow::InitUI()
 
     ui->weather_group->setFont(Ft);
     ui->TimeAndDate->setFont(Ft);
+
+
 }
 
 void TimeShow::InitConnect()
@@ -358,7 +362,7 @@ void TimeShow::SetTemptureHumidty(int tempture,int humidty)
 void TimeShow::SetDate(int year,int month,int day,int week)
 {
     char buf[32];
-    sprintf(buf,"20%02d-%02d-%02d %02d",year,month,day,week);
+    sprintf(buf,"%04d-%02d-%02d %02d",year,month,day,week);
     QString date_str(buf);
     ui->DateShow->setText(date_str);
 }
@@ -410,22 +414,26 @@ void TimeShow::SetWeather(int weather_id)
         break;
     }
 }
+
 void TimeShow::TimerUpdate()
 {
-    weather_and_time_data_g.second++;
-    if(weather_and_time_data_g.second>=60)
-    {
-        weather_and_time_data_g.second = 0;
-        weather_and_time_data_g.minute++;
-        if(weather_and_time_data_g.minute>=60)
-        {
-            weather_and_time_data_g.minute = 0;
-            weather_and_time_data_g.hour++;
-        }
-    }
+    CurrentDateTime = QDateTime::currentDateTime();
+    // 获取时分秒
+    QTime time = CurrentDateTime.time();
+    weather_and_time_data_g.hour = time.hour();
+    weather_and_time_data_g.minute = time.minute();
+    weather_and_time_data_g.second = time.second();
+
+    // 获取年月日
+    QDate date = CurrentDateTime.date();
+    weather_and_time_data_g.year = date.year();
+    weather_and_time_data_g.month = date.month();
+    weather_and_time_data_g.day = date.day();
+
     emit SetTimeReq(weather_and_time_data_g.hour,weather_and_time_data_g.minute,\
                     weather_and_time_data_g.second);
-
+    SetDate(weather_and_time_data_g.year,weather_and_time_data_g.month,\
+            weather_and_time_data_g.day,weather_and_time_data_g.week);
 }
 
 void TimeShow::ReadNiceWordsTxt(QList<QString> &NiceWordsList)

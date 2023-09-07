@@ -7,6 +7,7 @@
 #include <QNetworkInterface>
 #include <QTimer>
 #include <string>
+#include <QDateTime>
 #include <sys/types.h>
 #include <io.h>
 #include <fstream>
@@ -64,6 +65,8 @@ private:
     heart_data_t weather_and_time_data_g;
 
     QList<QString> NiceWords;
+
+    QDateTime CurrentDateTime = QDateTime::currentDateTime();
 
     QPixmap WeatherCloudy=tr(":/Image/cloudy.png");
     QPixmap WeatherRainy=tr(":/Image/rainy.png");
