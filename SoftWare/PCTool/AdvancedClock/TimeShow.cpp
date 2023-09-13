@@ -21,12 +21,14 @@ TimeShow::TimeShow(QWidget *parent) :
     MyTimeShowTimer = new QTimer;
     MyTimeShowTimer->start(1000);
     MyNiceWordsShowTimer = new QTimer;
+    MySetTimeDateTimer = new QTimer;
 
     InternetPort = 51230;
     ConnectIP = nullptr;
     currentClient = nullptr;
     MyNiceWordsShowTimer->start(5000);
     CurrentDateTime = QDateTime::currentDateTime();
+    MySetTimeDateTimer->setSingleShot(true);
 
     ui->setupUi(this);
     InitUI();
@@ -108,6 +110,9 @@ void TimeShow::InitConnect()
 
     connect(MyTimeShowTimer,SIGNAL(timeout()),this,SLOT(TimerUpdate()));
     connect(MyNiceWordsShowTimer,SIGNAL(timeout()),this,SLOT(NiceWordsShowUpdate()));
+
+    connect(this,SIGNAL(SetDeviceTimeDateReq(heart_data_t)),this,SLOT(SetDeviceTimeDate(heart_data_t)));
+    connect(MySetTimeDateTimer,SIGNAL(timeout()),this,SLOT(UpdateSetDeviceTime()));
 }
 
 
@@ -186,8 +191,16 @@ void TimeShow::NewConnect()
 
     emit ShowSystemMessage(new_connect_info, 10000);
     cout << new_connect_info.toStdString() << endl;
+
+    MySetTimeDateTimer->start(5000);
+    cout <<"NewConnect" <<endl;
 }
 
+void TimeShow::UpdateSetDeviceTime()
+{
+    emit SetDeviceTimeDateReq(weather_and_time_data_g);
+    cout << "UpdateSetDeviceTime"<<endl;
+}
 void TimeShow::ReadData()
 {
     QString disp_string,S;
@@ -269,11 +282,49 @@ void TimeShow::RspDataProcess(QByteArray buf)
             }
         }
             break;
+        case SET_TIME_DATE:
+        {
+            cout <<"SET_TIME_DATE" <<endl;;
+        }break;
         default:
         {
              emit SendData2OTA(buf);
         }
     }
+}
+
+void TimeShow::SetDeviceTimeDate(heart_data_t data)
+{
+    uint8_t buf[sizeof(cmd_msg_frame_t) + sizeof(time_and_date_set_t) + sizeof(uint32_t)];
+    uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(time_and_date_set_t) + sizeof(uint32_t);
+    QByteArray Sendata;
+    Sendata.resize(len);
+
+    cmd_msg_frame_t *msg = (cmd_msg_frame_t *)buf;
+    msg->header = MSG_FRAME_HEADER;
+    msg->device_addr = 0x00;
+    msg->cmd = SET_TIME_DATE;
+    msg->seq = 0x00;
+    msg->data_len = sizeof(time_and_date_set_t);
+
+    time_and_date_set_t *set_data = (time_and_date_set_t *)(msg + 1);
+    set_data->year = data.year;
+    set_data->month = data.month;
+    set_data->day = data.day;
+    set_data->week = data.week;
+
+    set_data->hour = data.hour;
+    set_data->minute = data.minute;
+    set_data->second = data.second;
+
+    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + sizeof(time_and_date_set_t));
+    uint32_t *check_sum = (uint32_t *)(set_data+1);
+    *check_sum = CheckSum;
+
+    memcpy((void*)Sendata.data(),buf,len);
+    SendData2Device(Sendata);
+
+    cout <<"SetDeviceTimeDate" <<endl;;
 }
 void TimeShow::HeartCmdRsp()
 {
@@ -429,6 +480,7 @@ void TimeShow::TimerUpdate()
     weather_and_time_data_g.year = date.year();
     weather_and_time_data_g.month = date.month();
     weather_and_time_data_g.day = date.day();
+    weather_and_time_data_g.week = date.dayOfWeek();
 
     emit SetTimeReq(weather_and_time_data_g.hour,weather_and_time_data_g.minute,\
                     weather_and_time_data_g.second);

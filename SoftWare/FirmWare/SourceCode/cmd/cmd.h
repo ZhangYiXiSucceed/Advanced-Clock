@@ -31,6 +31,7 @@ enum
 	VERSION_CMD,
 	CONNECT_MODE_CMD,
 	OLED_SHOW_MODE_CMD,
+	SET_TIME_DATE,
 };
 	
 typedef struct cmd_msg_frame_struct
@@ -93,6 +94,18 @@ typedef struct oled_show_mode_set_struct
 {
 	u8 mode;
 }oled_show_mode_set_t;
+
+typedef struct time_and_date_set_struct
+{
+	u16 year;
+	u8 month;
+	u8 day;
+	u8 week;
+	
+	u8 hour;
+	u8 minute;
+	u8 second;
+}time_and_date_set_t;
 cmd_process_errcode_e server_msg_process(u8* packet,u16 len);
 u32 CalCheckSum(uint8_t* Data, uint16_t len);
 #endif

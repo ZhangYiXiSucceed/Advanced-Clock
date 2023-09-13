@@ -36,6 +36,7 @@ signals:
     void ShowSystemMessage(QString,uint16_t);
     void SendData2OTA(QByteArray Data);
     void SetTimeReq(int hour,int minute,int second);
+    void SetDeviceTimeDateReq(heart_data_t data);
 private slots:
     void ScanInternet();
     void CloseInternetConnect();
@@ -51,6 +52,8 @@ private slots:
     void TimerUpdate();
     void NiceWordsShowUpdate();
     void SetWeather(int Weather_id);
+    void SetDeviceTimeDate(heart_data_t data);
+    void UpdateSetDeviceTime();
 private:
     Ui::TimeShow *ui;
     QTcpServer *MyTcpServer;
@@ -59,6 +62,7 @@ private:
 
     QTimer  *MyTimeShowTimer;
     QTimer  *MyNiceWordsShowTimer;
+    QTimer  *MySetTimeDateTimer;
 
     int InternetPort;
     QString ConnectIP;

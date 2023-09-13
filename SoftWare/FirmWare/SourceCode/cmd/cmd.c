@@ -395,6 +395,38 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 				set_show_state_change(picture);
 			}
 		}break;
+		case SET_TIME_DATE:
+		{
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + sizeof(time_and_date_set_t) + 4;
+			if(cmd_len != len)
+			{
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
+				res = MSG_LEN_ERR;
+				goto err;
+			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t) + sizeof(time_and_date_set_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t) +  sizeof(time_and_date_set_t)));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
+				res = MSG_CRC_ERR;
+				goto err;
+			}
+			u8* msg_data = (u8*)(cmd_msg_frame + 1);
+			time_and_date_set_t *data_set = (time_and_date_set_t *)msg_data;
+			
+			RTC_Set_Date(data_set->year%100,data_set->month,data_set->day,data_set->week);
+
+			if(data_set->hour >= 12)
+			{
+				RTC_Set_Time(data_set->hour,data_set->minute,data_set->second,RTC_H12_PM);	
+			}
+			else
+			{
+				RTC_Set_Time(data_set->hour,data_set->minute,data_set->second,RTC_H12_AM);	
+			}
+			
+		}break;
 		default:
 			rt_kprintf("cmd  err,0x%x\r\n", cmd_msg_frame->cmd);
 			res =  MSG_CMD_ERR;
