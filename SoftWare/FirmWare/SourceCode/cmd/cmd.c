@@ -415,6 +415,10 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			u8* msg_data = (u8*)(cmd_msg_frame + 1);
 			time_and_date_set_t *data_set = (time_and_date_set_t *)msg_data;
 			
+
+			rt_kprintf("year=%d month=%d dat=%d week=%d\r\n", data_set->year%100,data_set->month,data_set->day,data_set->week);
+			rt_kprintf("hour=%d min=%d sec=%d\r\n", data_set->hour,data_set->minute,data_set->second);
+
 			RTC_Set_Date(data_set->year%100,data_set->month,data_set->day,data_set->week);
 
 			if(data_set->hour >= 12)

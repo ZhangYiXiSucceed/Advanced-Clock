@@ -272,8 +272,6 @@ void TimeShow::RspDataProcess(QByteArray buf)
             heart_data_t* heart_data = (heart_data_t*)((cmd_msg_frame_t*)data + 1);
             weather_and_time_data_g = *heart_data;
             HeartCmdRsp();
-            SetDate(weather_and_time_data_g.year,weather_and_time_data_g.month,\
-                    weather_and_time_data_g.day,weather_and_time_data_g.week);
             SetTemptureHumidty(weather_and_time_data_g.tempture,weather_and_time_data_g.humidty);
             SetWeather(weather_and_time_data_g.weather_id);
             if(MyTimeShowTimer->isActive() == false)
