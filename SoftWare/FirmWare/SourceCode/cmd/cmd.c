@@ -429,7 +429,14 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			{
 				RTC_Set_Time(data_set->hour,data_set->minute,data_set->second,RTC_H12_AM);	
 			}
-			
+			time_and_weather_g.year = data_set->year;
+			time_and_weather_g.month = data_set->month;
+			time_and_weather_g.day = data_set->day;
+			time_and_weather_g.week = data_set->week;
+
+			time_and_weather_g.hour = data_set->hour ;
+			time_and_weather_g.minute = data_set->minute;
+			time_and_weather_g.second = data_set->second;
 		}break;
 		default:
 			rt_kprintf("cmd  err,0x%x\r\n", cmd_msg_frame->cmd);

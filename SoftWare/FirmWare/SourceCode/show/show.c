@@ -65,7 +65,7 @@ void show_interface_oled()
 			}
 			else if(system_data.SystemGMTTime > (temp_sys_time+3))
 			{
-				set_show_state_change(eight_diagrams);
+				set_show_state_change(wifi_connect);
 				OLED_Clear();
 				temp_sys_time = system_data.SystemGMTTime;
 			}
@@ -75,7 +75,7 @@ void show_interface_oled()
 			OLED_DrawBMP(0,0,128,64,eight_diagrams_bmp);
 			if(system_data.SystemGMTTime > (temp_sys_time+5))
 			{
-				set_show_state_change(wifi_connect);
+				set_show_state_change(wifi_ok);
 				OLED_Clear();
 			}
 		}break;

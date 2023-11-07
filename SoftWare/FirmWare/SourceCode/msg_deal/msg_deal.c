@@ -287,7 +287,7 @@ void periodic_task_process()
 		{
 			case WEATHER_MODE:
 			{
-				connect_state_change = (connect_state_change + 1) % 2;
+				connect_state_change = (connect_state_change + 1) % 4;
 				system_var.TwoMinuteFlag = 0;
 				rt_kprintf("*: two minute\r\n"); 
 				if(0 == connect_state_change)

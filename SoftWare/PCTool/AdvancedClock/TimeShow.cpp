@@ -270,10 +270,10 @@ void TimeShow::RspDataProcess(QByteArray buf)
                 return;
             }
             heart_data_t* heart_data = (heart_data_t*)((cmd_msg_frame_t*)data + 1);
-            weather_and_time_data_g = *heart_data;
             HeartCmdRsp();
-            SetTemptureHumidty(weather_and_time_data_g.tempture,weather_and_time_data_g.humidty);
-            SetWeather(weather_and_time_data_g.weather_id);
+            weather_and_time_data_g = *heart_data;
+            SetTemptureHumidty(heart_data->tempture,heart_data->humidty);
+            SetWeather(heart_data->weather_id);
             if(MyTimeShowTimer->isActive() == false)
             {
                 MyTimeShowTimer->start(1000);

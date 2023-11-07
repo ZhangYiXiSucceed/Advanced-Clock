@@ -11,8 +11,8 @@ unsigned char  WiFiNetCmd[][64]=
 #ifdef BOOT
   {"AT+CIPSTART=\"TCP\",\"192.168.0.141\",51230\x0d\x0a"},
 #else
-  //{"AT+CIPSTART=\"TCP\",\"api.k780.com\",80\x0d\x0a"},
-  {"AT+CIPSTART=\"TCP\",\"api.seniverse.com\",80\x0d\x0a"},	   
+  {"AT+CIPSTART=\"TCP\",\"api.k780.com\",80\x0d\x0a"},
+  //{"AT+CIPSTART=\"TCP\",\"api.seniverse.com\",80\x0d\x0a"},	   
 #endif 
   {"AT+CIPMODE=1\x0d\x0a"},            
   {"AT+CIPSEND\x0d\x0a"},                                                   
@@ -27,9 +27,9 @@ unsigned char  WiFiNetCmd[][64]=
 };
 
 
-char get_network_time_str[]="GET http://api.k780.com:88/?app=life.time&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json\r\n";
-//char get_network_weather_str[]="GET http://api.k780.com/?app=weather.today&weaId=40&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json\r\n";
-char get_network_weather_str[]="GET http://api.seniverse.com/v3/weather/now.json?key=SX0Kb-bmBma29UBZ3&location=shanghai&language=zh-Hans&unit=c\r\n";
+char get_network_time_str[]="GET http://api.k780.com:88/?app=life.time&appkey=60663&sign=ea6d75829010387c0fbbd994347ab9fa&format=json\r\n";
+char get_network_weather_str[]="GET http://api.k780.com/?app=weather.today&weaId=40&appkey=60663&sign=ea6d75829010387c0fbbd994347ab9fa&format=json\r\n";
+//char get_network_weather_str[]="GET http://api.seniverse.com/v3/weather/now.json?key=SX0Kb-bmBma29UBZ3&location=shanghai&language=zh-Hans&unit=c\r\n";
 /*{"success":"1","result":{"timestamp":"1627798664","datetime_1":"2021-08-01 14:17:44","datetime_2":"2021年08月01日 14时17分44秒","week_1":"0","week_2":"星期日","week_3":"周日","week_4":"Sunday"}}*/
 /*{"success":"1","result":{"weaid":"40","days":"2021-08-04","week":"星期三","cityno":"pudongxinqu","citynm":"浦东新区","cityid":"101020600","temperature":"30℃/26℃","temperature_curr":"28℃","humidity":"93%","aqi":"20","weather":"多云","weather_curr":"多云","weather_icon":"http://api.k780.com/upload/weather/d/1.gif","weather_icon1":"","wind":"东风","winp":"2级","temp_high":"30","temp_low":"26","temp_curr":"28","humi_high":"0","humi_low":"0","weatid":"2","weatid1":"","windid":"2","winpid":"2","weather_iconid":"1"}}*/
 /*{"results":[{"location":{"id":"WTW3SJ5ZBJUY","name":"上海","country":"CN","path":"上海,上海,中国","timezone":"Asia/Shanghai","      timezone_offset":"+08:00"},"now":{"text":"多云","code":"4","temperature":"27"},"last_update":"2023-09-05T00:20:14+08:00"}]}*/
@@ -489,7 +489,7 @@ void wifi_msg_process()
 				case AT_QUIRY_WEATHER_DATA:
 				{
 				 	//rt_kprintf("%s\r\n",FrameInBuff);
-					parsing_weather_json_info1(FrameInBuff,FrameInlen);
+					parsing_weather_json_info(FrameInBuff,FrameInlen);
 				 	sOperCmdBuff.tid = 0xff;
 				}
 				break;
