@@ -45,7 +45,6 @@ int main()
     wifi_msg_process();
     timer_interval_func_task();
 	  show_interface_oled();
-    
   }
 }
 
