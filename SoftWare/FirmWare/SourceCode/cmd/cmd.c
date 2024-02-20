@@ -318,6 +318,9 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 				para.para = &region_header;
 				timer_set_func(&para);
 			}
+			else{
+				rt_kprintf("cal_check_sum=%d, file_check_sum=%d\r\n", check_sum, ota_info_g.check_sum);
+			}
 		}break;
 #endif
 #ifndef BOOT
