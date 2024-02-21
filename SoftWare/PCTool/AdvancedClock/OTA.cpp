@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QDateTime>
+#include "easylogging++.h"
 using namespace std;
 
 OTA::OTA(QWidget *parent) :
@@ -117,7 +118,7 @@ void OTA::InitConnect()
 void PrintMsg()
 {
     static int Count = 0;
-    cout << "PrintMsg " << Count++ << endl;
+    LOG(INFO) << "PrintMsg " << Count++ << endl;
     QThread::msleep(1000);
 }
 
@@ -554,7 +555,7 @@ void OTA::RspDataProcess(QByteArray Data)
             uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + 1));
             if(cal_sum != read_sum)
             {
-                cout <<"frame check err,cal=" << cal_sum <<"read= "<< read_sum << endl;
+                LOG(INFO) <<"frame check err,cal=" << cal_sum <<"read= "<< read_sum << endl;
                 return;
             }
         }break;

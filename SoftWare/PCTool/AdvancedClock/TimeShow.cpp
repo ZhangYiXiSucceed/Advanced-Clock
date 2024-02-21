@@ -9,6 +9,7 @@
 #include <qtextcodec.h>
 #include <QFile>
 #include "Cmd.h"
+#include "easylogging++.h"
 #include "ui_TimeShow.h"
 using namespace std;
 
@@ -132,18 +133,18 @@ void TimeShow::ScanInternet()
         {
             ipv4AddressList.append(address);
             QString temp_str = address.toString();
-            cout << "find IP:" << temp_str.toStdString() << endl;
+            LOG(INFO) << "find IP:" << temp_str.toStdString() << endl;
 
             /* find the match ip */
             int lastDot = temp_str.lastIndexOf('.') + 1;
             int IPLastNum = temp_str.mid(lastDot,temp_str.length()).toInt();
-            /*cout << IPLastNum <<endl;*/
+            /*LOG(INFO) << IPLastNum <<endl;*/
 
             /* the last num is 1, the ip is  gateway */
             if(1 != IPLastNum)
             {
                 ConnectIP = temp_str;
-                cout << "Connect IP is:"<< ConnectIP.toStdString() << endl;
+                LOG(INFO) << "Connect IP is:"<< ConnectIP.toStdString() << endl;
             }
         }
     }
@@ -190,22 +191,22 @@ void TimeShow::NewConnect()
     new_connect_info += QString::number(currentClient->peerPort());
 
     emit ShowSystemMessage(new_connect_info, 10000);
-    cout << new_connect_info.toStdString() << endl;
+    LOG(INFO) << new_connect_info.toStdString() << endl;
 
-    MySetTimeDateTimer->start(5000);
-    cout <<"NewConnect" <<endl;
+    //MySetTimeDateTimer->start(5000);
+    //LOG(INFO) <<"NewConnect" <<endl;
 }
 
 void TimeShow::UpdateSetDeviceTime()
 {
     emit SetDeviceTimeDateReq(weather_and_time_data_g);
-    cout << "UpdateSetDeviceTime"<<endl;
+    LOG(INFO) << "UpdateSetDeviceTime"<<endl;
 }
 void TimeShow::ReadData()
 {
     QString disp_string,S;
     QByteArray buffer = currentClient->readAll();
-    cout <<"len=" <<buffer.size()<<endl;;
+    LOG(INFO) <<"len=" <<buffer.size()<<endl;;
 
     for(int i=0;i<buffer.size();i++)
     {
@@ -213,7 +214,7 @@ void TimeShow::ReadData()
         disp_string += S;
     }
 
-    cout << disp_string.toStdString()<<endl;
+    LOG(INFO) << disp_string.toStdString()<<endl;
     RspDataProcess(buffer);
 }
 
@@ -282,7 +283,7 @@ void TimeShow::RspDataProcess(QByteArray buf)
             break;
         case SET_TIME_DATE:
         {
-            cout <<"SET_TIME_DATE" <<endl;;
+            LOG(INFO) <<"SET_TIME_DATE" <<endl;;
         }break;
         default:
         {
@@ -322,7 +323,7 @@ void TimeShow::SetDeviceTimeDate(heart_data_t data)
     memcpy((void*)Sendata.data(),buf,len);
     SendData2Device(Sendata);
 
-    cout <<"SetDeviceTimeDate" <<endl;;
+    LOG(INFO) <<"SetDeviceTimeDate" <<endl;;
 }
 void TimeShow::HeartCmdRsp()
 {
@@ -493,14 +494,14 @@ void TimeShow::ReadNiceWordsTxt(QList<QString> &NiceWordsList)
     QString WordsInfo;
     if (!InFile)
     {
-        cout <<"read NiceWordsTxT err!\n"<<endl;
+        LOG(INFO) <<"read NiceWordsTxT err!\n"<<endl;
         QMessageBox::warning(NULL, "warning", "open failed", QMessageBox::Yes, QMessageBox::NoButton);
         return;
     }
     while(InFile.getline(Buf, READMAXLENGTH))
     {
         WordsInfo = QString::fromLocal8Bit(Buf);
-        cout << WordsInfo.toLocal8Bit().data() << endl;
+        LOG(INFO) << WordsInfo.toLocal8Bit().data() << endl;
         NiceWordsList.push_back(WordsInfo);
     }
     WordsInfo.remove('\r');
