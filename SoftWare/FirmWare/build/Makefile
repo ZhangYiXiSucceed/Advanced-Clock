@@ -20,7 +20,9 @@ SOURCECODE := ../SourceCode
 
 # source file path
 C_SOURCE = \
-$(wildcard $(CORE)/*.c)  				\
+$(wildcard $(CORE)/*.c)  				
+
+C_SOURCE += \
 $(wildcard $(DRIVER)/src/misc.c)  			\
 $(wildcard $(DRIVER)/src/stm32f4xx_adc.c)  			\
 $(wildcard $(DRIVER)/src/stm32f4xx_dac.c)  			\
@@ -37,7 +39,9 @@ $(wildcard $(DRIVER)/src/stm32f4xx_spi.c)  			\
 $(wildcard $(DRIVER)/src/stm32f4xx_syscfg.c)  		\
 $(wildcard $(DRIVER)/src/stm32f4xx_tim.c)  			\
 $(wildcard $(DRIVER)/src/stm32f4xx_usart.c)  		\
-$(wildcard $(DRIVER)/src/stm32f4xx_wwdg.c)  		\
+$(wildcard $(DRIVER)/src/stm32f4xx_wwdg.c)  		
+
+C_SOURCE += \
 $(wildcard $(SOURCECODE)/*.c)  			\
 $(wildcard $(SOURCECODE)/bluetooth/*.c) \
 $(wildcard $(SOURCECODE)/cJson/*.c)  	\
@@ -58,6 +62,8 @@ $(wildcard $(SOURCECODE)/wifi/*.c)  	\
 $(wildcard $(SOURCECODE)/show/*.c)  	\
 $(wildcard $(SOURCECODE)/region_header/*.c)  	\
 $(wildcard $(SOURCECODE)/cmd/*.c)  	\
+
+C_SOURCE += \
 
 # asm source file path
 ASM_SOURCE = \

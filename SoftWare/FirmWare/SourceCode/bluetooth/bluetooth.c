@@ -7,6 +7,17 @@ unsigned char  ble_cmd[][32]=
   {"AT+BAUD=9600"},
 };
 
+unsigned char ble_shell_cmd[][16]=
+{
+	{"getinfo"},
+	{"rst"},
+	{"close"},
+	{"open"},
+	{"nrf24"},
+	{"nrftx"},
+	{"nrfrx"},
+	{"help"},
+};
 
 void ble_init()
 {
@@ -44,40 +55,45 @@ void ble_init()
 int BleStateCheck(char *data)
 {
 	unsigned char *point;
-    point = strstr(data, "getinfo");               // IP_CONNECT 
+    point = strstr(data, ble_shell_cmd[RESP_BLE_GET_WIFI_TIME_INFO]);               // IP_CONNECT 
     if(point != NULL)
     {
       return RESP_BLE_GET_WIFI_TIME_INFO;
     }
-	point = strstr(data, "rst"); 
+	point = strstr(data, ble_shell_cmd[RESP_BLE_RESET]); 
 	if(point != NULL)
     {
       return RESP_BLE_RESET;
     }
-	point = strstr(data, "close"); 
+	point = strstr(data, ble_shell_cmd[RESP_BLE_CLOSE_INT]); 
 	if(point != NULL)
     {
       return RESP_BLE_CLOSE_INT;
     }
-	point = strstr(data, "open"); 
+	point = strstr(data, ble_shell_cmd[RESP_BLE_OPEN_INT]); 
 	if(point != NULL)
     {
       return RESP_BLE_OPEN_INT;
     }
-	point = strstr(data, "nrf24"); 
+	point = strstr(data, ble_shell_cmd[RESP_BLE_SEND_NRF24L01]); 
 	if(point != NULL)
     {
       return RESP_BLE_SEND_NRF24L01;
     }
-	point = strstr(data, "nrftx"); 
+	point = strstr(data, ble_shell_cmd[RESP_BLE_SET_TX]); 
 	if(point != NULL)
     {
       return RESP_BLE_SET_TX;
     }
-	point = strstr(data, "nrfrx"); 
+	point = strstr(data, ble_shell_cmd[RESP_BLE_SET_RX]); 
 	if(point != NULL)
     {
       return RESP_BLE_SET_RX;
+    }
+	point = strstr(data, ble_shell_cmd[RESP_BLE_HELP]); 
+	if(point != NULL)
+    {
+      return RESP_BLE_HELP;
     }
 	point = strstr(data, "OK"); 
 	if(point != NULL)
@@ -88,7 +104,15 @@ int BleStateCheck(char *data)
 }
 
 
-
+void print_bluetooth_cmd()
+{
+	int cmd_num = sizeof(ble_shell_cmd)/sizeof(ble_shell_cmd[0]);
+	int i;
+	for(i=0;i<cmd_num;i++)
+	{
+		rt_kprintf2("cmd%d:%s\r\n",i,ble_shell_cmd[i]);
+	}
+}
 void bluetooth_msg_porcess()
 {
   unsigned char mrtn;
@@ -127,6 +151,10 @@ void bluetooth_msg_porcess()
 	  mrtn = BleStateCheck((char*)FrameInBuff);
 	  switch(mrtn)
 	  {
+		case RESP_BLE_HELP:
+		{
+			print_bluetooth_cmd();
+		}break;
 	    case RESP_BLE_GET_WIFI_TIME_INFO:
       	{
       		print_wifi_weather_time_info();

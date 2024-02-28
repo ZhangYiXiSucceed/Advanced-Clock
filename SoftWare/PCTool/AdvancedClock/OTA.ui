@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QGroupBox" name="groupBox">
+  <widget class="QGroupBox" name="DeviceOpGroupBox">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>GroupBox</string>
+    <string>设备操作</string>
    </property>
    <widget class="QLineEdit" name="SoftwareVersion">
     <property name="geometry">
@@ -179,7 +179,7 @@
     </property>
    </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBox_2">
+  <widget class="QGroupBox" name="ProgressGroupBox">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -189,7 +189,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>GroupBox</string>
+    <string>进度条</string>
    </property>
    <widget class="QProgressBar" name="UpgradProgressBar">
     <property name="geometry">
@@ -241,7 +241,7 @@
     </property>
    </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBox_3">
+  <widget class="QGroupBox" name="UpgradeGroupBox">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -251,7 +251,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>GroupBox</string>
+    <string>升级操作</string>
    </property>
    <widget class="QLabel" name="FileLable">
     <property name="geometry">

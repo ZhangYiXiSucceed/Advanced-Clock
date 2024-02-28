@@ -9,6 +9,7 @@
 #include <qtextcodec.h>
 #include <QFile>
 #include "Cmd.h"
+#include "easylogging++.h"
 #include "ui_TimeShow.h"
 using namespace std;
 
@@ -19,12 +20,16 @@ TimeShow::TimeShow(QWidget *parent) :
 {
     MyTcpServer = new QTcpServer;
     MyTimeShowTimer = new QTimer;
+    MyTimeShowTimer->start(1000);
     MyNiceWordsShowTimer = new QTimer;
+    MySetTimeDateTimer = new QTimer;
 
     InternetPort = 51230;
     ConnectIP = nullptr;
     currentClient = nullptr;
     MyNiceWordsShowTimer->start(5000);
+    CurrentDateTime = QDateTime::currentDateTime();
+    MySetTimeDateTimer->setSingleShot(true);
 
     ui->setupUi(this);
     InitUI();
@@ -94,6 +99,8 @@ void TimeShow::InitUI()
 
     ui->weather_group->setFont(Ft);
     ui->TimeAndDate->setFont(Ft);
+
+
 }
 
 void TimeShow::InitConnect()
@@ -104,6 +111,9 @@ void TimeShow::InitConnect()
 
     connect(MyTimeShowTimer,SIGNAL(timeout()),this,SLOT(TimerUpdate()));
     connect(MyNiceWordsShowTimer,SIGNAL(timeout()),this,SLOT(NiceWordsShowUpdate()));
+
+    connect(this,SIGNAL(SetDeviceTimeDateReq(heart_data_t)),this,SLOT(SetDeviceTimeDate(heart_data_t)));
+    connect(MySetTimeDateTimer,SIGNAL(timeout()),this,SLOT(UpdateSetDeviceTime()));
 }
 
 
@@ -123,18 +133,18 @@ void TimeShow::ScanInternet()
         {
             ipv4AddressList.append(address);
             QString temp_str = address.toString();
-            cout << "find IP:" << temp_str.toStdString() << endl;
+            LOG(INFO) << "find IP:" << temp_str.toStdString() << endl;
 
             /* find the match ip */
             int lastDot = temp_str.lastIndexOf('.') + 1;
             int IPLastNum = temp_str.mid(lastDot,temp_str.length()).toInt();
-            /*cout << IPLastNum <<endl;*/
+            /*LOG(INFO) << IPLastNum <<endl;*/
 
             /* the last num is 1, the ip is  gateway */
             if(1 != IPLastNum)
             {
                 ConnectIP = temp_str;
-                cout << "Connect IP is:"<< ConnectIP.toStdString() << endl;
+                LOG(INFO) << "Connect IP is:"<< ConnectIP.toStdString() << endl;
             }
         }
     }
@@ -148,7 +158,6 @@ void TimeShow::ScanInternet()
     bool is_ok = MyTcpServer->listen(QHostAddress(ConnectIP),InternetPort);
     if(is_ok)
     {
-        //QMessageBox::information(NULL, "info", "Listening Client", QMessageBox::Yes, QMessageBox::NoButton);
         emit ShowSystemMessage("start Listening Client",2000);
     }
 }
@@ -182,14 +191,22 @@ void TimeShow::NewConnect()
     new_connect_info += QString::number(currentClient->peerPort());
 
     emit ShowSystemMessage(new_connect_info, 10000);
-    cout << new_connect_info.toStdString() << endl;
+    LOG(INFO) << new_connect_info.toStdString() << endl;
+
+    //MySetTimeDateTimer->start(5000);
+    //LOG(INFO) <<"NewConnect" <<endl;
 }
 
+void TimeShow::UpdateSetDeviceTime()
+{
+    emit SetDeviceTimeDateReq(weather_and_time_data_g);
+    LOG(INFO) << "UpdateSetDeviceTime"<<endl;
+}
 void TimeShow::ReadData()
 {
     QString disp_string,S;
     QByteArray buffer = currentClient->readAll();
-    cout <<"len=" <<buffer.size()<<endl;;
+    LOG(INFO) <<"len=" <<buffer.size()<<endl;;
 
     for(int i=0;i<buffer.size();i++)
     {
@@ -197,7 +214,7 @@ void TimeShow::ReadData()
         disp_string += S;
     }
 
-    cout << disp_string.toStdString()<<endl;
+    LOG(INFO) << disp_string.toStdString()<<endl;
     RspDataProcess(buffer);
 }
 
@@ -222,14 +239,21 @@ int CalCheckSum(uint8_t* Data, uint16_t len)
     return CheckSum;
 }
 
+static void MessageBoxShow(QString str)
+{
+    QMessageBox::warning(NULL, "warning", str, QMessageBox::Yes, QMessageBox::NoButton);
+}
+
 void TimeShow::RspDataProcess(QByteArray buf)
 {
     uint8_t *data = (uint8_t *)buf.data();
     cmd_msg_frame_t *msg = (cmd_msg_frame_t *)data;
-
+    char format_data[64];
     if(MSG_FRAME_HEADER != msg->header)
     {
-        cout <<"header err" << msg->header << endl;
+        sprintf(format_data,"header err=%d",msg->header);
+        QString date_str(format_data);
+        MessageBoxShow(date_str);
         return;
     }
 
@@ -241,27 +265,65 @@ void TimeShow::RspDataProcess(QByteArray buf)
             uint32_t read_sum = *((uint32_t*)(data + sizeof(cmd_msg_frame_t) + sizeof(heart_data_t)));
             if(cal_sum != read_sum)
             {
-                cout <<"frame check err,cal=" << cal_sum <<"read= "<< cal_sum << endl;
+                sprintf(format_data,"frame check err,cal=%d read=%d",cal_sum,read_sum);
+                QString date_str(format_data);
+                MessageBoxShow(date_str);
                 return;
             }
             heart_data_t* heart_data = (heart_data_t*)((cmd_msg_frame_t*)data + 1);
-            weather_and_time_data_g = *heart_data;
             HeartCmdRsp();
-            SetDate(weather_and_time_data_g.year,weather_and_time_data_g.month,\
-                    weather_and_time_data_g.day,weather_and_time_data_g.week);
-            SetTemptureHumidty(weather_and_time_data_g.tempture,weather_and_time_data_g.humidty);
-            SetWeather(weather_and_time_data_g.weather_id);
+            weather_and_time_data_g = *heart_data;
+            SetTemptureHumidty(heart_data->tempture,heart_data->humidty);
+            SetWeather(heart_data->weather_id);
             if(MyTimeShowTimer->isActive() == false)
             {
                 MyTimeShowTimer->start(1000);
             }
         }
             break;
+        case SET_TIME_DATE:
+        {
+            LOG(INFO) <<"SET_TIME_DATE" <<endl;;
+        }break;
         default:
         {
              emit SendData2OTA(buf);
         }
     }
+}
+
+void TimeShow::SetDeviceTimeDate(heart_data_t data)
+{
+    uint8_t buf[sizeof(cmd_msg_frame_t) + sizeof(time_and_date_set_t) + sizeof(uint32_t)];
+    uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(time_and_date_set_t) + sizeof(uint32_t);
+    QByteArray Sendata;
+    Sendata.resize(len);
+
+    cmd_msg_frame_t *msg = (cmd_msg_frame_t *)buf;
+    msg->header = MSG_FRAME_HEADER;
+    msg->device_addr = 0x00;
+    msg->cmd = SET_TIME_DATE;
+    msg->seq = 0x00;
+    msg->data_len = sizeof(time_and_date_set_t);
+
+    time_and_date_set_t *set_data = (time_and_date_set_t *)(msg + 1);
+    set_data->year = data.year;
+    set_data->month = data.month;
+    set_data->day = data.day;
+    set_data->week = data.week;
+
+    set_data->hour = data.hour;
+    set_data->minute = data.minute;
+    set_data->second = data.second;
+
+    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + sizeof(time_and_date_set_t));
+    uint32_t *check_sum = (uint32_t *)(set_data+1);
+    *check_sum = CheckSum;
+
+    memcpy((void*)Sendata.data(),buf,len);
+    SendData2Device(Sendata);
+
+    LOG(INFO) <<"SetDeviceTimeDate" <<endl;;
 }
 void TimeShow::HeartCmdRsp()
 {
@@ -350,7 +412,7 @@ void TimeShow::SetTemptureHumidty(int tempture,int humidty)
 void TimeShow::SetDate(int year,int month,int day,int week)
 {
     char buf[32];
-    sprintf(buf,"20%02d-%02d-%02d %02d",year,month,day,week);
+    sprintf(buf,"%04d-%02d-%02d %02d",year,month,day,week);
     QString date_str(buf);
     ui->DateShow->setText(date_str);
 }
@@ -402,22 +464,27 @@ void TimeShow::SetWeather(int weather_id)
         break;
     }
 }
+
 void TimeShow::TimerUpdate()
 {
-    weather_and_time_data_g.second++;
-    if(weather_and_time_data_g.second>=60)
-    {
-        weather_and_time_data_g.second = 0;
-        weather_and_time_data_g.minute++;
-        if(weather_and_time_data_g.minute>=60)
-        {
-            weather_and_time_data_g.minute = 0;
-            weather_and_time_data_g.hour++;
-        }
-    }
+    CurrentDateTime = QDateTime::currentDateTime();
+    // 获取时分秒
+    QTime time = CurrentDateTime.time();
+    weather_and_time_data_g.hour = time.hour();
+    weather_and_time_data_g.minute = time.minute();
+    weather_and_time_data_g.second = time.second();
+
+    // 获取年月日
+    QDate date = CurrentDateTime.date();
+    weather_and_time_data_g.year = date.year();
+    weather_and_time_data_g.month = date.month();
+    weather_and_time_data_g.day = date.day();
+    weather_and_time_data_g.week = date.dayOfWeek();
+
     emit SetTimeReq(weather_and_time_data_g.hour,weather_and_time_data_g.minute,\
                     weather_and_time_data_g.second);
-
+    SetDate(weather_and_time_data_g.year,weather_and_time_data_g.month,\
+            weather_and_time_data_g.day,weather_and_time_data_g.week);
 }
 
 void TimeShow::ReadNiceWordsTxt(QList<QString> &NiceWordsList)
@@ -427,14 +494,14 @@ void TimeShow::ReadNiceWordsTxt(QList<QString> &NiceWordsList)
     QString WordsInfo;
     if (!InFile)
     {
-        cout <<"read NiceWordsTxT err!\n"<<endl;
+        LOG(INFO) <<"read NiceWordsTxT err!\n"<<endl;
         QMessageBox::warning(NULL, "warning", "open failed", QMessageBox::Yes, QMessageBox::NoButton);
         return;
     }
     while(InFile.getline(Buf, READMAXLENGTH))
     {
         WordsInfo = QString::fromLocal8Bit(Buf);
-        cout << WordsInfo.toLocal8Bit().data() << endl;
+        LOG(INFO) << WordsInfo.toLocal8Bit().data() << endl;
         NiceWordsList.push_back(WordsInfo);
     }
     WordsInfo.remove('\r');

@@ -18,6 +18,7 @@ enum
     VERSION_CMD,
     CONNECT_MODE_CMD,
     OLED_SHOW_MODE_CMD,
+    SET_TIME_DATE,
 };
 typedef enum weather_id_struct
 {
@@ -103,5 +104,18 @@ typedef struct oled_show_mode_set_struct
 {
     uint8_t mode;
 }oled_show_mode_set_t;
+
+typedef struct time_and_date_set_struct
+{
+    uint16_t year;
+    uint8_t month;
+    uint8_t day;
+    uint8_t week;
+
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t second;
+}time_and_date_set_t;
+
 int CalCheckSum(uint8_t* Data, uint16_t len);
 #endif // CMD_H

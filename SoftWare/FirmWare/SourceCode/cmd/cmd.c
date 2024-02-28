@@ -2,9 +2,10 @@
 #include "main.h"
 #else
 #include "boot_main.h"
+ota_package_info_t ota_info_g;
 #endif
 
-u32 CalCheckSum(uint8_t* Data, uint16_t len)
+u32 CalCheckSum(uint8_t* Data, uint32_t len)
 {
     int CheckSum = 0;
     for(int i=0;i<len;i++)
@@ -246,9 +247,9 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			}
 			
 			u8* msg_data = (u8*)(cmd_msg_frame + 1);
-			ota_package_info_t *info = (ota_package_info_t *)msg_data;
+			ota_info_g = *(ota_package_info_t *)msg_data;
 
-			rt_kprintf("ota info, package num=%d, bin size=%d, check_sum=%d\r\n", info->package_num, info->bin_size, info->check_sum);
+			rt_kprintf("ota info, package num=%d, bin size=%d, check_sum=%d\r\n", ota_info_g.package_num, ota_info_g.bin_size, ota_info_g.check_sum);
 			FLASH_EraseSector(FLASH_Sector_3,VoltageRange_3);
 		}break;
 		case UPDATE_DATA:
@@ -270,7 +271,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 			}
 
 			rt_kprintf("ota seq=%d\r\n", cmd_msg_frame->seq);
-			STMFLASH_Write(ADDR_FLASH_SECTOR_4 + OTA_ONE_PACKAGE_SIZE*cmd_msg_frame->seq,(u32*)&packet[sizeof(cmd_msg_frame_t)],256);
+			STMFLASH_Write(APP_FLASH_ADDR + OTA_ONE_PACKAGE_SIZE*cmd_msg_frame->seq,(u32*)&packet[sizeof(cmd_msg_frame_t)],256);
 			//printf_buf(&packet[sizeof(cmd_msg_frame_t)],1024);
 
 		}break;
@@ -291,8 +292,35 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 				res = MSG_CRC_ERR;
 				goto err;
 			}
+			u32 check_sum = CalCheckSum((char*)APP_FLASH_ADDR, ota_info_g.bin_size);
+			rt_kprintf("ota end,check_sum=%d, size=%d\r\n", check_sum, ota_info_g.bin_size);
 
-			rt_kprintf("ota end\r\n");
+			if(check_sum == ota_info_g.check_sum)
+			{
+				rt_kprintf("start jump\r\n");
+
+				timer_interval_func_t para;
+				para.interval = 10 ;
+				para.target_time = para.interval + GetSystemTime();
+				para.cb = (timer_callback)quit_send_data_mode_cmd;
+				para.para = NULL;
+				timer_set_func(&para);
+
+				para.interval = 12 ;
+				para.target_time = para.interval + GetSystemTime();
+				para.cb = (timer_callback)set_send_mode;
+				para.para = NULL;
+				timer_set_func(&para);
+
+				para.interval = 14 ;
+				para.target_time = para.interval + GetSystemTime();
+				para.cb = (timer_callback)jump_exec;
+				para.para = &region_header;
+				timer_set_func(&para);
+			}
+			else{
+				rt_kprintf("cal_check_sum=%d, file_check_sum=%d\r\n", check_sum, ota_info_g.check_sum);
+			}
 		}break;
 #endif
 #ifndef BOOT
@@ -363,7 +391,7 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 				memcpy(picture_frame_buf_g[1],&packet[sizeof(cmd_msg_frame_t)],PICTURE_FRMAE_SIZE);
 			}
 		}break;
-#endif
+
 		case OLED_SHOW_MODE_CMD:
 		{
 			u16 cmd_len = sizeof(cmd_msg_frame_t) + sizeof(oled_show_mode_set_t) + 4;
@@ -395,10 +423,54 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
 				set_show_state_change(picture);
 			}
 		}break;
+		case SET_TIME_DATE:
+		{
+			u16 cmd_len = sizeof(cmd_msg_frame_t) + sizeof(time_and_date_set_t) + 4;
+			if(cmd_len != len)
+			{
+				rt_kprintf("frame len err,%d %d\r\n", cmd_len,len);
+				res = MSG_LEN_ERR;
+				goto err;
+			}
+			u32 cal_sum = CalCheckSum(packet,sizeof(cmd_msg_frame_t) + sizeof(time_and_date_set_t));
+			u32 read_sum = *((u32*)(packet + sizeof(cmd_msg_frame_t) +  sizeof(time_and_date_set_t)));
+			if(cal_sum != read_sum)
+			{
+				rt_kprintf("frame check err,%x %x\r\n", cal_sum,read_sum);
+				res = MSG_CRC_ERR;
+				goto err;
+			}
+			u8* msg_data = (u8*)(cmd_msg_frame + 1);
+			time_and_date_set_t *data_set = (time_and_date_set_t *)msg_data;
+			
+
+			rt_kprintf("year=%d month=%d dat=%d week=%d\r\n", data_set->year%100,data_set->month,data_set->day,data_set->week);
+			rt_kprintf("hour=%d min=%d sec=%d\r\n", data_set->hour,data_set->minute,data_set->second);
+
+			RTC_Set_Date(data_set->year%100,data_set->month,data_set->day,data_set->week);
+
+			if(data_set->hour >= 12)
+			{
+				RTC_Set_Time(data_set->hour,data_set->minute,data_set->second,RTC_H12_PM);	
+			}
+			else
+			{
+				RTC_Set_Time(data_set->hour,data_set->minute,data_set->second,RTC_H12_AM);	
+			}
+			time_and_weather_g.year = data_set->year;
+			time_and_weather_g.month = data_set->month;
+			time_and_weather_g.day = data_set->day;
+			time_and_weather_g.week = data_set->week;
+
+			time_and_weather_g.hour = data_set->hour ;
+			time_and_weather_g.minute = data_set->minute;
+			time_and_weather_g.second = data_set->second;
+		}break;
+#endif
 		default:
 			rt_kprintf("cmd  err,0x%x\r\n", cmd_msg_frame->cmd);
-			return MSG_CMD_ERR;
-			break;
+			res =  MSG_CMD_ERR;
+			goto err;
 	}
 	if((HEART_CMD != cmd_msg_frame->cmd) && (VERSION_CMD != cmd_msg_frame->cmd) && (PICTURE_CMD != cmd_msg_frame->cmd))
 	{

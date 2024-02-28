@@ -14,6 +14,7 @@ SOURCES += \
     OTA.cpp \
     PictureShow.cpp \
     TimeShow.cpp \
+    easylogging++.cpp \
     main.cpp \
     AdvancedClock.cpp
 
@@ -22,7 +23,8 @@ HEADERS += \
     Cmd.h \
     OTA.h \
     PictureShow.h \
-    TimeShow.h
+    TimeShow.h \
+    easylogging++.h
 
 FORMS += \
     AdvancedClock.ui \

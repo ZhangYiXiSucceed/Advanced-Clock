@@ -4,53 +4,53 @@ void HTSensor_Init(void)
 {			
 	GPIO_InitTypeDef  GPIO_InitStructure;
 
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);//Ê¹ÄÜGPIOBÊ±ÖÓ
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);//Ê¹ÄÜGPIOBÊ±ÖÓ
-	//GPIOB8,B9³õÊ¼»¯ÉèÖÃ
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);//Ê¹ï¿½ï¿½GPIOBÊ±ï¿½ï¿½
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);//Ê¹ï¿½ï¿½GPIOBÊ±ï¿½ï¿½
+	//GPIOB8,B9ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//ÆÕÍ¨Êä³öÄ£Ê½
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//ÍÆÍìÊä³ö
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//ï¿½ï¿½Í¨ï¿½ï¿½ï¿½Ä£Ê½
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//ÉÏÀ­
-	GPIO_Init(GPIOC, &GPIO_InitStructure);//³õÊ¼»¯
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//ï¿½ï¿½ï¿½ï¿½
+	GPIO_Init(GPIOC, &GPIO_InitStructure);//ï¿½ï¿½Ê¼ï¿½ï¿½
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);//³õÊ¼»¯
+	GPIO_Init(GPIOD, &GPIO_InitStructure);//ï¿½ï¿½Ê¼ï¿½ï¿½
   
 	IIC_SCL=1;
 	IIC_SDA=1;
 
 	HTSensorMode();
 }
-//²úÉúIICÆðÊ¼ÐÅºÅ
+//ï¿½ï¿½ï¿½ï¿½IICï¿½ï¿½Ê¼ï¿½Åºï¿½
 void IIC_Start(void)
 {
-	SDA_OUT();     //sdaÏßÊä³ö
+	SDA_OUT();     //sdaï¿½ï¿½ï¿½ï¿½ï¿½
 	IIC_SDA=1;	  	  
 	IIC_SCL=1;
 	delay_us(4);
  	IIC_SDA=0;//START:when CLK is high,DATA change form high to low 
 	delay_us(4);
-	IIC_SCL=0;//Ç¯×¡I2C×ÜÏß£¬×¼±¸·¢ËÍ»ò½ÓÊÕÊý¾Ý 
+	IIC_SCL=0;//Ç¯×¡I2Cï¿½ï¿½ï¿½ß£ï¿½×¼ï¿½ï¿½ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 }	  
-//²úÉúIICÍ£Ö¹ÐÅºÅ
+//ï¿½ï¿½ï¿½ï¿½IICÍ£Ö¹ï¿½Åºï¿½
 void IIC_Stop(void)
 {
-	SDA_OUT();//sdaÏßÊä³ö
+	SDA_OUT();//sdaï¿½ï¿½ï¿½ï¿½ï¿½
 	IIC_SCL=0;
 	IIC_SDA=0;//STOP:when CLK is high DATA change form low to high
  	delay_us(4);
 	IIC_SCL=1; 
-	IIC_SDA=1;//·¢ËÍI2C×ÜÏß½áÊøÐÅºÅ
+	IIC_SDA=1;//ï¿½ï¿½ï¿½ï¿½I2Cï¿½ï¿½ï¿½ß½ï¿½ï¿½ï¿½ï¿½Åºï¿½
 	delay_us(4);							   	
 }
-//µÈ´ýÓ¦´ðÐÅºÅµ½À´
-//·µ»ØÖµ£º1£¬½ÓÊÕÓ¦´ðÊ§°Ü
-//        0£¬½ÓÊÕÓ¦´ð³É¹¦
+//ï¿½È´ï¿½Ó¦ï¿½ï¿½ï¿½ÅºÅµï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Ê§ï¿½ï¿½
+//        0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½É¹ï¿½
 u8 IIC_Wait_Ack(void)
 {
 	u8 ucErrTime=0;
-	SDA_IN();      //SDAÉèÖÃÎªÊäÈë  
+	SDA_IN();      //SDAï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½  
 	IIC_SDA=1;delay_us(1);	   
 	IIC_SCL=1;delay_us(1);	 
 	while(READ_SDA)
@@ -62,10 +62,10 @@ u8 IIC_Wait_Ack(void)
 			return 1;
 		}
 	}
-	IIC_SCL=0;//Ê±ÖÓÊä³ö0 	   
+	IIC_SCL=0;//Ê±ï¿½ï¿½ï¿½ï¿½ï¿½0 	   
 	return 0;  
 } 
-//²úÉúACKÓ¦´ð
+//ï¿½ï¿½ï¿½ï¿½ACKÓ¦ï¿½ï¿½
 void IIC_Ack(void)
 {
 	IIC_SCL=0;
@@ -76,7 +76,7 @@ void IIC_Ack(void)
 	delay_us(2);
 	IIC_SCL=0;
 }
-//²»²úÉúACKÓ¦´ð		    
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ACKÓ¦ï¿½ï¿½		    
 void IIC_NAck(void)
 {
 	IIC_SCL=0;
@@ -87,31 +87,31 @@ void IIC_NAck(void)
 	delay_us(2);
 	IIC_SCL=0;
 }					 				     
-//IIC·¢ËÍÒ»¸ö×Ö½Ú
-//·µ»Ø´Ó»úÓÐÎÞÓ¦´ð
-//1£¬ÓÐÓ¦´ð
-//0£¬ÎÞÓ¦´ð			  
+//IICï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö½ï¿½
+//ï¿½ï¿½ï¿½Ø´Ó»ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½
+//1ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½
+//0ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½			  
 void IIC_Send_Byte(u8 txd)
 {                        
     u8 t;   
 	SDA_OUT(); 	    
-    IIC_SCL=0;//À­µÍÊ±ÖÓ¿ªÊ¼Êý¾Ý´«Êä
+    IIC_SCL=0;//ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ó¿ï¿½Ê¼ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½
     for(t=0;t<8;t++)
     {              
         IIC_SDA=(txd&0x80)>>7;
         txd<<=1; 	  
-		delay_us(2);   //¶ÔTEA5767ÕâÈý¸öÑÓÊ±¶¼ÊÇ±ØÐëµÄ
+		delay_us(2);   //ï¿½ï¿½TEA5767ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ç±ï¿½ï¿½ï¿½ï¿½
 		IIC_SCL=1;
 		delay_us(2); 
 		IIC_SCL=0;	
 		delay_us(2);
     }	 
 } 	    
-//¶Á1¸ö×Ö½Ú£¬ack=1Ê±£¬·¢ËÍACK£¬ack=0£¬·¢ËÍnACK   
+//ï¿½ï¿½1ï¿½ï¿½ï¿½Ö½Ú£ï¿½ack=1Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ACKï¿½ï¿½ack=0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nACK   
 u8 IIC_Read_Byte(unsigned char ack)
 {
 	unsigned char i,receive=0;
-	SDA_IN();//SDAÉèÖÃÎªÊäÈë
+	SDA_IN();//SDAï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½
     for(i=0;i<8;i++ )
 	{
         IIC_SCL=0; 
@@ -122,9 +122,9 @@ u8 IIC_Read_Byte(unsigned char ack)
 		delay_us(1); 
     }					 
     if (!ack)
-        IIC_NAck();//·¢ËÍnACK
+        IIC_NAck();//ï¿½ï¿½ï¿½ï¿½nACK
     else
-        IIC_Ack(); //·¢ËÍACK   
+        IIC_Ack(); //ï¿½ï¿½ï¿½ï¿½ACK   
     return receive;
 }
 
@@ -133,7 +133,7 @@ void HTSensorMode()
 {
   IIC_Start();
   
-  IIC_Send_Byte(0x88);   //0x44 + 0£¨write£©
+  IIC_Send_Byte(0x88);   //0x44 + 0ï¿½ï¿½writeï¿½ï¿½
   IIC_Wait_Ack();
   
   IIC_Send_Byte(0x23);   //0x2C06   
@@ -152,7 +152,7 @@ void ReadHTSensorData()
   
   IIC_Start();
   
-  IIC_Send_Byte(0x88);   //0x44 + 0£¨write£©
+  IIC_Send_Byte(0x88);   //0x44 + 0ï¿½ï¿½writeï¿½ï¿½
   IIC_Wait_Ack();
   
   IIC_Send_Byte(0xE0);   //0xE000 fetch data  
@@ -162,7 +162,7 @@ void ReadHTSensorData()
   
   
   IIC_Start();  
-  IIC_Send_Byte(0x89);   //0x44 + 1£¨read£©
+  IIC_Send_Byte(0x89);   //0x44 + 1ï¿½ï¿½readï¿½ï¿½
   IIC_Wait_Ack();
   
   (Temperture) = IIC_Read_Byte(1);
@@ -192,6 +192,7 @@ void PrintHTInfo()
 {
 	ReadHTSensorData();
 	rt_kprintf2("board:temp=%d C humi=%d %%\r\n",system_data.tempture,system_data.humidty);
+	rt_kprintf("board:temp=%d C humi=%d %%\r\n",system_data.tempture,system_data.humidty);
 }
 
 

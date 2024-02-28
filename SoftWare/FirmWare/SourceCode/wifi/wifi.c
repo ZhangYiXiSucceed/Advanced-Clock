@@ -11,7 +11,8 @@ unsigned char  WiFiNetCmd[][64]=
 #ifdef BOOT
   {"AT+CIPSTART=\"TCP\",\"192.168.0.141\",51230\x0d\x0a"},
 #else
-  {"AT+CIPSTART=\"TCP\",\"api.k780.com\",80\x0d\x0a"},	   
+  {"AT+CIPSTART=\"TCP\",\"api.k780.com\",80\x0d\x0a"},
+  //{"AT+CIPSTART=\"TCP\",\"api.seniverse.com\",80\x0d\x0a"},	   
 #endif 
   {"AT+CIPMODE=1\x0d\x0a"},            
   {"AT+CIPSEND\x0d\x0a"},                                                   
@@ -26,10 +27,12 @@ unsigned char  WiFiNetCmd[][64]=
 };
 
 
-char get_network_time_str[]="GET http://api.k780.com:88/?app=life.time&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json\r\n";
-char get_network_weather_str[]="GET http://api.k780.com/?app=weather.today&weaId=40&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json\r\n";
+char get_network_time_str[]="GET http://api.k780.com:88/?app=life.time&appkey=60663&sign=ea6d75829010387c0fbbd994347ab9fa&format=json\r\n";
+char get_network_weather_str[]="GET http://api.k780.com/?app=weather.today&weaId=40&appkey=60663&sign=ea6d75829010387c0fbbd994347ab9fa&format=json\r\n";
+//char get_network_weather_str[]="GET http://api.seniverse.com/v3/weather/now.json?key=SX0Kb-bmBma29UBZ3&location=shanghai&language=zh-Hans&unit=c\r\n";
 /*{"success":"1","result":{"timestamp":"1627798664","datetime_1":"2021-08-01 14:17:44","datetime_2":"2021年08月01日 14时17分44秒","week_1":"0","week_2":"星期日","week_3":"周日","week_4":"Sunday"}}*/
 /*{"success":"1","result":{"weaid":"40","days":"2021-08-04","week":"星期三","cityno":"pudongxinqu","citynm":"浦东新区","cityid":"101020600","temperature":"30℃/26℃","temperature_curr":"28℃","humidity":"93%","aqi":"20","weather":"多云","weather_curr":"多云","weather_icon":"http://api.k780.com/upload/weather/d/1.gif","weather_icon1":"","wind":"东风","winp":"2级","temp_high":"30","temp_low":"26","temp_curr":"28","humi_high":"0","humi_low":"0","weatid":"2","weatid1":"","windid":"2","winpid":"2","weather_iconid":"1"}}*/
+/*{"results":[{"location":{"id":"WTW3SJ5ZBJUY","name":"上海","country":"CN","path":"上海,上海,中国","timezone":"Asia/Shanghai","      timezone_offset":"+08:00"},"now":{"text":"多云","code":"4","temperature":"27"},"last_update":"2023-09-05T00:20:14+08:00"}]}*/
 wifi_info_t wifi_info_g;
 
 unsigned char get_wifi_info_data(unsigned char* frame_buffer,unsigned char frame_buffer_length, wifi_info_t *wifi_info);
@@ -371,6 +374,7 @@ void wifi_msg_process()
      if(queue_out(&wifi_queue, FrameInBuff, &FrameInlen) == QUEUE_OPER_OK)         // ����IOT�˿�����        
   	{
 		  memset(&FrameInBuff[FrameInlen],0x00,RX_BUFFER_SIZE - FrameInlen); 
+		  rt_kprintf("%s\r\n",FrameInBuff);
 		  switch(sOperCmdBuff.tid)
 		  {
 		  		 case AT_CMD:                                                                 // 2�����CESQ
@@ -714,6 +718,65 @@ int parsing_wifi_signal_info(unsigned char* frame_buffer,unsigned char frame_buf
 #ifndef BOOT
 time_and_weather_t  time_and_weather_g;
 
+void parsing_weather_json_info1(unsigned char* frame_buffer,unsigned short frame_buffer_length)
+{
+	cJSON *root = cJSON_Parse(frame_buffer);
+	if (0 == root)
+	{
+		rt_kprintf("cjson parsing error\r\n");
+		return;
+	}
+	//rt_kprintf("%s\n\n", cJSON_Print(root));
+
+	cJSON *results = cJSON_GetObjectItem(root, "results");
+	if (0 == results)
+	{
+		goto err_handle;
+	}
+	rt_kprintf("results name:%s\r\n", results->string);
+
+	cJSON *array = cJSON_GetObjectItem(results, NULL);
+	int array_size = cJSON_GetArraySize(array);
+	rt_kprintf("item size=%d\r\n", array_size);
+
+	
+	cJSON *location = cJSON_GetArrayItem(array, 0);
+	rt_kprintf("location value:%s\r\n", location->string);
+	if (0 == location)
+	{
+		goto err_handle;
+	}
+	cJSON *id = cJSON_GetObjectItem(location, "id");
+	rt_kprintf("id value:%p %s\r\n", id, id->valuestring);
+	cJSON *country = cJSON_GetObjectItem(location, "country");
+	rt_kprintf("country value: %p %s\r\n", country, country->valuestring);
+	cJSON *timezone = cJSON_GetObjectItem(location, "timezone");
+	rt_kprintf("timezone value:%s\r\n", timezone->valuestring);
+	cJSON *timezone_offset = cJSON_GetObjectItem(location, "timezone_offset");
+	rt_kprintf("timezone_offset value:%s\r\n", timezone_offset->valuestring);
+
+
+	cJSON *now = cJSON_GetArrayItem(array, 1);
+	if (0 == now)
+	{
+		goto err_handle;
+	}
+	cJSON *code = cJSON_GetObjectItem(now, "code");
+	rt_kprintf("code value:%s\r\n", code->valuestring);
+	cJSON *temperature = cJSON_GetObjectItem(now, "temperature");
+	rt_kprintf("temperature value:%s\r\n", temperature->valuestring);
+
+	cJSON *last_update = cJSON_GetArrayItem(array, 2);
+	if (0 == last_update)
+	{
+		goto err_handle;
+	}
+	rt_kprintf("last_update value:%s\r\n", last_update->valuestring);
+
+err_handle:
+	cJSON_Delete(root);
+}
+
 void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_buffer_length)
 {
 	cJSON *root = cJSON_Parse(frame_buffer);
@@ -723,6 +786,7 @@ void parsing_weather_json_info(unsigned char* frame_buffer,unsigned short frame_
 		return;
 	}
 	//rt_kprintf("%s\n\n", cJSON_Print(root));
+	/*{"success":"1","result":{"weaid":"40","days":"2021-08-04","week":"星期三","cityno":"pudongxinqu","citynm":"浦东新区","cityid":"101020600","temperature":"30℃/26℃","temperature_curr":"28℃","humidity":"93%","aqi":"20","weather":"多云","weather_curr":"多云","weather_icon":"http://api.k780.com/upload/weather/d/1.gif","weather_icon1":"","wind":"东风","winp":"2级","temp_high":"30","temp_low":"26","temp_curr":"28","humi_high":"0","humi_low":"0","weatid":"2","weatid1":"","windid":"2","winpid":"2","weather_iconid":"1"}}*/
 
 	cJSON *success = cJSON_GetObjectItem(root, "success");
 	if (0 == success)
@@ -801,7 +865,7 @@ void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buff
 	cJSON *root = cJSON_Parse(frame_buffer);
 	if (0 == root)
 	{
-		rt_kprintf("error\n");
+		rt_kprintf("cjson parsing error\n");
 		return;
 	}
 	//
@@ -809,12 +873,16 @@ void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buff
 
 	cJSON *success = cJSON_GetObjectItem(root, "success");
 	if (0 == success)
-		return;
+	{
+		goto errhandle;
+	}
 	rt_kprintf("success name:%s success value:%s\r\n", success->string, success->valuestring);
 	
 	cJSON *result = cJSON_GetObjectItem(root, "result");
 	if (0 == result)
-		return;
+	{
+		goto errhandle;
+	}
 	
 	cJSON *timestamp = cJSON_GetObjectItem(result, "timestamp");
 	rt_kprintf("timestamp value:%s\r\n", timestamp->valuestring);
@@ -835,7 +903,7 @@ void parsing_time_json_info(unsigned char* frame_buffer,unsigned char frame_buff
 	rt_kprintf("timestamp value:%s\r\n", week_4->valuestring);
 	
 	paraing_time_string(datetime_1->valuestring,week_1->valuestring);
-	
+errhandle:	
 	cJSON_Delete(root);
 }
 

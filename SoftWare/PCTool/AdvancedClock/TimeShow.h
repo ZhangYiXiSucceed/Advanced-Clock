@@ -7,6 +7,7 @@
 #include <QNetworkInterface>
 #include <QTimer>
 #include <string>
+#include <QDateTime>
 #include <sys/types.h>
 #include <io.h>
 #include <fstream>
@@ -35,6 +36,7 @@ signals:
     void ShowSystemMessage(QString,uint16_t);
     void SendData2OTA(QByteArray Data);
     void SetTimeReq(int hour,int minute,int second);
+    void SetDeviceTimeDateReq(heart_data_t data);
 private slots:
     void ScanInternet();
     void CloseInternetConnect();
@@ -50,6 +52,8 @@ private slots:
     void TimerUpdate();
     void NiceWordsShowUpdate();
     void SetWeather(int Weather_id);
+    void SetDeviceTimeDate(heart_data_t data);
+    void UpdateSetDeviceTime();
 private:
     Ui::TimeShow *ui;
     QTcpServer *MyTcpServer;
@@ -58,12 +62,15 @@ private:
 
     QTimer  *MyTimeShowTimer;
     QTimer  *MyNiceWordsShowTimer;
+    QTimer  *MySetTimeDateTimer;
 
     int InternetPort;
     QString ConnectIP;
     heart_data_t weather_and_time_data_g;
 
     QList<QString> NiceWords;
+
+    QDateTime CurrentDateTime = QDateTime::currentDateTime();
 
     QPixmap WeatherCloudy=tr(":/Image/cloudy.png");
     QPixmap WeatherRainy=tr(":/Image/rainy.png");
