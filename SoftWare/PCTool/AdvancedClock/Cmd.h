@@ -78,13 +78,13 @@ typedef struct server_heart_rsp_struct
     uint8_t rsp_res;
 }server_heart_rsp_t;
 
-typedef struct ota_package_info_struct
+typedef struct OTAPackageInfo_struct
 {
     uint32_t bin_size;
-    uint32_t package_num;
-    uint32_t check_sum;
+    uint32_t PackageNum;
+    uint32_t CheckSum;
     uint32_t rsv;
-}ota_package_info_t;
+}OTAPackageInfo_t;
 
 typedef struct version_info_struct
 {
