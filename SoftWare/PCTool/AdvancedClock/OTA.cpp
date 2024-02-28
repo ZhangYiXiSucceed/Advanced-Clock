@@ -545,7 +545,7 @@ void OTA::RspDataProcess(QByteArray Data)
             }
             else
             {
-                QMessageBox::information(NULL, "info", "jump ok,in app", QMessageBox::Yes, QMessageBox::NoButton);
+                QMessageBox::information(NULL, "info", "version ok,in app", QMessageBox::Yes, QMessageBox::NoButton);
             }
         }
         break;
