@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTimer>
 #include <QThread>
+#include <windows.h>
 #include "Cmd.h"
 #define  OTA_BIN_SIZE   0x20000
 #define  OTA_ONE_PACKAGE_SIZE   1024
@@ -73,12 +74,25 @@ public:
     void SetOTATransmitState(OTATransmitState_t State);
     OTATransmitState_t GetOTATransmitState();
 
+    static DWORD __stdcall StartSendBinSignal(void* arg)
+    {
+        OTA *op = (OTA*) arg;
+        emit op->SendBinReq();
+        QThread::msleep(1000);
+        return 0;
+    }
+    void StartSendBinThread()
+    {
+        CreateThread(NULL, 0, StartSendBinSignal, this, 0, NULL);
+    }
+
 signals:
     void SendReq2Device(QByteArray Data);
     void OpenDeviceReq();
     void CloseDeviceReq();
     void ShowParameter(QString, QString);
     void ShowSystemMessage(QString,uint16_t);
+    void SendBinReq();
 
 private slots:
     void RspDataProcess(QByteArray Data);

@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QDateTime>
 #include "easylogging++.h"
+
 using namespace std;
 
 OTA::OTA(QWidget *parent) :
@@ -22,9 +23,9 @@ OTA::OTA(QWidget *parent) :
     OTAInfoManager.BinBuf = new quint8[64*1024*1024];
     OTAInfoManager.State = START_OTA_TRNASMIT_INFO;
 
-    MyThread = new QThreadRun;
-    MyThread->SetSwitch(true);
-    MyThread->start();
+//    MyThread = new QThreadRun;
+//    MyThread->SetSwitch(true);
+//    MyThread->start();
 
     SetOTATransmitState(OTA_TRANSMIT_END_RSP);
 
