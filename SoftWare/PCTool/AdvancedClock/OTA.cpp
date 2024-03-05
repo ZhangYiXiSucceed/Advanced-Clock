@@ -27,6 +27,7 @@ OTA::OTA(QWidget *parent) :
 //    MyThread->SetSwitch(true);
 //    MyThread->start();
 
+    StartSendBinThread();
     SetOTATransmitState(OTA_TRANSMIT_END_RSP);
 
     InitUI();
@@ -113,7 +114,7 @@ void OTA::InitConnect()
 
     connect(MyStartConnectTimer,SIGNAL(timeout()),this,SLOT(OpenDevice()));
 
-    connect(MyThread,SIGNAL(RunFunc()),this,SLOT(UpgradeBinThread()));
+    connect(this,SIGNAL(SendBinReq()),this,SLOT(UpgradeBinThread()));
 }
 
 void PrintMsg()

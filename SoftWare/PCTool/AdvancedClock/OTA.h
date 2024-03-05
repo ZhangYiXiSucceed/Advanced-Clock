@@ -76,9 +76,12 @@ public:
 
     static DWORD __stdcall StartSendBinSignal(void* arg)
     {
-        OTA *op = (OTA*) arg;
-        emit op->SendBinReq();
-        QThread::msleep(1000);
+        while(1)
+        {
+            OTA *op = (OTA*) arg;
+            emit op->SendBinReq();
+            QThread::msleep(100);
+        }
         return 0;
     }
     void StartSendBinThread()
