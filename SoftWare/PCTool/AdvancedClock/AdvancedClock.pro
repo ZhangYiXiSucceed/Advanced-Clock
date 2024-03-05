@@ -11,6 +11,7 @@ CONFIG += console
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ControlDevice.cpp \
     OTA.cpp \
     PictureShow.cpp \
     TimeShow.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 HEADERS += \
     AdvancedClock.h \
     Cmd.h \
+    ControlDevice.h \
     OTA.h \
     PictureShow.h \
     TimeShow.h \
@@ -28,6 +30,7 @@ HEADERS += \
 
 FORMS += \
     AdvancedClock.ui \
+    ControlDevice.ui \
     OTA.ui \
     PictureShow.ui \
     TimeShow.ui

@@ -11,6 +11,7 @@ AdvancedClock::AdvancedClock(QWidget *parent):
     MyTimeShow(new TimeShow(this)),
     MyPictureShow(new PictureShow(this)),
     MyOTA(new OTA(this)),
+    MyControlDevice(new ControlDevice(this)),
     ui(new Ui::AdvancedClock)
 {
     ui->setupUi(this);
@@ -37,6 +38,8 @@ void AdvancedClock::InitUI()
     this->MyTabWidget->addTab(MyTimeShow,tr("时钟显示"));
     this->MyTabWidget->addTab(MyPictureShow,tr("图片显示"));
     this->MyTabWidget->addTab(MyOTA,tr("在线升级"));
+    this->MyTabWidget->addTab(MyControlDevice,tr("设备控制"));
+
 
     statusBar()->setFont(Ft);
 
