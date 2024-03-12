@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTimer>
 #include <QThread>
+#include <windows.h>
 #include "Cmd.h"
 #define  OTA_BIN_SIZE   0x20000
 #define  OTA_ONE_PACKAGE_SIZE   1024
@@ -29,7 +30,7 @@ private:
     void* CallBackArg;
 };
 
-typedef enum ota_transmit_state_enum
+typedef enum OTATransmitStat_enum
 {
     START_OTA_TRNASMIT_INFO=0x1,
     START_OTA_TRNASMIT_INFO_RSP,
@@ -37,17 +38,17 @@ typedef enum ota_transmit_state_enum
     OTA_TRANSMIT_DATA_RSP,
     OTA_TRANSMIT_END,
     OTA_TRANSMIT_END_RSP,
-}ota_transmit_state_t;
+}OTATransmitState_t;
 
-typedef struct ota_info_manager_struct
+typedef struct OTAInfoManagerStruct
 {
     QString FileAddress;          //the address of upgrade bin file
     quint64 BinSize;              //the size of bin file
     quint8  *BinBuf;
-    quint32 check_sum;
-    quint16 package_num;
-    quint16 curr_package_num;
-    ota_transmit_state_t state;
+    quint32 CheckSum;
+    quint16 PackageNum;
+    quint16 CurrPackageNum;
+    OTATransmitState_t State;
 }ota_info_manager_t;
 
 
@@ -70,14 +71,31 @@ public:
     void TransmitBinData(uint16_t cnt);
     void TransmitBinEnd();
 
-    void set_ota_transmit_state(ota_transmit_state_t state);
-    ota_transmit_state_t get_ota_transmit_state();
+    void SetOTATransmitState(OTATransmitState_t State);
+    OTATransmitState_t GetOTATransmitState();
+
+    static DWORD __stdcall StartSendBinSignal(void* arg)
+    {
+        while(1)
+        {
+            OTA *op = (OTA*) arg;
+            emit op->SendBinReq();
+            QThread::msleep(100);
+        }
+        return 0;
+    }
+    void StartSendBinThread()
+    {
+        CreateThread(NULL, 0, StartSendBinSignal, this, 0, NULL);
+    }
+
 signals:
     void SendReq2Device(QByteArray Data);
     void OpenDeviceReq();
     void CloseDeviceReq();
     void ShowParameter(QString, QString);
     void ShowSystemMessage(QString,uint16_t);
+    void SendBinReq();
 
 private slots:
     void RspDataProcess(QByteArray Data);
@@ -94,7 +112,7 @@ private slots:
     void SetConnectMode();
 private:
     Ui::OTA *ui;
-    ota_info_manager_t  ota_info_manager;
+    ota_info_manager_t  OTAInfoManager;
 
     QTimer  *MyStartConnectTimer;
     QThreadRun *MyThread;

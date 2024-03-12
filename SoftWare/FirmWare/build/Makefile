@@ -105,6 +105,7 @@ DOWNLOAD_EXEC := ST-LINK_CLI.exe
 
 RM   := rm -rf 
 ECHO := echo
+MKDIR := mkdir
 
 
 CMN_CFLAGS = -c --C99  --cpu Cortex-M4.fp.sp -g --apcs=interwork --split_sections \
@@ -137,47 +138,47 @@ OBJECTS  += $(addprefix $(BUILD_OBJ_DIR)/,$(notdir $(ASM_SOURCE:.s=.o)))
 DEPS = $(addprefix $(BUILD_DEP_DIR)/,$(notdir $(C_SOURCE:.c=.d)))
  vpath %.c $(sort $(dir $(C_SOURCE)))
 
+$(shell mkdir -p $(OUT_DIR))
+$(shell mkdir -p $(BUILD_OBJ_DIR))
+$(shell mkdir -p $(BUILD_DEP_DIR))
+
 ifeq ($(silent), )
 MAKEFLAGS += --silent
 endif
 
+.PHONY : precompile
+precompile : $(BUILD_OBJ_DIR)/$(f).i
 
 .PHONY : build
 build :  $(OUT_DIR)/$(TARGET).axf
 
-$(OUT_DIR)/$(TARGET).axf: $(OBJECTS) 
-	$(ECHO) Link $@ ...
+
+$(OUT_DIR)/$(TARGET).axf: $(OBJECTS)
 	$(LINK_EXEC) $(OBJECTS) $(CMN_LFLAGS) -o $@ --map --info totals --list_mapping_symbols --list=$(OUT_DIR)/$(TARGET).map 
 	$(ECHO) image $(TARGET).bin ...
 	$(FROMELF_EXEC) --bin --output $(OUT_DIR)/$(TARGET).bin $@
 
 -include $(DEPS)
 
-$(BUILD_OBJ_DIR)/%.o : %.s Makefile | $(BUILD_OBJ_DIR)
+$(BUILD_OBJ_DIR)/%.o : %.s Makefile 
 	$(ECHO) 'Compiling' $<
 	$(ASM_EXEC)  $(CMN_AFLAGS) $< -o $@ 
 
 # compiler process
 $(BUILD_OBJ_DIR)/%.o : %.d  
-$(BUILD_OBJ_DIR)/%.o : %.c  Makefile | $(BUILD_DEP_DIR) $(BUILD_OBJ_DIR)
+$(BUILD_OBJ_DIR)/%.o : %.c  Makefile 
 	$(ECHO)  'Compiling' $<
 	$(CC_EXEC) -c  $(CMN_CFLAGS) $< -o $@ 
 
 $(BUILD_DEP_DIR)/%.d : OBJ_BNAME=$(basename $(notdir $@))
-$(BUILD_DEP_DIR)/%.d : %.c  Makefile | $(BUILD_DEP_DIR) $(BUILD_OBJ_DIR)
+$(BUILD_DEP_DIR)/%.d : %.c  Makefile 
 	$(ECHO) 'Update dependency Compiling' $<
 	$(CC_EXEC) -M   $(CMN_CFLAGS) $< -o "$(BUILD_OBJ_DIR)/$(OBJ_BNAME).o $(BUILD_DEP_DIR)/$(OBJ_BNAME).d"  >  $@
 	$(CC_EXEC) -c   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o
 
-
-$(OUT_DIR):
-	mkdir $@
-
-$(BUILD_OBJ_DIR):
-	mkdir $@
-
-$(BUILD_DEP_DIR):
-	mkdir $@
+$(BUILD_OBJ_DIR)/$(f).i : ../SourceCode/$(f).c
+	$(ECHO)  'Precompiling' $<
+	$(CC_EXEC) -c  -E $(CMN_CFLAGS) $< -o $@ 
 
 # dwonload 
 .PHONY : flash

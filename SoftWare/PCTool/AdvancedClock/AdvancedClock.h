@@ -2,11 +2,13 @@
 #define ADVANCEDCLOCK_H
 
 #include <QMainWindow>
-#include <TimeShow.h>
-#include <PictureShow.h>
-#include <OTA.h>
 #include <QLabel>
 #include <QTextCodec>
+#include "TimeShow.h"
+#include "PictureShow.h"
+#include "OTA.h"
+#include "ControlDevice.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AdvancedClock; }
@@ -32,6 +34,7 @@ private:
     TimeShow *MyTimeShow;
     PictureShow *MyPictureShow;
     OTA *MyOTA;
+    ControlDevice *MyControlDevice;
 
     QLabel *InternetIP;
     QLabel *Port;

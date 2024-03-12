@@ -18,7 +18,7 @@ typedef struct picture_info_manager_struct
     QString FileAddress;          //the address of upgrade bin file
     quint64 BinSize;              //the size of bin file
     quint8  *BinBuf;
-    ota_transmit_state_t state;
+    OTATransmitState_t state;
 }picture_info_manager_t;
 
 namespace Ui {

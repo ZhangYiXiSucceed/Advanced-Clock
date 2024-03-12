@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QDateTime>
 #include "easylogging++.h"
+
 using namespace std;
 
 OTA::OTA(QWidget *parent) :
@@ -19,14 +20,15 @@ OTA::OTA(QWidget *parent) :
     MyStartConnectTimer->start(5000);
     MyStartConnectTimer->setSingleShot(true);
 
-    ota_info_manager.BinBuf = new quint8[64*1024*1024];
-    ota_info_manager.state = START_OTA_TRNASMIT_INFO;
+    OTAInfoManager.BinBuf = new quint8[64*1024*1024];
+    OTAInfoManager.State = START_OTA_TRNASMIT_INFO;
 
-    MyThread = new QThreadRun;
-    MyThread->SetSwitch(true);
-    MyThread->start();
+//    MyThread = new QThreadRun;
+//    MyThread->SetSwitch(true);
+//    MyThread->start();
 
-    set_ota_transmit_state(OTA_TRANSMIT_END_RSP);
+    StartSendBinThread();
+    SetOTATransmitState(OTA_TRANSMIT_END_RSP);
 
     InitUI();
     InitConnect();
@@ -112,7 +114,7 @@ void OTA::InitConnect()
 
     connect(MyStartConnectTimer,SIGNAL(timeout()),this,SLOT(OpenDevice()));
 
-    connect(MyThread,SIGNAL(RunFunc()),this,SLOT(UpgradeBinThread()));
+    connect(this,SIGNAL(SendBinReq()),this,SLOT(UpgradeBinThread()));
 }
 
 void PrintMsg()
@@ -122,25 +124,25 @@ void PrintMsg()
     QThread::msleep(1000);
 }
 
-void OTA::set_ota_transmit_state(ota_transmit_state_t state)
+void OTA::SetOTATransmitState(OTATransmitState_t State)
 {
-    ota_info_manager.state = state;
+    OTAInfoManager.State = State;
 }
 
-ota_transmit_state_t OTA::get_ota_transmit_state()
+OTATransmitState_t OTA::GetOTATransmitState()
 {
-    return ota_info_manager.state;
+    return OTAInfoManager.State;
 }
 void OTA::UpgradeBinThread()
 {
-    switch(ota_info_manager.state)
+    switch(OTAInfoManager.State)
     {
         case START_OTA_TRNASMIT_INFO:
         {
             TransmitBinInfo();
-            set_ota_transmit_state(START_OTA_TRNASMIT_INFO_RSP);
+            SetOTATransmitState(START_OTA_TRNASMIT_INFO_RSP);
             emit ShowSystemMessage(tr(" start ota transmit info"),1500);
-            ota_info_manager.curr_package_num = 0;
+            OTAInfoManager.CurrPackageNum = 0;
         }
         break;
         case START_OTA_TRNASMIT_INFO_RSP:
@@ -150,16 +152,16 @@ void OTA::UpgradeBinThread()
         break;
         case OTA_TRANSMIT_DATA:
         {
-            if(ota_info_manager.curr_package_num < ota_info_manager.package_num)
+            if(OTAInfoManager.CurrPackageNum < OTAInfoManager.PackageNum)
             {
-                TransmitBinData(ota_info_manager.curr_package_num);
-                ota_info_manager.curr_package_num++;
-                set_ota_transmit_state(OTA_TRANSMIT_DATA_RSP);
-                ui->UpgradProgressBar->setValue((ota_info_manager.curr_package_num*100)/ota_info_manager.package_num);
+                TransmitBinData(OTAInfoManager.CurrPackageNum);
+                OTAInfoManager.CurrPackageNum++;
+                SetOTATransmitState(OTA_TRANSMIT_DATA_RSP);
+                ui->UpgradProgressBar->setValue((OTAInfoManager.CurrPackageNum*100)/OTAInfoManager.PackageNum);
             }
             else
             {
-                set_ota_transmit_state(OTA_TRANSMIT_END);
+                SetOTATransmitState(OTA_TRANSMIT_END);
             }
         }
         break;
@@ -171,7 +173,7 @@ void OTA::UpgradeBinThread()
         case OTA_TRANSMIT_END:
         {
             TransmitBinEnd();
-            set_ota_transmit_state(OTA_TRANSMIT_END_RSP);
+            SetOTATransmitState(OTA_TRANSMIT_END_RSP);
             emit ShowSystemMessage(tr("ota transmit end"),1500);
         }
         break;
@@ -203,22 +205,22 @@ void OTA::CloseDevice()
 
 void OTA::SelectOTABin()
 {
-    ota_info_manager.FileAddress = QFileDialog::getOpenFileName(this,tr("Open File"),ota_info_manager.FileAddress,tr("(*.bin);;(*.hex);;(*.axf);;(*.txt);;All Files(*.*)"));
-    int position = ota_info_manager.FileAddress.toStdString().find_last_of('/');
-    ui->UpgradBinFileAddress->setText(ota_info_manager.FileAddress.mid(position+1));
-    if(ota_info_manager.FileAddress != NULL)
+    OTAInfoManager.FileAddress = QFileDialog::getOpenFileName(this,tr("Open File"),OTAInfoManager.FileAddress,tr("(*.bin);;(*.hex);;(*.axf);;(*.txt);;All Files(*.*)"));
+    int position = OTAInfoManager.FileAddress.toStdString().find_last_of('/');
+    ui->UpgradBinFileAddress->setText(OTAInfoManager.FileAddress.mid(position+1));
+    if(OTAInfoManager.FileAddress != NULL)
     {
-        QFileInfo *Temp = new QFileInfo(ota_info_manager.FileAddress);
-        ota_info_manager.BinSize = Temp->size();
+        QFileInfo *Temp = new QFileInfo(OTAInfoManager.FileAddress);
+        OTAInfoManager.BinSize = Temp->size();
         ui->UpgradBinFileTimeDate->setText(Temp->lastModified().toString("yyyy-MM-dd hh:mm:ss"));
         //添加日期等
-        QFile *BinFile = new QFile(ota_info_manager.FileAddress);
+        QFile *BinFile = new QFile(OTAInfoManager.FileAddress);
         if(BinFile->open(QIODevice::ReadOnly))
         {
             emit ShowSystemMessage(tr("打开文件成功，并获取相关信息！"),1500);
-            ui->UpgradBinFileSize->setText(tr("%1 B\n").arg(ota_info_manager.BinSize));
+            ui->UpgradBinFileSize->setText(tr("%1 B\n").arg(OTAInfoManager.BinSize));
             QByteArray  array = BinFile->readAll();
-            memcpy(ota_info_manager.BinBuf, array.data(), ota_info_manager.BinSize);
+            memcpy(OTAInfoManager.BinBuf, array.data(), OTAInfoManager.BinSize);
             BinFile->close();
         }
         delete BinFile;
@@ -234,8 +236,8 @@ void OTA::SelectOTABin()
 
 void OTA::TransmitBinInfo()
 {
-    uint8_t buf[sizeof(cmd_msg_frame_t) +  sizeof(ota_package_info_t) + sizeof(uint32_t)];
-    uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t) + sizeof(uint32_t);
+    uint8_t buf[sizeof(cmd_msg_frame_t) +  sizeof(OTAPackageInfo_t) + sizeof(uint32_t)];
+    uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(OTAPackageInfo_t) + sizeof(uint32_t);
     QByteArray Sendata;
     Sendata.resize(len);
 
@@ -244,17 +246,17 @@ void OTA::TransmitBinInfo()
     msg->device_addr = 0x00;
     msg->cmd = START_UPDATE;
     msg->seq = 0;
-    msg->data_len = sizeof(ota_package_info_t);
+    msg->data_len = sizeof(OTAPackageInfo_t);
 
-    ota_package_info_t *info =(ota_package_info_t *)(msg+1);
-    info->bin_size = ota_info_manager.BinSize;
-    info->package_num = (ota_info_manager.BinSize % OTA_ONE_PACKAGE_SIZE)?(ota_info_manager.BinSize/OTA_ONE_PACKAGE_SIZE + 1):(ota_info_manager.BinSize/OTA_ONE_PACKAGE_SIZE);
-    info->check_sum = CalCheckSum(ota_info_manager.BinBuf,ota_info_manager.BinSize);
+    OTAPackageInfo_t *info =(OTAPackageInfo_t *)(msg+1);
+    info->bin_size = OTAInfoManager.BinSize;
+    info->PackageNum = (OTAInfoManager.BinSize % OTA_ONE_PACKAGE_SIZE)?(OTAInfoManager.BinSize/OTA_ONE_PACKAGE_SIZE + 1):(OTAInfoManager.BinSize/OTA_ONE_PACKAGE_SIZE);
+    info->CheckSum = CalCheckSum(OTAInfoManager.BinBuf,OTAInfoManager.BinSize);
 
-    ota_info_manager.package_num =  info->package_num;
+    OTAInfoManager.PackageNum =  info->PackageNum;
 
-    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t));
-    uint32_t *check_sum = (uint32_t *)(&buf[sizeof(cmd_msg_frame_t) + sizeof(ota_package_info_t)]);
+    int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + sizeof(OTAPackageInfo_t));
+    uint32_t *check_sum = (uint32_t *)(&buf[sizeof(cmd_msg_frame_t) + sizeof(OTAPackageInfo_t)]);
     *check_sum = CheckSum;
 
     memcpy((void*)Sendata.data(),buf,len);
@@ -276,7 +278,7 @@ void OTA::TransmitBinData(uint16_t cnt)
     msg->data_len = OTA_ONE_PACKAGE_SIZE;
 
     uint8_t *data =(uint8_t *)(msg+1);
-    memcpy(data,ota_info_manager.BinBuf+cnt*OTA_ONE_PACKAGE_SIZE,OTA_ONE_PACKAGE_SIZE);
+    memcpy(data,OTAInfoManager.BinBuf+cnt*OTA_ONE_PACKAGE_SIZE,OTA_ONE_PACKAGE_SIZE);
 
     int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE);
     uint32_t *check_sum = (uint32_t *)(&buf[sizeof(cmd_msg_frame_t) + OTA_ONE_PACKAGE_SIZE + 1]);
@@ -310,7 +312,7 @@ void OTA::TransmitBinEnd()
 
 void OTA::StartUpgrade()
 {
-    set_ota_transmit_state(START_OTA_TRNASMIT_INFO);
+    SetOTATransmitState(START_OTA_TRNASMIT_INFO);
 }
 
 void OTA::ResetDeviceCmd()
@@ -501,19 +503,19 @@ void OTA::RspDataProcess(QByteArray Data)
         break;
         case START_UPDATE:
         {
-            set_ota_transmit_state(OTA_TRANSMIT_DATA);
+            SetOTATransmitState(OTA_TRANSMIT_DATA);
             emit ShowSystemMessage("rsp start update",1500);
         }
         break;
         case UPDATE_DATA:
         {
-            if(ota_info_manager.curr_package_num < ota_info_manager.package_num)
+            if(OTAInfoManager.CurrPackageNum < OTAInfoManager.PackageNum)
             {
-                set_ota_transmit_state(OTA_TRANSMIT_DATA);
+                SetOTATransmitState(OTA_TRANSMIT_DATA);
             }
             else
             {
-                 set_ota_transmit_state(OTA_TRANSMIT_END );
+                 SetOTATransmitState(OTA_TRANSMIT_END );
             }
         }
         break;
@@ -545,7 +547,7 @@ void OTA::RspDataProcess(QByteArray Data)
             }
             else
             {
-                QMessageBox::information(NULL, "info", "jump ok,in app", QMessageBox::Yes, QMessageBox::NoButton);
+                QMessageBox::information(NULL, "info", "version ok,in app", QMessageBox::Yes, QMessageBox::NoButton);
             }
         }
         break;
@@ -570,7 +572,7 @@ void OTA::RspDataProcess(QByteArray Data)
 
 OTA::~OTA()
 {
-    delete  ota_info_manager.BinBuf;
+    delete  OTAInfoManager.BinBuf;
     delete ui;
 }
 
