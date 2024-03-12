@@ -45,7 +45,7 @@ void ControlDevice::ScanInternet()
         {
             ipv4AddressList.append(address);
             QString temp_str = address.toString();
-            LOG(INFO) << "find IP:" << temp_str.toStdString() << endl;
+            LOG(INFO) << "find IP:" << temp_str.toStdString() << Qt::endl;
 
             /* find the match ip */
             int lastDot = temp_str.lastIndexOf('.') + 1;
@@ -56,7 +56,7 @@ void ControlDevice::ScanInternet()
             if(1 != IPLastNum)
             {
                 ConnectIP = temp_str;
-                LOG(INFO) << "Connect IP is:"<< ConnectIP.toStdString() << endl;
+                LOG(INFO) << "Connect IP is:"<< ConnectIP.toStdString() << Qt::endl;
             }
         }
     }
@@ -101,14 +101,14 @@ void ControlDevice::NewConnect()
     new_connect_info += ",port:";
     new_connect_info += QString::number(currentClient->peerPort());
 
-    LOG(INFO) << new_connect_info.toStdString() << endl;
+    LOG(INFO) << new_connect_info.toStdString() << Qt::endl;
 }
 
 void ControlDevice::ReadData()
 {
     QString disp_string,S;
     QByteArray buffer = currentClient->readAll();
-    LOG(INFO) <<"len=" <<buffer.size()<<endl;;
+    LOG(INFO) <<"len=" <<buffer.size()<<Qt::endl;;
 
     for(int i=0;i<buffer.size();i++)
     {
@@ -116,7 +116,7 @@ void ControlDevice::ReadData()
         disp_string += S;
     }
 
-    LOG(INFO) << disp_string.toStdString()<<endl;
+    LOG(INFO) << disp_string.toStdString()<<Qt::endl;
     RspDataProcess(buffer);
 }
 
