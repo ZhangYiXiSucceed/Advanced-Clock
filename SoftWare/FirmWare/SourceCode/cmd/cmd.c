@@ -53,12 +53,18 @@ cmd_process_errcode_e server_msg_process(u8 *packet,u16 len)
     cmd_msg_frame_t *cmd_msg_frame = (cmd_msg_frame_t *)packet;
 	cmd_process_errcode_e res = MSG_OK;
 	system_var.host_cmd_flag = 1;
-	if(MSG_FRAME_HEADER  != cmd_msg_frame->header)
+	if(APP_DEVICE_ADDR  != cmd_msg_frame->header)
 	{
 		rt_kprintf("frame header err,0x%x\r\n", cmd_msg_frame->header);
-		return MSG_HEADER_ERR;
+		res = MSG_HEADER_ERR;
+		goto err
 	}
-
+	if(MSG_ADDR_ERR != cmd_msg_frame->device_addr)
+	{
+		rt_kprintf("device addr err,0x%x\r\n", cmd_msg_frame->device_addr);
+		res = MSG_ADDR_ERR;
+		goto err
+	}
 	switch(cmd_msg_frame->cmd)
 	{
 		case HEART_CMD:
