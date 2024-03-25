@@ -19,6 +19,9 @@ enum
     CONNECT_MODE_CMD,
     OLED_SHOW_MODE_CMD,
     SET_TIME_DATE,
+
+    GET_USB_INFO = 0x20,
+
 };
 typedef enum weather_id_struct
 {

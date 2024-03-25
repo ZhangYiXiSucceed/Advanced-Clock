@@ -20,7 +20,7 @@ public:
     void InitUI();
     void InitConnect();
     void RspDataProcess(QByteArray buffer);
-
+    void GetUSBInfo(uint8_t data_type);
 private slots:
     void ScanInternet();
     void CloseInternetConnect();
