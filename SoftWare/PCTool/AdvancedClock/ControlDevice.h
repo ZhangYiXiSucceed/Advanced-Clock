@@ -20,13 +20,14 @@ public:
     void InitUI();
     void InitConnect();
     void RspDataProcess(QByteArray buffer);
-    void GetUSBInfo(uint8_t data_type);
+    void SendData2Device(QByteArray Data);
 private slots:
     void ScanInternet();
     void CloseInternetConnect();
     void NewConnect();
     void ReadData();
     void disconnectedSlot();
+    void GetUSBInfoCmdSend();
 private:
     QTcpServer *MyTcpServer;
     QList<QTcpSocket*> MyTcpClient;

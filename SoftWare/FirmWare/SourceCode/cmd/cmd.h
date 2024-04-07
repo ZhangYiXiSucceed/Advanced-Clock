@@ -36,7 +36,8 @@ enum
 	OLED_SHOW_MODE_CMD,
 	SET_TIME_DATE,
 
-	GET_USB_INFO = 0x20,
+	GET_USB_INFO_CMD = 0x20,
+
 };
 	
 typedef struct cmd_msg_frame_struct

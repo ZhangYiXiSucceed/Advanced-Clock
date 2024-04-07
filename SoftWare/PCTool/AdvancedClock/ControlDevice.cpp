@@ -8,6 +8,7 @@ ControlDevice::ControlDevice(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ControlDevice)
 {
+    ui->setupUi(this);
     MyTcpServer = new QTcpServer;
 
     InternetPort = 53400;
@@ -17,7 +18,6 @@ ControlDevice::ControlDevice(QWidget *parent) :
     InitUI();
     InitConnect();
     ScanInternet();
-    ui->setupUi(this);
 }
 
 void ControlDevice::InitUI()
@@ -28,7 +28,8 @@ void ControlDevice::InitUI()
 
 void ControlDevice::InitConnect()
 {
-    connect(MyTcpServer,SIGNAL(newConnection()),this,SLOT(NewConnect()));
+    connect(MyTcpServer,SIGNAL(newConnection()),this, SLOT(NewConnect()));
+    connect(ui->GetUSBInfo,SIGNAL(clicked(bool)),this, SLOT(GetUSBInfoCmdSend()));
 }
 
 void ControlDevice::ScanInternet()
@@ -109,7 +110,7 @@ void ControlDevice::ReadData()
 {
     QString disp_string,S;
     QByteArray buffer = currentClient->readAll();
-    LOG(INFO) <<"len=" <<buffer.size()<<Qt::endl;;
+    LOG(INFO) <<"len=" <<buffer.size();
 
     for(int i=0;i<buffer.size();i++)
     {
@@ -117,7 +118,7 @@ void ControlDevice::ReadData()
         disp_string += S;
     }
 
-    LOG(INFO) << disp_string.toStdString()<<Qt::endl;
+    LOG(INFO) << disp_string.toStdString();
     RspDataProcess(buffer);
 }
 
@@ -132,8 +133,15 @@ void ControlDevice::disconnectedSlot()
         }
     }
 }
-
-void ControlDevice::GetUSBInfo(uint8_t data_type)
+void ControlDevice::SendData2Device(QByteArray Data)
+{
+    qint64 res = currentClient->write(Data);
+    if( -1 == res)
+    {
+        QMessageBox::warning(NULL, "warning", "send failed", QMessageBox::Yes, QMessageBox::NoButton);
+    }
+}
+void ControlDevice::GetUSBInfoCmdSend()
 {
     uint8_t buf[sizeof(cmd_msg_frame_t) + sizeof(uint8_t) + sizeof(uint32_t)];
     uint16_t len = sizeof(cmd_msg_frame_t) + sizeof(uint8_t) + sizeof(uint32_t);
@@ -148,13 +156,14 @@ void ControlDevice::GetUSBInfo(uint8_t data_type)
     msg->data_len = sizeof(uint8_t);
 
     uint8_t *set_data = (uint8_t *)(msg + 1);
-    *set_data = data_type;
+    *set_data = GET_USB_INFO;
 
     int CheckSum = CalCheckSum(buf, sizeof(cmd_msg_frame_t) + sizeof(uint8_t));
     uint32_t *check_sum = (uint32_t *)(set_data+1);
     *check_sum = CheckSum;
 
     memcpy((void*)Sendata.data(),buf,len);
+    SendData2Device(Sendata);
 }
 
 static void MessageBoxShow(QString str)
