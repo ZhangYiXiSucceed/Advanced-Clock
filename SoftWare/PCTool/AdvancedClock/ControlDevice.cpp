@@ -14,6 +14,8 @@ ControlDevice::ControlDevice(QWidget *parent) :
     InternetPort = 53400;
     ConnectIP = nullptr;
     currentClient = nullptr;
+    GetUSBInfoTimer = new QTimer;
+    GetUSBInfoTimer->start(100);
 
     InitUI();
     InitConnect();
@@ -30,6 +32,7 @@ void ControlDevice::InitConnect()
 {
     connect(MyTcpServer,SIGNAL(newConnection()),this, SLOT(NewConnect()));
     connect(ui->GetUSBInfo,SIGNAL(clicked(bool)),this, SLOT(GetUSBInfoCmdSend()));
+    connect(GetUSBInfoTimer,SIGNAL(timeout()),this,SLOT(GetUSBInfoCmdSend()));
 }
 
 void ControlDevice::ScanInternet()
@@ -135,10 +138,13 @@ void ControlDevice::disconnectedSlot()
 }
 void ControlDevice::SendData2Device(QByteArray Data)
 {
-    qint64 res = currentClient->write(Data);
-    if( -1 == res)
+    if((currentClient != NULL) and (currentClient->state() == QAbstractSocket::ConnectedState))
     {
-        QMessageBox::warning(NULL, "warning", "send failed", QMessageBox::Yes, QMessageBox::NoButton);
+        qint64 res = currentClient->write(Data);
+        if( -1 == res)
+        {
+            QMessageBox::warning(NULL, "warning", "send failed", QMessageBox::Yes, QMessageBox::NoButton);
+        }
     }
 }
 void ControlDevice::GetUSBInfoCmdSend()
@@ -187,7 +193,10 @@ void  ControlDevice::RspDataProcess(QByteArray buf)
     {
         case GET_USB_INFO:
         {
-
+            usb_info_t *usb_info = (usb_info_t *)(msg+1);
+            ui->LEUSBSpeed->setText(QString::number(usb_info->usb_speed));
+            ui->LEBlockNum->setText(QString::number(usb_info->block_num));
+            ui->LEBlockSize->setText(QString::number(usb_info->block_size));
         }
         break;
         default:

@@ -120,5 +120,13 @@ typedef struct time_and_date_set_struct
     uint8_t second;
 }time_and_date_set_t;
 
+typedef struct usb_info_struct
+{
+    int usb_speed;
+    int block_num;
+    int block_size;
+    int rsv;
+}usb_info_t;
+
 int CalCheckSum(uint8_t* Data, uint16_t len);
 #endif // CMD_H

@@ -178,19 +178,6 @@
      <string>设置模式</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="JumpDevice_2">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>150</y>
-      <width>101</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>设备跳转</string>
-    </property>
-   </widget>
   </widget>
   <widget class="QGroupBox" name="ProgressGroupBox">
    <property name="geometry">
