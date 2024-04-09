@@ -3,6 +3,7 @@
 
 #include "stm32f4xx.h"
 
+#define APP_DEVICE_ADDR  0
 #define MSG_FRAME_HEADER 0x676A737A
 #define OTA_ONE_PACKAGE_SIZE   1024
 #define APP_FLASH_ADDR ADDR_FLASH_SECTOR_4
@@ -13,6 +14,7 @@ typedef enum cmd_process_errcode_enum
 	MSG_CMD_ERR,
 	MSG_LEN_ERR,
 	MSG_CRC_ERR,
+	MSG_ADDR_ERR,
 	UPDATE_HEADER_ERR,
 	
 }cmd_process_errcode_e;
@@ -33,6 +35,9 @@ enum
 	CONNECT_MODE_CMD,
 	OLED_SHOW_MODE_CMD,
 	SET_TIME_DATE,
+
+	GET_USB_INFO_CMD = 0x20,
+
 };
 	
 typedef struct cmd_msg_frame_struct

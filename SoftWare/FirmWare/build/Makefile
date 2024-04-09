@@ -174,7 +174,8 @@ $(BUILD_DEP_DIR)/%.d : OBJ_BNAME=$(basename $(notdir $@))
 $(BUILD_DEP_DIR)/%.d : %.c  Makefile 
 	$(ECHO) 'Update dependency Compiling' $<
 	$(CC_EXEC) -M   $(CMN_CFLAGS) $< -o "$(BUILD_OBJ_DIR)/$(OBJ_BNAME).o $(BUILD_DEP_DIR)/$(OBJ_BNAME).d"  >  $@
-	$(CC_EXEC) -c   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o
+	$(CC_EXEC
+	) -c   $(CMN_CFLAGS) $< -o $(BUILD_OBJ_DIR)/$(OBJ_BNAME).o
 
 $(BUILD_OBJ_DIR)/$(f).i : ../SourceCode/$(f).c
 	$(ECHO)  'Precompiling' $<

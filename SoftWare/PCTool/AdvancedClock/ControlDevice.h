@@ -5,6 +5,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QNetworkInterface>
+#include <QTimer>
 
 namespace Ui {
 class ControlDevice;
@@ -20,17 +21,19 @@ public:
     void InitUI();
     void InitConnect();
     void RspDataProcess(QByteArray buffer);
-
+    void SendData2Device(QByteArray Data);
 private slots:
     void ScanInternet();
     void CloseInternetConnect();
     void NewConnect();
     void ReadData();
     void disconnectedSlot();
+    void GetUSBInfoCmdSend();
 private:
     QTcpServer *MyTcpServer;
     QList<QTcpSocket*> MyTcpClient;
     QTcpSocket *currentClient;
+    QTimer  *GetUSBInfoTimer;
 
     int InternetPort;
     QString ConnectIP;
