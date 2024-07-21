@@ -21,6 +21,7 @@ enum
     SET_TIME_DATE,
 
     GET_USB_INFO = 0x20,
+    SET_PICTURE_CMD,
 
 };
 typedef enum weather_id_struct
