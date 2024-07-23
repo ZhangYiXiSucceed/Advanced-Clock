@@ -1,5 +1,6 @@
 #ifndef BOOT
 #include "main.h"
+#include "bank_manager.h"
 #else
 #include "boot_main.h"
 #endif
@@ -296,6 +297,8 @@ void periodic_task_process()
 					PrintHTInfo();
 					print_wifi_weather_time_info();
 					OLED_Clear();
+
+					set_bank_id(1);
 				}
 				else 
 				{
@@ -317,7 +320,10 @@ void periodic_task_process()
 					para.cb = (timer_callback)leave_host;
 					para.para = NULL;
 					timer_set_func(&para);
+
+					set_bank_id(2);
 				}
+				
 			}break;
 			case HOST_MODE:
 			{
@@ -328,7 +334,7 @@ void periodic_task_process()
 				para.cb = (timer_callback)connect_host;
 				para.para = NULL;
 				timer_set_func(&para);
-
+				
 			}break;
 			case OTHER_MODE:
 			{

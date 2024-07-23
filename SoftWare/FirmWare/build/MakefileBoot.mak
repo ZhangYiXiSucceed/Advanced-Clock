@@ -141,7 +141,7 @@ $(OUT_DIR)/$(TARGET).axf: $(OBJECTS)
 -include $(DEPS)
 
 
-$(BUILD_OBJ_DIR)/%.o : %.s Makefile | $(BUILD_OBJ_DIR)
+$(BUILD_OBJ_DIR)/%.o : %.s Makefile 
 	$(ECHO) 'Compiling' $<
 	$(ASM_EXEC)  $(CMN_AFLAGS) $< -o $@ 
 

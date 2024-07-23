@@ -24,3 +24,33 @@ LR_IROM1 0x08010000 0x00100000  ; load region size_region
   }
 }
 
+LR_BANK0 0x30000000  0x1000
+{
+  ER_BANK0 0x2001E000  OVERLAY  0x1000 
+  {
+    bank0.o(BANK_SEC, +FIRST)
+    bank0.o(+RO)
+    bank0.o(.text)
+  }
+}
+
+LR_BANK1 0x30001000  0x1000
+{
+  ER_BANK1 0x2001E000  OVERLAY 0x1000 
+  {
+    bank1.o(BANK_SEC, +FIRST)
+    bank1.o(+RO)
+    bank1.o(.text)
+  }
+}
+
+LR_BANK2 0x30002000  0x1000
+{
+  ER_BANK2 0x2001E000  OVERLAY 0x1000 
+  {
+    bank2.o(BANK_SEC, +FIRST)
+    bank2.o(+RO)
+    bank2.o(.text)
+  }
+}
+

@@ -15,7 +15,7 @@ int main()
   TIM5_Init();
   
   init_wifi_network();
-  IWDG_Init();
+  //IWDG_Init();
 
 
   rt_kprintf("*******************************************\r\n");
@@ -25,7 +25,7 @@ int main()
   region_header_init(&region_header);
   while(1)
   {
-    IWDG_Feed();
+    //IWDG_Feed();
     shell_process();
 	  periodic_task_process();
     wifi_msg_process();

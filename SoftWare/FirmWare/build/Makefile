@@ -62,6 +62,7 @@ $(wildcard $(SOURCECODE)/wifi/*.c)  	\
 $(wildcard $(SOURCECODE)/show/*.c)  	\
 $(wildcard $(SOURCECODE)/region_header/*.c)  	\
 $(wildcard $(SOURCECODE)/cmd/*.c)  	\
+$(wildcard $(SOURCECODE)/bank/*.c)  	\
 
 C_SOURCE += \
 
@@ -94,6 +95,7 @@ C_INCLUDE  =							\
 -I$(SOURCECODE)/region_header/    		\
 -I$(SOURCECODE)/cmd/    				\
 -I$(SOURCECODE)/flash/    				\
+-I$(SOURCECODE)/bank/    				\
 
 # compiler exe 
 CC_EXEC := armcc.exe 
@@ -106,6 +108,7 @@ DOWNLOAD_EXEC := ST-LINK_CLI.exe
 RM   := rm -rf 
 ECHO := echo
 MKDIR := mkdir
+PYTHON := python 
 
 
 CMN_CFLAGS = -c --C99  --cpu Cortex-M4.fp.sp -g --apcs=interwork --split_sections \
@@ -156,7 +159,7 @@ build :  $(OUT_DIR)/$(TARGET).axf
 $(OUT_DIR)/$(TARGET).axf: $(OBJECTS)
 	$(LINK_EXEC) $(OBJECTS) $(CMN_LFLAGS) -o $@ --map --info totals --list_mapping_symbols --list=$(OUT_DIR)/$(TARGET).map 
 	$(ECHO) image $(TARGET).bin ...
-	$(FROMELF_EXEC) --bin --output $(OUT_DIR)/$(TARGET).bin $@
+	$(FROMELF_EXEC) --bin --output $(OUT_DIR)/$(TARGET) $@
 
 -include $(DEPS)
 
@@ -179,6 +182,11 @@ $(BUILD_DEP_DIR)/%.d : %.c  Makefile
 $(BUILD_OBJ_DIR)/$(f).i : ../SourceCode/$(f).c
 	$(ECHO)  'Precompiling' $<
 	$(CC_EXEC) -c  -E $(CMN_CFLAGS) $< -o $@ 
+
+#package
+.PHONY : package
+package:
+	$(PYTHON) package.py ./out/AdvancedClock
 
 # dwonload 
 .PHONY : flash
