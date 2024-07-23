@@ -11,6 +11,7 @@ __attribute__((section("BANK_SEC"),used))  static void bank_handler(u8 bank_id, 
             rt_kprintf("this is bank func,bank id=%d func id=%d\r\n", bank_id, func_id);
         }break;
         default:
+         rt_kprintf("this is bank func,func id=%d,err\r\n", func_id);
         break;
     }
 }

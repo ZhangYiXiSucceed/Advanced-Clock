@@ -1,5 +1,5 @@
 #include "main.h"
-
+#include "bank_manager.h"
 
 int main()
 {
@@ -23,7 +23,7 @@ int main()
   init_wifi_network();
   NRF24L01_Init();
   
-  IWDG_Init();
+  //IWDG_Init();
 
   rt_kprintf("*******************************************\r\n");
   rt_kprintf("%s, time=%s date=%s\r\n",(char*)Data, __TIME__,__DATE__);
@@ -31,7 +31,7 @@ int main()
 
   rt_kprintf2((char*)Data);
   region_header_init(&region_header);
-
+  bank_init();
 
   while(1)
   {
@@ -45,6 +45,7 @@ int main()
     wifi_msg_process();
     timer_interval_func_task();
 	  show_interface_oled();
+    bank_process();
   }
 }
 
