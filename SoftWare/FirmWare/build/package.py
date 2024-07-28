@@ -22,7 +22,7 @@ def concatenate_files(file1, file2_dir, output_file):
             print("size={}".format(os.path.getsize(output_file)))
 
             for i in range(3):
-                file_name = file2_dir + "/ER_BANK" + str(i)
+                file_name = file2_dir + "/ER_OVERLAY" + str(i)
                 with open(file_name, "rb") as f:
                     # 读取第二个文件的内容并写入输出文件
                     file_buf = f.read()
@@ -37,7 +37,7 @@ def concatenate_files(file1, file2_dir, output_file):
                     fout.write(padding_buf)
 
             
-            print(f"Files {file1} and bank file have been concatenated into {output_file}")
+            print(f"Files {file1} and overlay file have been concatenated into {output_file}")
     except IOError as e:
         print(f"Error: {e}")
 

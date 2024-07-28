@@ -1,6 +1,6 @@
 #ifndef BOOT
 #include "main.h"
-#include "bank_manager.h"
+#include "overlay_manager.h"
 #else
 #include "boot_main.h"
 #endif
@@ -298,7 +298,7 @@ void periodic_task_process()
 					print_wifi_weather_time_info();
 					OLED_Clear();
 
-					set_bank_id(1);
+					set_overlay_id(1);
 				}
 				else 
 				{
@@ -321,7 +321,7 @@ void periodic_task_process()
 					para.para = NULL;
 					timer_set_func(&para);
 
-					set_bank_id(2);
+					set_overlay_id(2);
 				}
 				
 			}break;
