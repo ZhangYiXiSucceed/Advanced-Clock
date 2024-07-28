@@ -1,5 +1,5 @@
 #include "main.h"
-#include "bank_manager.h"
+#include "overlay_manager.h"
 
 int main()
 {
@@ -31,7 +31,7 @@ int main()
 
   rt_kprintf2((char*)Data);
   region_header_init(&region_header);
-  bank_init();
+  overlay_init();
 
   while(1)
   {
@@ -45,7 +45,7 @@ int main()
     wifi_msg_process();
     timer_interval_func_task();
 	  show_interface_oled();
-    bank_process();
+    overlay_process();
   }
 }
 
