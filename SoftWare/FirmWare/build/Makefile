@@ -128,7 +128,10 @@ CMN_AFLAGS = --cpu Cortex-M4.fp.sp -g --apcs=interwork \
 LINK_SCRIPT := AdvanceClock.sct
 CMN_LFLAGS = --cpu Cortex-M4.fp.sp \
 --strict --scatter $(LINK_SCRIPT) \
---remove
+--remove \
+--emit_debug_overlay_relocs \
+--emit_debug_overlay_section
+
 
 
 # compiler objects
