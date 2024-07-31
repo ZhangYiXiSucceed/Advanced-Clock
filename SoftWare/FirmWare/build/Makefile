@@ -130,6 +130,7 @@ CMN_LFLAGS = --cpu Cortex-M4.fp.sp \
 --strict --scatter $(LINK_SCRIPT) \
 --remove \
 --emit_debug_overlay_relocs \
+
 --emit_debug_overlay_section
 
 
