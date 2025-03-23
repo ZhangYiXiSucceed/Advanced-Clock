@@ -19,6 +19,10 @@ enum
     CONNECT_MODE_CMD,
     OLED_SHOW_MODE_CMD,
     SET_TIME_DATE,
+
+    GET_USB_INFO = 0x20,
+    SET_PICTURE_CMD,
+
 };
 typedef enum weather_id_struct
 {
@@ -116,6 +120,14 @@ typedef struct time_and_date_set_struct
     uint8_t minute;
     uint8_t second;
 }time_and_date_set_t;
+
+typedef struct usb_info_struct
+{
+    int usb_speed;
+    int block_num;
+    int block_size;
+    int rsv;
+}usb_info_t;
 
 int CalCheckSum(uint8_t* Data, uint16_t len);
 #endif // CMD_H
