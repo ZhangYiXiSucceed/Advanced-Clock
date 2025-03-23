@@ -6,16 +6,16 @@ void LED_Init(void)
 {    	 
   GPIO_InitTypeDef  GPIO_InitStructure;
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);//Ê¹ÄÜGPIOFÊ±ÖÓ
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);//Ê¹ï¿½ï¿½GPIOFÊ±ï¿½ï¿½
 	
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12 |GPIO_Pin_13| GPIO_Pin_14;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//ÆÕÍ¨Êä³öÄ£Ê½
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//ÍÆÍìÊä³ö
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//ï¿½ï¿½Í¨ï¿½ï¿½ï¿½Ä£Ê½
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;//ÉÏÀ­
-  GPIO_Init(GPIOE, &GPIO_InitStructure);//³õÊ¼»¯
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;//ï¿½ï¿½ï¿½ï¿½
+  GPIO_Init(GPIOE, &GPIO_InitStructure);//ï¿½ï¿½Ê¼ï¿½ï¿½
 }
-void LedOnD1()   //´Ó×óµ½ÓÒÒÀ´ÎÊÇD1£¬D2£¬D3£¬D4£¨PCBÉÏÃæ£©
+void LedOnD1()   //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½D1ï¿½ï¿½D2ï¿½ï¿½D3ï¿½ï¿½D4ï¿½ï¿½PCBï¿½ï¿½ï¿½æ£©
 {
 	GPIO_SetBits(GPIOE,GPIO_Pin_11);
 }
@@ -25,7 +25,7 @@ void LedOnD2()
   GPIO_SetBits(GPIOE,GPIO_Pin_12);
 }
 
-void LedOnD3()   //´Ó×óµ½ÓÒÒÀ´ÎÊÇD1£¬D2£¬D3£¬D4£¨PCBÉÏÃæ£©
+void LedOnD3()   //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½D1ï¿½ï¿½D2ï¿½ï¿½D3ï¿½ï¿½D4ï¿½ï¿½PCBï¿½ï¿½ï¿½æ£©
 {
 	GPIO_SetBits(GPIOE,GPIO_Pin_13);
 }

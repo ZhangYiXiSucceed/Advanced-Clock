@@ -12,6 +12,7 @@ DEBUG = -O2
 BUILD_OBJ_DIR  :=obj
 BUILD_DEP_DIR  :=dep
 OUT_DIR    :=out
+BUILD_lnt_DIR :=lnt
 
 # directoty for compiler source file
 CORE       := ../Core
@@ -104,6 +105,7 @@ ASM_EXEC := armasm.exe
 LINK_EXEC := armlink.exe
 FROMELF_EXEC := fromelf.exe
 DOWNLOAD_EXEC := ST-LINK_CLI.exe
+LINT_EXEC := lint-nt.exe
 
 RM   := rm -rf 
 ECHO := echo
@@ -130,9 +132,18 @@ CMN_LFLAGS = --cpu Cortex-M4.fp.sp \
 --strict --scatter $(LINK_SCRIPT) \
 --remove
 
+LINT_FLAGS = --i"D:\Software\MinGW\include"  --i"D:\Software\MinGW\lib\gcc\mingw32\6.3.0\include" -width="0,4" -format=">>> %f(%l) : %t %n : %m"
+LINT_FLAGS += gcc.lnt
+LINT_FLAGS += $(C_INCLUDE)
+LINT_FLAGS += -dSTM32F405xx
+LINT_FLAGS += -dSTM32F40_41xxx
+LINT_FLAGS += -dUSE_STDPERIPH_DRIVER 
+LINT_FLAGS += -d__UVISION_VERSION="537"
+LINT_FLAGS += -ID:/Software/Keil/pack/Keil/STM32F4xx_DFP/2.13.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include
 
 # compiler objects
 OBJECTS  = $(addprefix $(BUILD_OBJ_DIR)/,$(notdir $(C_SOURCE:.c=.o)))
+LINT_OBJECTS  = $(addprefix $(BUILD_lnt_DIR)/,$(notdir $(C_SOURCE:.c=.lnt)))
  vpath %.c $(sort $(dir $(C_SOURCE)))
 
 OBJECTS  += $(addprefix $(BUILD_OBJ_DIR)/,$(notdir $(ASM_SOURCE:.s=.o)))
@@ -144,10 +155,25 @@ DEPS = $(addprefix $(BUILD_DEP_DIR)/,$(notdir $(C_SOURCE:.c=.d)))
 $(shell mkdir -p $(OUT_DIR))
 $(shell mkdir -p $(BUILD_OBJ_DIR))
 $(shell mkdir -p $(BUILD_DEP_DIR))
+$(shell mkdir -p $(BUILD_lnt_DIR))
 
 ifeq ($(silent), )
 MAKEFLAGS += --silent
 endif
+
+
+.PHONY : lint
+lint :$(BUILD_lnt_DIR)/$(TARGET).lnt
+
+
+$(BUILD_lnt_DIR)/$(TARGET).lnt: $(LINT_OBJECTS)
+	$(ECHO) generate $(TARGET).lnt > $(BUILD_lnt_DIR)/$(TARGET).lnt
+
+# compiler process
+$(BUILD_lnt_DIR)/%.lnt : %.c   
+	$(ECHO)  'PClint Anazlay' $<
+	$(LINT_EXEC)  $(LINT_FLAGS) $< > $@ -zero
+
 
 .PHONY : precompile
 precompile : $(BUILD_OBJ_DIR)/$(f).i
@@ -161,7 +187,7 @@ $(OUT_DIR)/$(TARGET).axf: $(OBJECTS)
 	$(ECHO) image $(TARGET).bin ...
 	$(FROMELF_EXEC) --bin --output $(OUT_DIR)/$(TARGET) $@
 
--include $(DEPS)
+#-include $(DEPS)
 
 $(BUILD_OBJ_DIR)/%.o : %.s Makefile 
 	$(ECHO) 'Compiling' $<
@@ -181,7 +207,11 @@ $(BUILD_DEP_DIR)/%.d : %.c  Makefile
 
 $(BUILD_OBJ_DIR)/$(f).i : ../SourceCode/$(f).c
 	$(ECHO)  'Precompiling' $<
-	$(CC_EXEC) -c  -E $(CMN_CFLAGS) $< -o $@ 
+	$(CC_EXEC) -c  -E $(CMN_CFLAGS) $< -o $@  
+
+
+
+
 
 #package
 .PHONY : package
@@ -200,8 +230,7 @@ flash:
 clean:
 	$(ECHO) 'clean obj and dep ...' 
 	$(RM) *.o
-	$(RM) obj/*
-	$(RM) obj_boot/*
-	$(RM) dep/*
-	$(RM) dep_boot/*
-	$(RM) out/*
+	$(RM) $(BUILD_OBJ_DIR)/*
+	$(RM) $(BUILD_DEP_DIR)/*
+	$(RM) $(OUT_DIR)/*
+	$(RM) $(BUILD_lnt_DIR)/*
