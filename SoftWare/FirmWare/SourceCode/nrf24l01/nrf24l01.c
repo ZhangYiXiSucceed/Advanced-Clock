@@ -135,7 +135,7 @@ void NRF24L01_Init(void)
 		 
 		}
 	}
-	system_var.NRFRxFlag = 1;
+	system_var.NRFTxFlag = 1;
 	queue_init(&nrf24l01_queue);
 }
 //¼ì²â24L01ÊÇ·ñ´æÔÚ
@@ -347,7 +347,7 @@ void nrf_communication_service_msg_process()
 	{
 		 if(NRF24L01_RxPacket(NRFRXBuffer) == 0)
 		 {
-			  rt_kprintf((char*)(&NRFRXBuffer[1]));
+			  ((char*)(&NRFRXBuffer[1]));
 			  state = NRF24L01StateCheck((char*)(&NRFRXBuffer[1]));
 			  switch(state)
 			  {
